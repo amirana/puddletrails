@@ -46,6 +46,11 @@ const login = async ({ email, password }) => {
 
     if (!user) throw ApiError.unAuthorized("Invalid email or password");
 
+
+    // compare password
+    const isMatch = await user.comparePassword(password)
+    if (!isMatch) throw ApiError.unAuthorized("Invalid email or password")
+
     if (!user.isVerified) {
         throw ApiError.forbidden("Please verify your email before login");
     }
@@ -116,4 +121,11 @@ const forgotPassword = (email) => {
     // todo: verify mail code
 }
 
-export { register };
+const profile = async(userId) => {
+    const user = await User.findById(userId)
+
+    if (!user) throw ApiError.notFound("User not found")
+    return user;
+}
+
+export { register, login, logout, forgotPassword, refresh };
