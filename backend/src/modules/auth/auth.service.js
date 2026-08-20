@@ -5,6 +5,7 @@ import {
     generateResetToken,
     verifyRefreshToken,
 } from "../../common/utils/jwt.utils.js";
+import { sendVerificationEmail } from "../../common/config/email.js";
 
 const hashedToken = (token) =>
     crypto.createHash("sha256").update(token).digest("hex");
@@ -28,6 +29,11 @@ const register = async ({ firstName, lastName, email, password }) => {
     console.log(user);
 
     // send an email to user with rawToken
+    try {
+        await sendVerificationEmail(email, token)
+    } catch (error) {
+        console.error(error)
+    }
 
     const userObj = user.toObject();
     delete userObj.password;
@@ -121,6 +127,19 @@ const forgotPassword = (email) => {
     // todo: verify mail code
 }
 
+const verifyEmail = async (token) => {
+    const hashedToken = hashedToken(token)
+    const user = await User.findOne({verificationToken: hashedToken}).select("+verificationToken")
+
+    // if user not found
+    if (!user) throw ApiError.unAuthorized("User not verified")
+
+    user.isVerified = true
+    user.verificationToken = undefined
+    await user.save()
+    return user
+}
+
 const profile = async(userId) => {
     const user = await User.findById(userId)
 
@@ -128,4 +147,4 @@ const profile = async(userId) => {
     return user;
 }
 
-export { register, login, logout, forgotPassword, refresh };
+export { register, login, logout, forgotPassword, refresh, profile, verifyEmail };
