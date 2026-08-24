@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
     {
@@ -22,11 +22,13 @@ const userSchema = new mongoose.Schema(
             trim: true,
             unique: true,
             lowercase: true,
+            maxlength: 322,
             required: [true, "Email is required"],
         },
         password: {
             type: String,
             minlength: 8,
+            maxlength: 55,
             select: false,
             required: [true, "Password is required"],
         },
@@ -63,15 +65,14 @@ const userSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next()
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
-    this.password = await bcrypt.hash(this.password, 12)
-    next()
+    this.password = await bcrypt.hash(this.password, 12);
 });
 
 userSchema.methods.comparePassword = async function (clearTextPassword) {
-    return bcrypt.compare(clearTextPassword, this.password) // it doesnt take much time. so, await is not necessary
-}
+    return bcrypt.compare(clearTextPassword, this.password); // it doesnt take much time. so, await is not necessary
+};
 
 export default mongoose.model("User", userSchema);
