@@ -65,10 +65,10 @@ const login = async ({ email, password }) => {
     }
 
     const accessToken = generateAccessToken({ id: user._id });
-    const refreshToken = generateResetToken({ id: user._id });
+    const refreshToken = generateRefreshToken({ id: user._id });
 
     // Store hashed refresh token in DB so it can be invalidated on logout
-    user.refreshToken = hashedToken(refreshToken);
+    user.refreshToken = hashToken(refreshToken);
     await user.save({ validateBeforeSave: false }); // stop validation before save
 
     const userObj = user.toObject();
@@ -91,7 +91,7 @@ const refresh = async (token) => {
     if (!user) throw ApiError.unAuthorized("User no longer exists");
 
     // Verify the refresh token matches what's stored (prevents reuse of old tokens)
-    if (user.refreshToken !== hashedToken(token)) {
+    if (user.refreshToken !== hashToken(token)) {
         throw ApiError.unAuthorized(
             "Invalid refresh token — please log in again",
         );
@@ -99,9 +99,9 @@ const refresh = async (token) => {
 
     const accessToken = generateAccessToken({ id: user._id });
 
-    const refreshToken = generateResetToken({ id: user._id });
+    const refreshToken = generateRefreshToken({ id: user._id });
 
-    user.refreshToken = hashedToken(refreshToken);
+    user.refreshToken = hashToken(refreshToken);
     await user.save({ validateBeforeSave: false });
 
     return { accessToken, refreshToken };
@@ -171,7 +171,7 @@ const verifyEmail = async (token) => {
     // If you paste the hash from MongoDB into Postman, hashing again would not match;
     // so we also try a direct match on the stored value.
 
-    const hashedInput = hashedToken(trimmed);
+    const hashedInput = hashToken(trimmed);
     const user = await User.findOne({ verificationToken: hashedInput }).select(
         "+verificationToken",
     );

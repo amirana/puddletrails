@@ -10,6 +10,8 @@ const login = async (req, res) => {
     const { user, accessToken, refreshToken } = await authService.login(
         req.body,
     );
+
+    // Refresh token goes in httpOnly cookie — not accessible to JS
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
@@ -28,7 +30,15 @@ const login = async (req, res) => {
 
 const refreshToken = async (req, res) => {
     const token = req.cookies?.refreshToken;
-    const { accessToken } = await authService.refresh(token);
+    const { accessToken, refreshToken } = await authService.refresh(token);
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+    });
+
     ApiResponse.ok(res, "Token refreshed", { accessToken });
 };
 

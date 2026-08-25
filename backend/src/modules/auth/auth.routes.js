@@ -21,7 +21,7 @@ router.post(
     controller.forgotPassword,
 );
 router.put(
-    "/reset-password",
+    "/reset-password/:token",
     validate(ResetPasswordDto),
     controller.resetPassword,
 );
