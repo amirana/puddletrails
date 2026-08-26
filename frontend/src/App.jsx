@@ -1,11 +1,14 @@
-import Navbar from "./components/landing/sections/Navbar.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage.jsx";
 import "./App.css";
 
 function App() {
     return (
-        <>
-            <Navbar />
-        </>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<LandingPage />}></Route>
+            </Routes>
+        </BrowserRouter>
     );
 }
 
