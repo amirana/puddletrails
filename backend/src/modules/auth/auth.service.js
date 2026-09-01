@@ -172,9 +172,13 @@ const verifyEmail = async (token) => {
     // so we also try a direct match on the stored value.
 
     const hashedInput = hashToken(trimmed);
-    const user = await User.findOne({ verificationToken: hashedInput }).select(
+    console.log(trimmed);
+    console.log(hashedInput);
+    let user = await User.findOne({ verificationToken: hashedInput }).select(
         "+verificationToken",
     );
+
+    console.log(user);
 
     // if user not found
     if (!user) {

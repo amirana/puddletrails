@@ -4,7 +4,7 @@ const Footer = () => {
     return (
         <footer className="border-t border-black/10 bg-white px-6 py-16 text-left sm:py-20">
             <div className="mx-auto max-w-6xl">
-                <div className="grid gap-12 md:grid-cols-[2fr_repeat(3,1fr)] md:gap-8">
+                <div className="grid gap-12 md:grid-cols-[2fr_repeat(2,1fr)] md:gap-8">
                     <div className="max-w-sm">
                         <h2 className="m-0 text-xl font-semibold tracking-tight !text-[#08060d]">
                             Traverse
@@ -18,21 +18,15 @@ const Footer = () => {
                     </div>
 
                     <div className="flex flex-col gap-3 text-sm">
-                        <h3 className="m-0 mb-1 font-medium text-[#08060d]">Product</h3>
-                        <Link className="text-[#6b6375] hover:text-[#08060d]" to="#features">Features</Link>
-                        <Link className="text-[#6b6375] hover:text-[#08060d]" to="#how-it-works">How it works</Link>
-                    </div>
-
-                    <div className="flex flex-col gap-3 text-sm">
                         <h3 className="m-0 mb-1 font-medium text-[#08060d]">Legal</h3>
                         <Link className="text-[#6b6375] hover:text-[#08060d]" to="/privacy">Privacy</Link>
                         <Link className="text-[#6b6375] hover:text-[#08060d]" to="/terms">Terms</Link>
                     </div>
 
                     <div className="flex flex-col gap-3 text-sm">
-                        <h3 className="m-0 mb-1 font-medium text-[#08060d]">Social</h3>
-                        <Link className="text-[#6b6375] hover:text-[#08060d]" to="#">Instagram</Link>
-                        <Link className="text-[#6b6375] hover:text-[#08060d]" to="#">X</Link>
+                        <h3 className="m-0 mb-1 font-medium text-[#172033]">Social</h3>
+                        <a className="text-[#172033]/60 hover:text-[#172033]" href="#">Instagram</a>
+                        <a className="text-[#172033]/60 hover:text-[#172033]" href="#">X</a>
                     </div>
                 </div>
 

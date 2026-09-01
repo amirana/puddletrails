@@ -18,7 +18,7 @@ const CtaSection = () => {
                 </p>
 
                 <Link
-                    to="/register"
+                    to="/signup"
                     className="mt-8 inline-block rounded-full bg-[#b8dfc7] px-7 py-3 text-sm font-medium text-[#174c36] transition-colors hover:bg-[#9fd1b1]"
                 >
                     Plan a Trip
