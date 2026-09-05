@@ -1,5 +1,6 @@
 import { useState, createContext } from "react";
 import { login as loginUser } from "../services/authService.js";
+import { logout as logoutUser } from "../services/authService.js";
 
 const AuthContext = createContext();
 
@@ -10,14 +11,23 @@ function AuthProvider({ children }) {
     const login = async (data) => {
         const result = await loginUser(data);
 
-        setUser(result.user);
-        setAccessToken(result.accessToken);
+        setUser(result.data.user);
+        setAccessToken(result.data.accessToken);
+
+        return result;
+    };
+
+    const logout = async () => {
+        const result = await logoutUser(accessToken);
+
+        setUser(null);
+        setAccessToken(null);
 
         return result;
     };
 
     return (
-        <AuthContext.Provider value={{ user, accessToken, login }}>
+        <AuthContext.Provider value={{ user, accessToken, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
