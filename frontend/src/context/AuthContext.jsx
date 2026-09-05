@@ -9,6 +9,7 @@ const AuthContext = createContext();
 function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
+    const [authLoading, setAuthLoading] = useState(true);
 
     const authCheckStarted = useRef(false);
 
@@ -50,13 +51,15 @@ function AuthProvider({ children }) {
 
     useEffect(() => {
         const userProfile = async () => {
-            try {
-                if (authCheckStarted.current) return;
+            if (authCheckStarted.current) return;
 
-                authCheckStarted.current = true;
+            authCheckStarted.current = true;
+            try {
                 await profile();
             } catch (error) {
                 console.error(error.message);
+            } finally {
+                setAuthLoading(false);
             }
         };
 
@@ -65,7 +68,15 @@ function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider
-            value={{ user, accessToken, login, logout, refresh, profile }}
+            value={{
+                user,
+                accessToken,
+                login,
+                logout,
+                refresh,
+                profile,
+                authLoading,
+            }}
         >
             {children}
         </AuthContext.Provider>

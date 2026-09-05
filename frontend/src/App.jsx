@@ -5,6 +5,7 @@ import Signup from "./pages/auth/Signup.jsx";
 import VerifyEmail from "./pages/auth/VerifyEmail.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 
 function App() {
     return (
@@ -16,7 +17,14 @@ function App() {
                 element={<VerifyEmail />}
             ></Route>
             <Route path="/login" element={<Login />}></Route>
-            <Route path="/dashboard" element={<Dashboard />}></Route>
+            <Route
+                path="/dashboard"
+                element={
+                    <ProtectedRoute>
+                        <Dashboard />
+                    </ProtectedRoute>
+                }
+            ></Route>
         </Routes>
     );
 }

@@ -3,7 +3,7 @@ import AuthContext from "../context/AuthContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-    const { user, logout } = useContext(AuthContext);
+    const { user, authLoading, logout } = useContext(AuthContext);
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
@@ -13,6 +13,10 @@ const Dashboard = () => {
             console.error(error.message);
         }
     };
+
+    if (authLoading) {
+        return "Loading"
+    }
 
     return (
         <section>
