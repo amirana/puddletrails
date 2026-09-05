@@ -37,4 +37,43 @@ const logout = async (accessToken) => {
     return result;
 };
 
-export { login, logout };
+const refresh = async () => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
+        {
+            method: "POST",
+            credentials: "include",
+        },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Something went wrong.");
+    }
+
+    return result;
+};
+
+const profile = async (accessToken) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/profile`,
+        {
+            method: "GET",
+            credentials: "include",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Something went wrong.");
+    }
+
+    return result;
+};
+
+export { login, logout, refresh, profile };
