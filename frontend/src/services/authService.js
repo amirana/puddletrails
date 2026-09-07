@@ -76,4 +76,25 @@ const profile = async (accessToken) => {
     return result;
 };
 
-export { login, logout, refresh, profile };
+const forgotPassword = async (data) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Forgot password failed");
+    }
+
+    return result;
+};
+
+export { login, logout, refresh, profile, forgotPassword };

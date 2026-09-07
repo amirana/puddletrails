@@ -101,6 +101,15 @@ const Login = () => {
                         )}
                     </label>
 
+                    <div className="-mt-2 text-right">
+                        <Link
+                            to="/forgot-password"
+                            className="text-sm font-medium text-[#4d8063] transition-colors hover:text-[#174c36] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36]"
+                        >
+                            Forgot password?
+                        </Link>
+                    </div>
+
                     {submitError && (
                         <p
                             className="rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-700"

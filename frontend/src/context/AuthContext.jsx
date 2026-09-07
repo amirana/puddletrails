@@ -1,8 +1,8 @@
 import { useState, createContext, useEffect, useRef } from "react";
-import { login as loginUser } from "../services/authService.js";
-import { logout as logoutUser } from "../services/authService.js";
-import { refresh as refreshUser } from "../services/authService.js";
-import { profile as profileUser } from "../services/authService.js";
+import { login as loginUser } from "../services/AuthService.js";
+import { logout as logoutUser } from "../services/AuthService.js";
+import { refresh as refreshUser } from "../services/AuthService.js";
+import { profile as profileUser } from "../services/AuthService.js";
 
 const AuthContext = createContext();
 
