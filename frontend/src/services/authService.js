@@ -97,4 +97,25 @@ const forgotPassword = async (data) => {
     return result;
 };
 
-export { login, logout, refresh, profile, forgotPassword };
+const resetPassword = async (token, data) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/reset-password/${token}`,
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Something went wrong.");
+    }
+
+    return result;
+};
+
+export { login, logout, refresh, profile, forgotPassword, resetPassword };

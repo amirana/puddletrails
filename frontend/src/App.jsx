@@ -5,6 +5,7 @@ import Signup from "./pages/auth/Signup.jsx";
 import VerifyEmail from "./pages/auth/VerifyEmail.jsx";
 import Login from "./pages/auth/Login.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
+import ResetPassword from "./pages/auth/ResetPassword.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 
@@ -19,6 +20,10 @@ function App() {
             ></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/forgot-password" element={<ForgotPassword />}></Route>
+            <Route
+                path="/reset-password/:token"
+                element={<ResetPassword />}
+            ></Route>
             <Route
                 path="/dashboard"
                 element={
