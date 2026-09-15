@@ -7,4 +7,16 @@ const createTrip = async (req, res) => {
     ApiResonse.created(res, "Trip created successfully", trip);
 };
 
-export { createTrip };
+const getTrips = async (req, res) => {
+    const trips = await tripService.getTrips(req.user.id);
+
+    ApiResonse.ok(res, "Trips fetched successfully", trips);
+};
+
+const getTrip = async (req, res) => {
+    const trip = await tripService.getTrip(req.params.tripId, req.user.id);
+
+    ApiResonse.ok(res, "Trip fetched successfully", trip);
+};
+
+export { createTrip, getTrips, getTrip };

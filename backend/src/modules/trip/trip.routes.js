@@ -13,4 +13,7 @@ tripRoute.post(
     tripController.createTrip,
 );
 
+tripRoute.get("/", authenticate, tripController.getTrips);
+tripRoute.get("/:tripId", authenticate, tripController.getTrip);
+
 export default tripRoute;

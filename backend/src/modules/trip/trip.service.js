@@ -14,4 +14,25 @@ const createTrip = async (tripData, userId) => {
     return trip;
 };
 
-export { createTrip };
+const getTrips = async (userId) => {
+    const trips = await Trip.find({
+        owner: userId,
+    });
+
+    return trips;
+};
+
+const getTrip = async (tripId, userId) => {
+    const trip = await Trip.findOne({
+        _id: tripId,
+        owner: userId,
+    });
+
+    if (!trip) {
+        throw ApiError.notFound("Trip not found");
+    }
+
+    return trip;
+};
+
+export { createTrip, getTrips, getTrip };
