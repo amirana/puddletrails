@@ -19,4 +19,14 @@ const getTrip = async (req, res) => {
     ApiResonse.ok(res, "Trip fetched successfully", trip);
 };
 
-export { createTrip, getTrips, getTrip };
+const updateTrip = async (req, res) => {
+    const updatedTrip = await tripService.updateTrip(
+        req.params.tripId,
+        req.user.id,
+        req.body,
+    );
+
+    ApiResonse.ok(res, "Trip updated successfully", updatedTrip);
+};
+
+export { createTrip, getTrips, getTrip, updateTrip };

@@ -35,4 +35,23 @@ const getTrip = async (tripId, userId) => {
     return trip;
 };
 
-export { createTrip, getTrips, getTrip };
+const updateTrip = async (tripId, userId, tripData) => {
+    const updatedTrip = await Trip.findOneAndUpdate(
+        {
+            _id: tripId,
+            owner: userId,
+        },
+        tripData,
+        {
+            new: true,
+        },
+    );
+
+    if (updatedTrip === null) {
+        throw ApiError.notFound("Trip not found")
+    }
+
+    return updatedTrip;
+};
+
+export { createTrip, getTrips, getTrip, updateTrip };
