@@ -29,4 +29,13 @@ const updateTrip = async (req, res) => {
     ApiResonse.ok(res, "Trip updated successfully", updatedTrip);
 };
 
-export { createTrip, getTrips, getTrip, updateTrip };
+const deleteTrip = async (req, res) => {
+    const deletedTrip = await tripService.deleteTrip(
+        req.params.tripId,
+        req.user.id,
+    );
+
+    ApiResonse.ok(res, "Trip deleted successfully", deletedTrip);
+};
+
+export { createTrip, getTrips, getTrip, updateTrip, deleteTrip };

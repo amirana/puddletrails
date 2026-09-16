@@ -48,10 +48,19 @@ const updateTrip = async (tripId, userId, tripData) => {
     );
 
     if (updatedTrip === null) {
-        throw ApiError.notFound("Trip not found")
+        throw ApiError.notFound("Trip not found");
     }
 
     return updatedTrip;
 };
 
-export { createTrip, getTrips, getTrip, updateTrip };
+const deleteTrip = async (tripId, userId) => {
+    const deletedTrip = await Trip.findByIdAndDelete({
+        _id: tripId,
+        owner: userId,
+    });
+
+    return deletedTrip
+};
+
+export { createTrip, getTrips, getTrip, updateTrip, deleteTrip };

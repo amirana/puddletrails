@@ -24,4 +24,6 @@ tripRoute.patch(
     tripController.updateTrip,
 );
 
+tripRoute.delete("/:tripId", authenticate, tripController.deleteTrip);
+
 export default tripRoute;
