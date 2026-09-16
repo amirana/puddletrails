@@ -26,34 +26,20 @@ const Login = () => {
     };
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-[#f8f8f8] px-6 py-12">
-            <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-7 text-left shadow-sm sm:p-10">
-                <div className="flex items-center justify-between gap-4">
-                    <Link
-                        to="/"
-                        className="text-xl font-semibold tracking-tight text-[#08060d] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174c36]"
-                    >
-                        Traverse
-                    </Link>
-                    <p className="text-right text-sm text-[#6b6375]">
-                        New here?{" "}
-                        <Link
-                            to="/signup"
-                            className="font-medium text-[#4d8063] transition-colors hover:text-[#174c36] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36]"
-                        >
-                            Sign up
-                        </Link>
-                    </p>
-                </div>
-
-                <div className="mt-10">
-                    <p className="text-xs font-medium tracking-[0.16em] text-[#6b6375]">
+        <main className="min-h-screen bg-[#f6f8f7] px-6 py-8 sm:py-10">
+            <header className="mx-auto flex max-w-6xl items-center justify-between">
+                <Link to="/" className="text-xl font-bold tracking-[-0.05em] text-slate-950">Traverse</Link>
+                <p className="text-sm text-slate-500">New here? <Link to="/signup" className="font-semibold text-emerald-700 transition-colors hover:text-emerald-900">Sign up</Link></p>
+            </header>
+            <div className="mx-auto mt-20 w-full max-w-md rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-[0_14px_40px_rgba(15,23,42,0.06)] sm:mt-24 sm:p-9">
+                <div>
+                    <p className="text-xs font-bold tracking-[0.16em] text-emerald-700">
                         WELCOME BACK
                     </p>
-                    <h1 className="mb-0 mt-3 text-3xl font-semibold leading-tight tracking-tight !text-[#08060d] sm:text-4xl">
+                    <h1 className="mb-0 mt-3 !text-2xl font-semibold leading-tight tracking-[-0.035em] !text-slate-950">
                         Continue planning together.
                     </h1>
-                    <p className="mt-3 text-sm leading-relaxed text-[#6b6375]">
+                    <p className="mt-2 text-sm leading-relaxed text-slate-500">
                         Log in to pick up where your travel plans left off.
                     </p>
                 </div>
@@ -63,10 +49,10 @@ const Login = () => {
                     onSubmit={handleSubmit(onSubmit)}
                     noValidate
                 >
-                    <label className="block text-sm font-medium text-[#08060d]">
+                    <label className="block text-sm font-semibold text-slate-800">
                         Email address
                         <input
-                            className="mt-2 block w-full rounded-lg border border-black/15 bg-white px-3.5 py-3 text-base text-[#08060d] outline-none transition focus:border-[#4d8063] focus:ring-2 focus:ring-[#b8dfc7]"
+                            className="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
                             type="email"
                             autoComplete="email"
                             {...register("email", {
@@ -84,10 +70,10 @@ const Login = () => {
                         )}
                     </label>
 
-                    <label className="block text-sm font-medium text-[#08060d]">
+                    <label className="block text-sm font-semibold text-slate-800">
                         Password
                         <input
-                            className="mt-2 block w-full rounded-lg border border-black/15 bg-white px-3.5 py-3 text-base text-[#08060d] outline-none transition focus:border-[#4d8063] focus:ring-2 focus:ring-[#b8dfc7]"
+                            className="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3.5 py-3 text-base text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-emerald-600 focus:ring-4 focus:ring-emerald-100"
                             type="password"
                             autoComplete="current-password"
                             {...register("password", {
@@ -104,7 +90,7 @@ const Login = () => {
                     <div className="-mt-2 text-right">
                         <Link
                             to="/forgot-password"
-                            className="text-sm font-medium text-[#4d8063] transition-colors hover:text-[#174c36] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36]"
+                            className="text-sm font-semibold text-emerald-700 transition-colors hover:text-emerald-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
                         >
                             Forgot password?
                         </Link>
@@ -120,7 +106,7 @@ const Login = () => {
                     )}
 
                     <button
-                        className="w-full rounded-full bg-[#b8dfc7] px-5 py-3.5 text-sm font-medium text-[#174c36] transition-colors hover:bg-[#9fd1b1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36] disabled:cursor-not-allowed disabled:opacity-60"
+                        className="w-full rounded-lg bg-emerald-700 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                         type="submit"
                         disabled={isSubmitting}
                     >

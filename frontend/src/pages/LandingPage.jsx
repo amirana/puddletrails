@@ -13,8 +13,13 @@ const features = [
             "Organize your trip day by day, add activities and places, and rearrange plans whenever things change. Move activities across days without starting over.",
         supportingText:
             "Tentative times. Flexible plans. One shared itinerary.",
-        image: "https://placehold.co/1200x600",
-        imageAlt: "Traverse itinerary preview",
+        preview: {
+            label: "Tuesday, September 16",
+            title: "A day in Portree",
+            primary: "Breakfast at Birch",
+            secondary: "Explore the Old Man of Storr",
+            detail: "10:30 AM · 2 hr 30 min",
+        },
     },
     {
         number: "02",
@@ -23,8 +28,13 @@ const features = [
         description:
             "Invite your travel group, choose who can edit and who can view, and keep everyone working from the same plan.",
         supportingText: "Owner. Editor. Viewer. One shared trip.",
-        image: "https://placehold.co/1200x600",
-        imageAlt: "Traverse collaboration preview",
+        preview: {
+            label: "TRIP MEMBERS",
+            title: "Everyone is in the loop",
+            primary: "Maya added a place",
+            secondary: "James updated the budget",
+            detail: "2 new updates today",
+        },
     },
     {
         number: "03",
@@ -33,8 +43,13 @@ const features = [
         description:
             "Keep reservations, expenses, checklists, and important files together so you don't have to search through scattered group chats and folders.",
         supportingText: "Reservations. Expenses. Checklists. Files.",
-        image: "https://placehold.co/1200x600",
-        imageAlt: "Traverse organization preview",
+        preview: {
+            label: "TRIP DETAILS",
+            title: "The essentials, together",
+            primary: "Hotel booking confirmed",
+            secondary: "Passport checklist complete",
+            detail: "Everything saved and shared",
+        },
     },
     {
         number: "04",
@@ -43,8 +58,13 @@ const features = [
         description:
             "Bring your itinerary, people, bookings, expenses, and trip details together in one shared workspace.",
         supportingText: "One trip. One shared plan.",
-        image: "https://placehold.co/1200x600",
-        imageAlt: "Traverse trip overview preview",
+        preview: {
+            label: "TRIP OVERVIEW",
+            title: "Scotland escape",
+            primary: "8 places saved",
+            secondary: "4 reservations confirmed",
+            detail: "September 14–21, 2026",
+        },
     },
 ];
 
