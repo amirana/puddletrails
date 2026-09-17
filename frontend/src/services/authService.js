@@ -1,3 +1,21 @@
+const register = async (data) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+        },
+    );
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Registration failed.");
+    }
+
+    return result;
+};
+
 const login = async (data) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/login`,
@@ -118,4 +136,4 @@ const resetPassword = async (token, data) => {
     return result;
 };
 
-export { login, logout, refresh, profile, forgotPassword, resetPassword };
+export { register, login, logout, refresh, profile, forgotPassword, resetPassword };

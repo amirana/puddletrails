@@ -1,5 +1,8 @@
+// pages/auth/Signup.jsx
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { register as registerUser } from "../../services/AuthService.js";
 
 const Signup = () => {
     const {
@@ -8,28 +11,15 @@ const Signup = () => {
         formState: { errors, isSubmitSuccessful, isSubmitting },
     } = useForm({ mode: "onTouched" });
 
+    const [submitError, setSubmitError] = useState("");
+
     const onSubmit = async (data) => {
+        setSubmitError("");
         try {
-            const response = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/auth/register`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(data),
-                },
-            );
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.message || "Registration failed");
-            }
-
-            console.log("Registration successful:", result);
+            await registerUser(data);
         } catch (error) {
-            console.error("Registration error:", error);
+            setSubmitError(error.message || "Registration failed.");
+            throw error; // keeps isSubmitSuccessful accurate on failure
         }
     };
 
@@ -39,21 +29,22 @@ const Signup = () => {
                 <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-[0_20px_50px_rgba(15,23,42,0.1)] sm:p-10">
                     <Link
                         to="/"
-                        className="text-xl font-semibold tracking-tight text-[#08060d]"
+                        className="text-xl font-semibold tracking-tight text-slate-950"
                     >
                         Traverse
                     </Link>
-                    <h1 className="mb-0 mt-8 text-3xl font-semibold tracking-tight !text-[#08060d]">
-                        You’re all set.
+                    <h1 className="mt-8 text-3xl font-semibold tracking-tight text-slate-950">
+                        Check your email
                     </h1>
-                    <p className="mt-3 text-base leading-relaxed text-[#6b6375]">
-                        Your account has been created successfully.
+                    <p className="mt-3 text-base leading-relaxed text-slate-500">
+                        We&rsquo;ve sent a verification link to your inbox.
+                        Verify your email before logging in.
                     </p>
                     <Link
-                        to="/"
-                        className="mt-8 inline-flex rounded-full bg-[#b8dfc7] px-6 py-3 text-sm font-medium text-[#174c36] transition-colors hover:bg-[#9fd1b1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36]"
+                        to="/login"
+                        className="mt-8 inline-flex rounded-lg bg-emerald-700 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700"
                     >
-                        Back to home
+                        Back to log in
                     </Link>
                 </div>
             </div>
@@ -63,15 +54,28 @@ const Signup = () => {
     return (
         <main className="min-h-screen bg-[#f6f8f7] px-6 py-8 sm:py-10">
             <header className="mx-auto flex max-w-6xl items-center justify-between">
-                <Link to="/" className="text-xl font-bold tracking-[-0.05em] text-slate-950">Traverse</Link>
-                <p className="text-sm text-slate-500">Already have an account? <Link to="/login" className="font-semibold text-emerald-700 transition-colors hover:text-emerald-900">Log in</Link></p>
+                <Link
+                    to="/"
+                    className="text-xl font-bold tracking-[-0.05em] text-slate-950"
+                >
+                    Traverse
+                </Link>
+                <p className="text-sm text-slate-500">
+                    Already have an account?{" "}
+                    <Link
+                        to="/login"
+                        className="font-semibold text-emerald-700 transition-colors hover:text-emerald-900"
+                    >
+                        Log in
+                    </Link>
+                </p>
             </header>
             <div className="mx-auto mt-16 w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-[0_14px_40px_rgba(15,23,42,0.06)] sm:mt-20 sm:p-9">
                 <div>
                     <p className="text-xs font-bold tracking-[0.16em] text-emerald-700">
                         START PLANNING
                     </p>
-                    <h1 className="mb-0 mt-3 !text-2xl font-semibold leading-tight tracking-[-0.035em] !text-slate-950">
+                    <h1 className="mt-3 text-2xl font-semibold leading-tight tracking-[-0.035em] text-slate-950">
                         Create your account
                     </h1>
                     <p className="mt-2 text-sm leading-relaxed text-slate-500">
@@ -176,6 +180,16 @@ const Signup = () => {
                             </span>
                         )}
                     </label>
+
+                    {submitError && (
+                        <p
+                            className="rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-700"
+                            role="alert"
+                        >
+                            {submitError}
+                        </p>
+                    )}
+
                     <button
                         className="w-full rounded-lg bg-emerald-700 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-emerald-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
                         type="submit"

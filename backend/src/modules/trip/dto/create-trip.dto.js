@@ -7,7 +7,7 @@ class CreateTripDto extends BaseDto {
         destination: Joi.string().trim().min(2).max(60).required(),
         startDate: Joi.date().required(),
         endDate: Joi.date().min(Joi.ref("startDate")).required(),
-        description: Joi.string().trim(),
+        description: Joi.string().trim().empty("").default(null),
     });
 }
 
