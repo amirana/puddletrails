@@ -11,9 +11,8 @@
     --shadow:
         rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-
     font: 18px/145% var(--font-scoutie);
-    letter-spacing: 0.30px;
+    letter-spacing: 0.3px;
     color-scheme: light dark;
     color: var(--text);
     background: var(--bg);
@@ -69,7 +68,7 @@ h2 {
 
 h1 {
     font-size: 56px;
-    letter-spacing: 0.20px;
+    letter-spacing: 0.2px;
     margin: 32px 0;
     @media (max-width: 1024px) {
         font-size: 36px;
@@ -79,11 +78,20 @@ h1 {
 h2 {
     font-size: 24px;
     line-height: 118%;
-    letter-spacing: 0.30px;
+    letter-spacing: 0.3px;
     margin: 0 0 8px;
     @media (max-width: 1024px) {
         font-size: 20px;
     }
 }
 
+/* Make the black icon white */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(47%) sepia(87%) saturate(2171%) hue-rotate(203deg)
+        brightness(101%) contrast(92%);
+    cursor: pointer;
+}

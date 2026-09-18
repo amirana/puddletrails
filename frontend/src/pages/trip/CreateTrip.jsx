@@ -1,15 +1,19 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Link } from "react-router-dom";
 import AppHeader from "../../components/layout/AppHeader.jsx";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import AuthContext from "../../context/AuthContext.jsx";
 import { useContext, useState } from "react";
+import DestinationCombobox from "../../components/ui/DestinationCombobox.jsx";
 
 const CreateTrip = () => {
     const {
         register,
+        control,
         handleSubmit,
         formState: { errors, isSubmitting },
+        getValues,
+        watch,
     } = useForm({ mode: "onTouched" });
 
     const [tripCreated, setTripCreated] = useState(false);
@@ -20,10 +24,10 @@ const CreateTrip = () => {
     const onSubmit = async (data) => {
         setServerError("");
         try {
-            const tripData = {
-                ...data,
-                ...(data.description ? { description: data.description } : {}),
-            };
+            // const tripData = {
+            //     ...data,
+            //     ...(data.description),
+            // };
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/trips/`,
                 {
@@ -33,7 +37,7 @@ const CreateTrip = () => {
                         Authorization: `Bearer ${accessToken}`,
                     },
                     credentials: "include",
-                    body: JSON.stringify(tripData),
+                    body: JSON.stringify(data),
                 },
             );
 
@@ -49,6 +53,9 @@ const CreateTrip = () => {
             setServerError(error.message);
         }
     };
+
+    const today = new Date().toISOString().slice(0, 10);
+    const startDate = watch("startDate");
 
     if (tripCreated === true) {
         return (
@@ -131,7 +138,7 @@ const CreateTrip = () => {
 
                             <label className="flex flex-col gap-1.5 text-sm font-medium text-[#172033]">
                                 Destination
-                                <input
+                                {/* <input
                                     type="text"
                                     placeholder="e.g. Goa, India"
                                     className={`rounded-lg border px-4 py-2.5 text-sm text-[#172033] outline-none transition-colors focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 ${
@@ -148,6 +155,30 @@ const CreateTrip = () => {
                                         },
                                         maxLength: 60,
                                     })}
+                                /> */}
+                                <Controller
+                                    name="destination"
+                                    control={control}
+                                    rules={{
+                                        required: "Destination is required.",
+                                        minLength: {
+                                            value: 2,
+                                            message:
+                                                "Destination must be at least 2 characters.",
+                                        },
+                                        maxLength: {
+                                            value: 60,
+                                            message:
+                                                "Destination must be at most 60 characters.",
+                                        },
+                                    }}
+                                    render={({ field }) => (
+                                        <DestinationCombobox
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            error={errors.destination}
+                                        />
+                                    )}
                                 />
                                 {errors.destination && (
                                     <span className="text-xs text-red-500">
@@ -161,6 +192,7 @@ const CreateTrip = () => {
                                     Start date
                                     <input
                                         type="date"
+                                        min={today}
                                         className={`rounded-lg border px-4 py-2.5 text-sm text-[#172033] outline-none transition-colors focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 ${
                                             errors.startDate
                                                 ? "border-red-400"
@@ -181,6 +213,7 @@ const CreateTrip = () => {
                                     End date
                                     <input
                                         type="date"
+                                        min={startDate || today}
                                         className={`rounded-lg border px-4 py-2.5 text-sm text-[#172033] outline-none transition-colors focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 ${
                                             errors.endDate
                                                 ? "border-red-400"
@@ -188,6 +221,16 @@ const CreateTrip = () => {
                                         }`}
                                         {...register("endDate", {
                                             required: "End date is required.",
+                                            validate: (endDate) => {
+                                                const startDate =
+                                                    getValues("startDate");
+
+                                                if (endDate < startDate) {
+                                                    return "End date must be on or after the start date.";
+                                                }
+
+                                                return true;
+                                            },
                                         })}
                                     />
                                     {errors.endDate && (
