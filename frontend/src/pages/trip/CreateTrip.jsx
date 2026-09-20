@@ -1,10 +1,11 @@
 import { useForm, Controller } from "react-hook-form";
 import { Link } from "react-router-dom";
 import AppHeader from "../../components/layout/AppHeader.jsx";
-import { ArrowLeft, CheckCircle2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import AuthContext from "../../context/AuthContext.jsx";
 import { useContext, useState } from "react";
 import DestinationCombobox from "../../components/ui/DestinationCombobox.jsx";
+import { useNavigate } from "react-router-dom";
 
 const CreateTrip = () => {
     const {
@@ -16,18 +17,17 @@ const CreateTrip = () => {
         watch,
     } = useForm({ mode: "onTouched" });
 
-    const [tripCreated, setTripCreated] = useState(false);
+    // const [tripCreated, setTripCreated] = useState(false);
     const [serverError, setServerError] = useState("");
 
     const { accessToken } = useContext(AuthContext);
 
+    const navigate = useNavigate();
+
     const onSubmit = async (data) => {
         setServerError("");
         try {
-            // const tripData = {
-            //     ...data,
-            //     ...(data.description),
-            // };
+
             const response = await fetch(
                 `${import.meta.env.VITE_API_URL}/api/trips/`,
                 {
@@ -47,7 +47,10 @@ const CreateTrip = () => {
                 throw new Error(result.message || "Something went wrong");
             }
 
-            setTripCreated(true);
+            navigate(`/trips/${result.data._id}`)
+
+            // setTripCreated(true);
+
         } catch (error) {
             console.error("Trip creation error:", error);
             setServerError(error.message);
@@ -57,30 +60,30 @@ const CreateTrip = () => {
     const today = new Date().toISOString().slice(0, 10);
     const startDate = watch("startDate");
 
-    if (tripCreated === true) {
-        return (
-            <div className="min-h-screen bg-[#FFFDF8]">
-                <AppHeader />
-                <main className="flex min-h-[70vh] items-center justify-center px-6 py-16">
-                    <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-8 text-center shadow-sm sm:p-10">
-                        <CheckCircle2 className="mx-auto h-10 w-10 text-[#3B82F6]" />
-                        <h1 className="mt-4 text-2xl font-semibold tracking-tight text-[#172033]">
-                            You&rsquo;re all set
-                        </h1>
-                        <p className="mt-3 text-sm leading-relaxed text-[#172033]/60">
-                            Your trip has been created. Time to start planning.
-                        </p>
-                        <Link
-                            to="/dashboard"
-                            className="mt-8 inline-flex rounded-full bg-[#3B82F6] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#2563EB] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3B82F6]"
-                        >
-                            Back to dashboard
-                        </Link>
-                    </div>
-                </main>
-            </div>
-        );
-    }
+    // if (tripCreated === true) {
+    //     return (
+    //         <div className="min-h-screen bg-[#FFFDF8]">
+    //             <AppHeader />
+    //             <main className="flex min-h-[70vh] items-center justify-center px-6 py-16">
+    //                 <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-8 text-center shadow-sm sm:p-10">
+    //                     <CheckCircle2 className="mx-auto h-10 w-10 text-[#3B82F6]" />
+    //                     <h1 className="mt-4 text-2xl font-semibold tracking-tight text-[#172033]">
+    //                         You&rsquo;re all set
+    //                     </h1>
+    //                     <p className="mt-3 text-sm leading-relaxed text-[#172033]/60">
+    //                         Your trip has been created. Time to start planning.
+    //                     </p>
+    //                     <Link
+    //                         to="/dashboard"
+    //                         className="mt-8 inline-flex rounded-full bg-[#3B82F6] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#2563EB] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#3B82F6]"
+    //                     >
+    //                         Back to dashboard
+    //                     </Link>
+    //                 </div>
+    //             </main>
+    //         </div>
+    //     );
+    // }
 
     return (
         <div className="min-h-screen bg-[#FFFDF8]">

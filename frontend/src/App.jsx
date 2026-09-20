@@ -9,6 +9,7 @@ import ResetPassword from "./pages/auth/ResetPassword.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 import CreateTrip from "./pages/trip/CreateTrip.jsx";
+import TripDetails from "./pages/trip/TripDetails.jsx";
 
 function App() {
     return (
@@ -38,6 +39,14 @@ function App() {
                 element={
                     <ProtectedRoute>
                         <CreateTrip />
+                    </ProtectedRoute>
+                }
+            ></Route>
+            <Route
+                path="/trips/:tripId"
+                element={
+                    <ProtectedRoute>
+                        <TripDetails />
                     </ProtectedRoute>
                 }
             ></Route>
