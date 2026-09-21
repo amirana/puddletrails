@@ -4,6 +4,7 @@ import { ArrowLeft, CalendarDays, MapPin, PlaneTakeoff } from "lucide-react";
 import { getTrip as getTripService } from "../../services/TripService.js";
 import AuthContext from "../../context/AuthContext.jsx";
 import AppHeader from "../../components/layout/AppHeader.jsx";
+import Footer from "../../components/layout/Footer.jsx";
 
 const TripDetails = () => {
     const { tripId } = useParams();
@@ -46,6 +47,7 @@ const TripDetails = () => {
                         </div>
                     </div>
                 </main>
+                <Footer />
             </div>
         );
     }
@@ -91,12 +93,12 @@ const TripDetails = () => {
 
                                     <div>
                                         <h1 className="text-3xl font-semibold tracking-tight text-[#172033] sm:text-4xl">
-                                            {trip.title}
+                                            {trip?.title}
                                         </h1>
                                         <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#172033]/70">
                                             <span className="inline-flex items-center gap-2">
                                                 <MapPin className="h-4 w-4 text-[#3B82F6]" />
-                                                {trip.destination}
+                                                {trip?.destination}
                                             </span>
                                             <span className="inline-flex items-center gap-2">
                                                 <CalendarDays className="h-4 w-4 text-[#3B82F6]" />
@@ -123,7 +125,7 @@ const TripDetails = () => {
                                     About this trip
                                 </p>
                                 <p className="mt-4 text-base leading-7 text-[#172033]/75">
-                                    {trip.description ||
+                                    {trip?.description ||
                                         "No description added yet. Add a few details to capture the mood, plans, or goals for this trip."}
                                 </p>
                             </article>
@@ -134,7 +136,7 @@ const TripDetails = () => {
                                         Destination
                                     </p>
                                     <p className="mt-3 text-lg font-semibold text-[#172033]">
-                                        {trip.destination}
+                                        {trip?.destination}
                                     </p>
                                 </div>
 
@@ -157,6 +159,7 @@ const TripDetails = () => {
                     </div>
                 </div>
             </main>
+            <Footer />
         </div>
     );
 };
