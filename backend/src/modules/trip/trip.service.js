@@ -60,7 +60,11 @@ const deleteTrip = async (tripId, userId) => {
         owner: userId,
     });
 
-    return deletedTrip
+    if (deletedTrip === null) {
+        throw ApiError.notFound("Trip not found");
+    }
+
+    return deletedTrip;
 };
 
 export { createTrip, getTrips, getTrip, updateTrip, deleteTrip };

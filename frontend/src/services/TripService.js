@@ -59,4 +59,24 @@ const updateTrip = async (tripId, tripData, accessToken) => {
     return result;
 };
 
-export { getTrip, getTrips, updateTrip };
+const deleteTrip = async (tripId, accessToken) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Failed to delete trip.");
+    }
+
+    return result;
+};
+
+export { getTrip, getTrips, updateTrip, deleteTrip };
