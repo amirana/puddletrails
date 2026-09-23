@@ -1,4 +1,5 @@
 import Trip from "./trip.model.js";
+import TripMember from "./tripmember.model.js";
 import ApiError from "../../common/utils/api-error.js";
 
 const createTrip = async (tripData, userId) => {
@@ -10,6 +11,12 @@ const createTrip = async (tripData, userId) => {
         description: tripData.description,
         owner: userId,
     });
+
+    await TripMember.create({
+        trip: trip._id,
+        user: userId,
+        role: "owner"
+    })
 
     return trip;
 };
