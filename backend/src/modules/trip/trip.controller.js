@@ -38,4 +38,22 @@ const deleteTrip = async (req, res) => {
     ApiResonse.ok(res, "Trip deleted successfully", deletedTrip);
 };
 
-export { createTrip, getTrips, getTrip, updateTrip, deleteTrip };
+const tripInvitation = async (req, res) => {
+    const invitation = await tripService.createInvitation(
+        req.params.tripId,
+        req.body.email,
+        req.body.role,
+        req.user.id,
+    );
+
+    ApiResonse.ok(res, "Trip invitation sent", invitation);
+};
+
+export {
+    createTrip,
+    getTrips,
+    getTrip,
+    updateTrip,
+    deleteTrip,
+    tripInvitation,
+};

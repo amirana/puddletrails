@@ -8,7 +8,7 @@ const tripMemberSchema = new mongoose.Schema(
             require: true,
         },
         user: {
-            type: mongoose.Schema.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             require: true,
         },

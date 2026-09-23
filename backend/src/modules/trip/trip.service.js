@@ -1,5 +1,7 @@
 import Trip from "./trip.model.js";
 import TripMember from "./tripmember.model.js";
+import tripInvitation from "./tripinvitation.model.js";
+import crypto from "crypto";
 import ApiError from "../../common/utils/api-error.js";
 
 const createTrip = async (tripData, userId) => {
@@ -15,8 +17,8 @@ const createTrip = async (tripData, userId) => {
     await TripMember.create({
         trip: trip._id,
         user: userId,
-        role: "owner"
-    })
+        role: "owner",
+    });
 
     return trip;
 };
@@ -74,4 +76,45 @@ const deleteTrip = async (tripId, userId) => {
     return deletedTrip;
 };
 
-export { createTrip, getTrips, getTrip, updateTrip, deleteTrip };
+const createInvitation = async (tripId, email, role, userId) => {
+    const trip = await Trip.findOne({
+        _id: tripId,
+        owner: userId,
+    });
+
+    if (!trip) {
+        throw ApiError.notFound("Trip not found");
+    }
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const hashToken = (token) =>
+        crypto.createHash("sha256").update(token).digest("hex");
+
+    const hashedToken = hashToken(token);
+
+    const invitation = await tripInvitation.create({
+        trip: tripId,
+        email,
+        role,
+        token: hashedToken,
+        expiresAt: Date.now() + 7 * 60 * 1000,
+    });
+
+    const invitationData = invitation.toObject();
+
+    delete invitationData.token;
+
+    return {
+        invitation: invitationData,
+        token,
+    };
+};
+
+export {
+    createTrip,
+    getTrips,
+    getTrip,
+    updateTrip,
+    deleteTrip,
+    createInvitation,
+};
