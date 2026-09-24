@@ -31,4 +31,17 @@ tripRoute.post(
     authenticate,
     tripController.tripInvitation,
 );
+
+tripRoute.post(
+    "/invitations/:token/accept",
+    authenticate,
+    tripController.acceptInvitation,
+);
+
+tripRoute.post(
+    "/invitations/:token/decline",
+    authenticate,
+    tripController.declineInvitation,
+);
+
 export default tripRoute;
