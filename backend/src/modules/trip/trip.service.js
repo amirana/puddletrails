@@ -4,6 +4,7 @@ import tripInvitation from "./tripinvitation.model.js";
 import User from "../auth/auth.model.js";
 import crypto from "crypto";
 import ApiError from "../../common/utils/api-error.js";
+import { sendInvitationEmail } from "../../common/config/email.js";
 
 const createTrip = async (tripData, userId) => {
     const trip = await Trip.create({
@@ -77,42 +78,55 @@ const deleteTrip = async (tripId, userId) => {
     return deletedTrip;
 };
 
+const token = crypto.randomBytes(32).toString("hex");
+const hashToken = (token) =>
+    crypto.createHash("sha256").update(token).digest("hex");
+
 const createInvitation = async (tripId, email, role, userId) => {
     const trip = await Trip.findOne({
         _id: tripId,
         owner: userId,
     });
 
-    if (!trip) {
-        throw ApiError.notFound("Trip not found");
+    try {
+        if (!trip) {
+            throw ApiError.notFound("Trip not found");
+        }
+
+        const hashedToken = hashToken(token);
+
+        const invitation = await tripInvitation.create({
+            trip: tripId,
+            email,
+            role,
+            token: hashedToken,
+            expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
+        });
+
+        await sendInvitationEmail(email, token, trip.title, role);
+
+        const invitationData = invitation.toObject();
+
+        delete invitationData.token;
+
+        return {
+            invitation: invitationData,
+            token,
+        };
+    } catch (error) {
+        if (error.code === 11000) {
+            throw ApiError.conflict(
+                "An invitation has already been sent to this email.",
+            );
+        }
+
+        throw error;
     }
-
-    const token = crypto.randomBytes(32).toString("hex");
-    const hashToken = (token) =>
-        crypto.createHash("sha256").update(token).digest("hex");
-
-    const hashedToken = hashToken(token);
-
-    const invitation = await tripInvitation.create({
-        trip: tripId,
-        email,
-        role,
-        token: hashedToken,
-        expiresAt: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    });
-
-    const invitationData = invitation.toObject();
-
-    delete invitationData.token;
-
-    return {
-        invitation: invitationData,
-        token,
-    };
 };
 
 const acceptInvitation = async (token, userId) => {
-    const invitation = await tripInvitation.findOne({ token });
+    const hashedToken = hashToken(token);
+    const invitation = await tripInvitation.findOne({ token: hashedToken });
     const user = await User.findById(userId);
     const now = Date.now();
 
@@ -159,7 +173,8 @@ const acceptInvitation = async (token, userId) => {
 };
 
 const declineInvitation = async (token, userId) => {
-    const invitation = await tripInvitation.findOne({ token });
+    const hashedToken = hashToken(token);
+    const invitation = await tripInvitation.findOne({ token: hashedToken });
     const user = await User.findById(userId);
     const now = Date.now();
 

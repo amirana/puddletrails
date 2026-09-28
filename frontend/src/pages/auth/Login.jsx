@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AuthContext from "../../context/AuthContext.jsx";
 
 const Login = () => {
@@ -13,13 +13,18 @@ const Login = () => {
 
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
+    const [searchParams] = useSearchParams();
 
     const onSubmit = async (data) => {
         setSubmitError("");
 
         try {
             await login(data);
-            navigate("/dashboard");
+
+            const redirect = searchParams.get("redirect");
+
+            redirect ? navigate(redirect) : navigate("/dashboard");
+            
         } catch (error) {
             setSubmitError(error.message || "Unable to log in.");
         }
@@ -28,8 +33,21 @@ const Login = () => {
     return (
         <main className="min-h-screen bg-[#f6f8f7] px-6 py-8 sm:py-10">
             <header className="mx-auto flex max-w-6xl items-center justify-between">
-                <Link to="/" className="text-xl font-bold tracking-[-0.05em] text-slate-950">Traverse</Link>
-                <p className="text-sm text-slate-500">New here? <Link to="/signup" className="font-semibold text-emerald-700 transition-colors hover:text-emerald-900">Sign up</Link></p>
+                <Link
+                    to="/"
+                    className="text-xl font-bold tracking-[-0.05em] text-slate-950"
+                >
+                    Traverse
+                </Link>
+                <p className="text-sm text-slate-500">
+                    New here?{" "}
+                    <Link
+                        to="/signup"
+                        className="font-semibold text-emerald-700 transition-colors hover:text-emerald-900"
+                    >
+                        Sign up
+                    </Link>
+                </p>
             </header>
             <div className="mx-auto mt-20 w-full max-w-md rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-[0_14px_40px_rgba(15,23,42,0.06)] sm:mt-24 sm:p-9">
                 <div>

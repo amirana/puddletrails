@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 import CreateTrip from "./pages/trip/CreateTrip.jsx";
 import TripDetails from "./pages/trip/TripDetails.jsx";
+import Invitation from "./pages/trip/invitation.jsx";
 
 function App() {
     return (
@@ -50,6 +51,7 @@ function App() {
                     </ProtectedRoute>
                 }
             ></Route>
+            <Route path="/invitations/:token" element={<Invitation />}></Route>
         </Routes>
     );
 }

@@ -37,6 +37,20 @@ const sendResetPasswordEmail = async (email, token) => {
     );
 };
 
+const sendInvitationEmail = async (email, token, tripTitle, role) => {
+    const url = `${process.env.CLIENT_URL}/invitations/${token}`;
+
+    await sendEmail(
+        email,
+        "You've been invited to join a trip on Traverse",
+        `<h2>You're invited!</h2>
+        <p>You have been invited to join <strong>${tripTitle}</strong> on Traverse.</p>
+        <p>Your role: <strong>${role}</strong></p>
+        <p><a href="${url}">Accept Invitation</a></p>
+        <p>This invitation expires in 7 days.</p>`,
+    );
+};
+
 const sendOrderConfirmationEmail = async (email, order) => {
     const items = order.items
         .map((i) => `<li>${i.title} x${i.quantity} — ₹${i.price}</li>`)
@@ -55,5 +69,6 @@ const sendOrderConfirmationEmail = async (email, order) => {
 export {
     sendVerificationEmail,
     sendResetPasswordEmail,
+    sendInvitationEmail,
     sendOrderConfirmationEmail,
 };
