@@ -26,8 +26,14 @@ const createTrip = async (tripData, userId) => {
 };
 
 const getTrips = async (userId) => {
+    const memberships = await TripMember.find({
+        user: userId,
+    }).select("trip");
+
+    const memberTripIds = memberships.map((membership) => membership.trip);
+
     const trips = await Trip.find({
-        owner: userId,
+        $or: [{ owner: userId }, { _id: { $in: memberTripIds } }],
     });
 
     return trips;
@@ -36,11 +42,19 @@ const getTrips = async (userId) => {
 const getTrip = async (tripId, userId) => {
     const trip = await Trip.findOne({
         _id: tripId,
-        owner: userId,
+    });
+
+    const member = await TripMember.findOne({
+        trip: tripId,
+        user: userId,
     });
 
     if (!trip) {
         throw ApiError.notFound("Trip not found");
+    }
+
+    if (!member) {
+        throw ApiError.unauthorized("You do not have access to this trip");
     }
 
     return trip;
@@ -66,14 +80,16 @@ const updateTrip = async (tripId, userId, tripData) => {
 };
 
 const deleteTrip = async (tripId, userId) => {
-    const deletedTrip = await Trip.findByIdAndDelete({
+    const trip = await Trip.findByIdAndDelete({
         _id: tripId,
         owner: userId,
     });
 
-    if (deletedTrip === null) {
+    if (!trip) {
         throw ApiError.notFound("Trip not found");
     }
+
+    const deletedTrip = await Trip.findByIdAndDelete(tripId);
 
     return deletedTrip;
 };
@@ -138,8 +154,8 @@ const acceptInvitation = async (token, userId) => {
         throw ApiError.notFound("User not found");
     }
 
-    if (invitation.status !== "pending") {
-        throw ApiError.badRequest("Invitation is no longer pending");
+    if (invitation.status === "accepted") {
+        throw ApiError.badRequest("Invitation has already been accepted");
     }
 
     if (invitation.expiresAt < now) {
@@ -186,8 +202,8 @@ const declineInvitation = async (token, userId) => {
         throw ApiError.notFound("User not found");
     }
 
-    if (invitation.status !== "pending") {
-        throw ApiError.badRequest("Invitation is no longer pending");
+    if (invitation.status === "declined") {
+        throw ApiError.badRequest("Invitation has already been declined");
     }
 
     if (invitation.expiresAt < now) {

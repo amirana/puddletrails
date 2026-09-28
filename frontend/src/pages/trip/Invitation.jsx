@@ -4,11 +4,11 @@ import {
     declineInvitation as declineInvitationService,
 } from "../../services/TripService.js";
 import { useState, useContext, useEffect } from "react";
-import AuthContext from "../../context/AuthContext";
+import AuthContext from "../../context/AuthContext.jsx";
 
 const Invitation = () => {
     const { token } = useParams();
-    const { accessToken } = useContext(AuthContext);
+    const { authLoading, accessToken } = useContext(AuthContext);
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
@@ -25,10 +25,10 @@ const Invitation = () => {
     };
 
     useEffect(() => {
-        if (!accessToken) {
+        if (!authLoading && !accessToken) {
             navigate(`/login?redirect=/invitations/${token}`);
         }
-    }, [accessToken, token, navigate]);
+    }, [authLoading, accessToken, token, navigate]);
 
     return (
         <main>

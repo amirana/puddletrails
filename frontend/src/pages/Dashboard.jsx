@@ -79,6 +79,10 @@ const Dashboard = () => {
                         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#3B82F6]">
                             Dashboard
                         </p>
+
+                        <p className="mt-4 text-lg font-semibold tracking-[-0.04em] text-[#172033] sm:text-2xl">
+                            Welcome, {user?.firstName || "traveler"}
+                        </p>
                         <h1 className="mt-3 text-4xl font-semibold tracking-[-0.05em] text-[#172033] sm:text-6xl">
                             Your trips
                         </h1>
