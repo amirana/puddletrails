@@ -28,30 +28,40 @@ const createTrip = async (tripData, userId) => {
 const getTrips = async (userId) => {
     const memberships = await TripMember.find({
         user: userId,
-    }).select("trip");
+    });
 
-    const memberTripIds = memberships.map((membership) => membership.trip);
+    const tripIds = memberships.map((member) => member.trip);
 
     const trips = await Trip.find({
-        $or: [{ owner: userId }, { _id: { $in: memberTripIds } }],
+        $or: [{ owner: userId }, { _id: { $in: tripIds } }],
     });
 
     return trips;
 };
 
 const getTrip = async (tripId, userId) => {
+    console.log("GET TRIP:", { tripId, userId });
     const trip = await Trip.findOne({
         _id: tripId,
-    });
-
-    const member = await TripMember.findOne({
-        trip: tripId,
-        user: userId,
     });
 
     if (!trip) {
         throw ApiError.notFound("Trip not found");
     }
+
+    console.log("TRIP OWNER:", trip.owner.toString());
+    console.log("CURRENT USER:", userId.toString());
+
+    // Owner always has access
+    if (trip.owner.toString() === userId.toString()) {
+        return trip;
+    } 
+
+    // Otherwise check membership
+    const member = await TripMember.findOne({
+        trip: tripId,
+        user: userId,
+    });
 
     if (!member) {
         throw ApiError.unauthorized("You do not have access to this trip");
