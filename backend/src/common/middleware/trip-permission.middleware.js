@@ -3,14 +3,14 @@ import ApiError from "../utils/api-error.js";
 
 const loadMembership = async (req, res, next) => {
     try {
-        console.log("TRIP ID:", req.params.tripId);
-        console.log("USER ID:", req.user.id);
+        // console.log("TRIP ID:", req.params.tripId);
+        // console.log("USER ID:", req.user.id);
 
         const membership = await TripMember.findOne({
             trip: req.params.tripId,
             user: req.user.id,
         });
-        console.log("MEMBERSHIP:", membership);
+        // console.log("MEMBERSHIP:", membership);
 
         if (!membership) {
             throw ApiError.forbidden("You do not have access to this trip");

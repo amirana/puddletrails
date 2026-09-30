@@ -106,95 +106,102 @@ const TripDetails = () => {
                         <ArrowLeft className="h-4 w-4" />
                         Back to dashboard
                     </Link>
-
-                    <section className="mt-6 w-full">
-                        <div className="overflow-hidden rounded-[18px] border border-[#E6EEF8] bg-white p-6 shadow-sm">
-                            <h3 className="mb-4 text-lg font-semibold text-[#172033]">
-                                Invite someone to this trip
-                            </h3>
-                            {sendSuccess && (
-                                <p className="mt-3 text-sm text-green-600">
-                                    {sendSuccess}
-                                </p>
-                            )}
-                            {sendError && (
-                                <div>
-                                    <p className="mt-3 text-sm text-red-600">
-                                        {sendError}
+                    {trip.role === "owner" && (
+                        <section className="mt-6 w-full">
+                            <div className="overflow-hidden rounded-[18px] border border-[#E6EEF8] bg-white p-6 shadow-sm">
+                                <h3 className="mb-4 text-lg font-semibold text-[#172033]">
+                                    Invite someone to this trip
+                                </h3>
+                                {sendSuccess && (
+                                    <p className="mt-3 text-sm text-green-600">
+                                        {sendSuccess}
                                     </p>
-                                </div>
-                            )}
-                            <form
-                                className="grid gap-3 md:flex md:items-center md:gap-4"
-                                onSubmit={handleSubmit(handleSendInvitation)}
-                            >
-                                <div className="flex-1">
-                                    <label className="mb-1 block text-sm font-medium text-[#172033]/80">
-                                        Email
-                                    </label>
-                                    <input
-                                        {...register("email", {
-                                            required: "Email is required",
-                                            pattern: {
-                                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                                message: "Enter a valid email",
-                                            },
-                                        })}
-                                        type="email"
-                                        placeholder="name@example.com"
-                                        aria-invalid={
-                                            errors.email ? "true" : "false"
-                                        }
-                                        className="w-full rounded-lg border border-[#D8E3F2] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#CDE0FF]"
-                                    />
-                                    {errors.email && (
-                                        <p className="mt-1 text-xs text-red-600">
-                                            {errors.email.message}
+                                )}
+                                {sendError && (
+                                    <div>
+                                        <p className="mt-3 text-sm text-red-600">
+                                            {sendError}
                                         </p>
+                                    </div>
+                                )}
+                                <form
+                                    className="grid gap-3 md:flex md:items-center md:gap-4"
+                                    onSubmit={handleSubmit(
+                                        handleSendInvitation,
                                     )}
-                                </div>
+                                >
+                                    <div className="flex-1">
+                                        <label className="mb-1 block text-sm font-medium text-[#172033]/80">
+                                            Email
+                                        </label>
+                                        <input
+                                            {...register("email", {
+                                                required: "Email is required",
+                                                pattern: {
+                                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                    message:
+                                                        "Enter a valid email",
+                                                },
+                                            })}
+                                            type="email"
+                                            placeholder="name@example.com"
+                                            aria-invalid={
+                                                errors.email ? "true" : "false"
+                                            }
+                                            className="w-full rounded-lg border border-[#D8E3F2] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#CDE0FF]"
+                                        />
+                                        {errors.email && (
+                                            <p className="mt-1 text-xs text-red-600">
+                                                {errors.email.message}
+                                            </p>
+                                        )}
+                                    </div>
 
-                                <div className="w-40">
-                                    <label className="mb-1 block text-sm font-medium text-[#172033]/80">
-                                        Role
-                                    </label>
-                                    <select
-                                        {...register("role", {
-                                            required: "Role is required",
-                                        })}
-                                        aria-invalid={
-                                            errors.role ? "true" : "false"
-                                        }
-                                        className="w-full rounded-lg border border-[#D8E3F2] bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#CDE0FF]"
-                                    >
-                                        <option value="viewer">Viewer</option>
-                                        <option value="editor">Editor</option>
-                                    </select>
-                                    {errors.role && (
-                                        <p className="mt-1 text-xs text-red-600">
-                                            {errors.role.message}
-                                        </p>
-                                    )}
-                                </div>
+                                    <div className="w-40">
+                                        <label className="mb-1 block text-sm font-medium text-[#172033]/80">
+                                            Role
+                                        </label>
+                                        <select
+                                            {...register("role", {
+                                                required: "Role is required",
+                                            })}
+                                            aria-invalid={
+                                                errors.role ? "true" : "false"
+                                            }
+                                            className="w-full rounded-lg border border-[#D8E3F2] bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#CDE0FF]"
+                                        >
+                                            <option value="viewer">
+                                                Viewer
+                                            </option>
+                                            <option value="editor">
+                                                Editor
+                                            </option>
+                                        </select>
+                                        {errors.role && (
+                                            <p className="mt-1 text-xs text-red-600">
+                                                {errors.role.message}
+                                            </p>
+                                        )}
+                                    </div>
 
-                                <div>
-                                    <label className="mb-1 block text-sm font-medium text-transparent">
-                                        &nbsp;
-                                    </label>
-                                    <button
-                                        type="submit"
-                                        className="rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-medium text-white hover:bg-[#1E4BBB]"
-                                        disabled={isSending}
-                                    >
-                                        {isSending
-                                            ? "Sending..."
-                                            : "Send Invitation"}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </section>
-
+                                    <div>
+                                        <label className="mb-1 block text-sm font-medium text-transparent">
+                                            &nbsp;
+                                        </label>
+                                        <button
+                                            type="submit"
+                                            className="rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-medium text-white hover:bg-[#1E4BBB]"
+                                            disabled={isSending}
+                                        >
+                                            {isSending
+                                                ? "Sending..."
+                                                : "Send Invitation"}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </section>
+                    )}
                     <EditTripForm trip={trip} setTrip={setTrip} />
                 </div>
             </main>

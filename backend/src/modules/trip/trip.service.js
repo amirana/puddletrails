@@ -54,8 +54,11 @@ const getTrip = async (tripId, userId) => {
 
     // Owner always has access
     if (trip.owner.toString() === userId.toString()) {
-        return trip;
-    } 
+        return {
+            ...trip.toObject(),
+            role: "owner",
+        };
+    }
 
     // Otherwise check membership
     const member = await TripMember.findOne({
@@ -67,14 +70,16 @@ const getTrip = async (tripId, userId) => {
         throw ApiError.unauthorized("You do not have access to this trip");
     }
 
-    return trip;
+    return {
+        ...trip.toObject(),
+        role: member.role,
+    };
 };
 
 const updateTrip = async (tripId, userId, tripData) => {
     const updatedTrip = await Trip.findOneAndUpdate(
         {
             _id: tripId,
-            owner: userId,
         },
         tripData,
         {
