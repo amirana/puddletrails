@@ -114,6 +114,7 @@ const Dashboard = () => {
                                         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#172033] text-white shadow-sm">
                                             <Compass className="h-4 w-4" />
                                         </span>
+                                        <span>{trip.role}</span>
                                     </div>
 
                                     <div className="rounded-[1.2rem] bg-[#F0F2F4] px-3 py-3">
@@ -168,15 +169,18 @@ const Dashboard = () => {
                                     </div>
                                 </div>
                             </Link>
-                            <button
-                                type="button"
-                                onClick={() => handleDelete(trip._id)}
-                                disabled={trip.owner !== user._id}
-                                className="rounded-full border border-[#F5C2C2] bg-[#FFF1F1] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#B42318] transition-colors hover:bg-[#FEE2E2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCA5A5] disabled:cursor-not-allowed disabled:border-[#E5E7EB] disabled:bg-[#F3F4F6] disabled:text-[#94A3B8] disabled:hover:bg-[#F3F4F6] disabled:opacity-70"
-                                aria-label={`Delete ${trip?.title || "trip"}`}
-                            >
-                                Delete
-                            </button>
+
+                            {trip.role === "owner" && (
+                                <button
+                                    type="button"
+                                    onClick={() => handleDelete(trip._id)}
+                                    disabled={trip.owner !== user._id}
+                                    className="rounded-full border border-[#F5C2C2] bg-[#FFF1F1] px-2.5 py-1 text-[9px] font-semibold uppercase tracking-[0.18em] text-[#B42318] transition-colors hover:bg-[#FEE2E2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FCA5A5] disabled:cursor-not-allowed disabled:border-[#E5E7EB] disabled:bg-[#F3F4F6] disabled:text-[#94A3B8] disabled:hover:bg-[#F3F4F6] disabled:opacity-70"
+                                    aria-label={`Delete ${trip?.title || "trip"}`}
+                                >
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     ))}
                 </div>

@@ -36,7 +36,16 @@ const getTrips = async (userId) => {
         $or: [{ owner: userId }, { _id: { $in: tripIds } }],
     });
 
-    return trips;
+    return trips.map((trip) => {
+        const membership = memberships.find(
+            (member) => member.trip.toString() === trip._id.toString(),
+        );
+
+        return {
+            ...trip.toObject(),
+            role: membership?.role,
+        };
+    });
 };
 
 const getTrip = async (tripId, userId) => {
@@ -76,14 +85,15 @@ const getTrip = async (tripId, userId) => {
     };
 };
 
-const updateTrip = async (tripId, userId, tripData) => {
+const updateTrip = async (tripId, tripData) => {
     const updatedTrip = await Trip.findOneAndUpdate(
         {
             _id: tripId,
         },
         tripData,
         {
-            new: true,
+            returnDocument: "after",
+            runValidators: true,
         },
     );
 
@@ -94,17 +104,12 @@ const updateTrip = async (tripId, userId, tripData) => {
     return updatedTrip;
 };
 
-const deleteTrip = async (tripId, userId) => {
-    const trip = await Trip.findByIdAndDelete({
-        _id: tripId,
-        owner: userId,
-    });
+const deleteTrip = async (tripId) => {
+    const deletedTrip = await Trip.findByIdAndDelete(tripId);
 
-    if (!trip) {
+    if (!deletedTrip) {
         throw ApiError.notFound("Trip not found");
     }
-
-    const deletedTrip = await Trip.findByIdAndDelete(tripId);
 
     return deletedTrip;
 };

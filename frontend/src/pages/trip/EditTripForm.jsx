@@ -48,7 +48,10 @@ const EditTripForm = ({ trip, setTrip }) => {
         try {
             const response = await updateTripService(tripId, data, accessToken);
 
-            setTrip(response.data);
+            setTrip((prev) => ({
+                ...response.data,
+                role: prev.role,
+            }));
             setIsEditing(false);
         } catch (error) {
             console.error(error);
@@ -97,22 +100,25 @@ const EditTripForm = ({ trip, setTrip }) => {
                                         </h1>
                                     )}
 
-                                    {!isEditing && (
-                                        <button
-                                            type="button"
-                                            disabled={trip.role === "viewer"}
-                                            onClick={() => {
-                                                if (trip.role !== "viewer") {
-                                                    setIsEditing(true);
-                                                }
-                                            }}
-                                            className="inline-flex items-center justify-center gap-2 rounded-full border border-[#D6E4FF] bg-white px-3 py-2 text-xs font-medium text-[#172033] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#A7C2FF] hover:shadow-[0_12px_28px_rgba(59,130,246,0.10)] disabled:cursor-not-allowed disabled:opacity-50 disabled:cursor-not-allowed disabled:opacity-50"
-                                            aria-label="Edit trip"
-                                        >
-                                            <Pencil className="h-3.5 w-3.5 text-[#3B82F6]" />
-                                            Edit
-                                        </button>
-                                    )}
+                                    {!isEditing &&
+                                        (trip.role === "owner" ||
+                                            trip.role === "editor") && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (
+                                                        trip.role !== "viewer"
+                                                    ) {
+                                                        setIsEditing(true);
+                                                    }
+                                                }}
+                                                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#D6E4FF] bg-white px-3 py-2 text-xs font-medium text-[#172033] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#A7C2FF] hover:shadow-[0_12px_28px_rgba(59,130,246,0.10)] disabled:cursor-not-allowed disabled:opacity-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                                aria-label="Edit trip"
+                                            >
+                                                <Pencil className="h-3.5 w-3.5 text-[#3B82F6]" />
+                                                Edit
+                                            </button>
+                                        )}
 
                                     {isEditing && (
                                         <div className="flex flex-wrap items-center gap-2">
