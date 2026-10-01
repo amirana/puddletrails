@@ -102,6 +102,26 @@ const sendInvitation = async (tripId, email, role, accessToken) => {
     return result;
 };
 
+const getInvitation = async (token, accessToken) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/invitations/${token}`,
+        {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        },
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Unable to load this invitation.");
+    }
+
+    return result;
+};
+
 const acceptInvitation = async (token, accessToken) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/trips/invitations/${token}/accept`,
@@ -148,6 +168,7 @@ export {
     updateTrip,
     deleteTrip,
     sendInvitation,
+    getInvitation,
     acceptInvitation,
     declineInvitation,
 };

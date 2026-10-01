@@ -1,24 +1,23 @@
-class ApiResonse {
-
+class ApiResponse {
     static ok(res, message, data = null) {
         return res.status(200).json({
             success: true,
             message,
-            data
-        })
+            data,
+        });
     }
 
     static created(res, message, data = null) {
         return res.status(201).json({
             success: true,
             message,
-            data
-        })
+            data,
+        });
     }
 
     static noContent(res) {
-        return res.status(204).send()
+        return res.status(204).send();
     }
 }
 
-export default ApiResonse
+export default ApiResponse;

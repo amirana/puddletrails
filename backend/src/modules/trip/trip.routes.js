@@ -64,4 +64,10 @@ tripRoute.post(
     tripController.declineInvitation,
 );
 
+tripRoute.get(
+    "/invitations/:token",
+    authenticate,
+    tripController.getInvitation,
+);
+
 export default tripRoute;

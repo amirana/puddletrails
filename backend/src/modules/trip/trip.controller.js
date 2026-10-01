@@ -1,22 +1,22 @@
 import * as tripService from "../trip/trip.service.js";
-import ApiResonse from "../../common/utils/api-response.js";
+import ApiResponse from "../../common/utils/api-response.js";
 
 const createTrip = async (req, res) => {
     const trip = await tripService.createTrip(req.body, req.user.id);
 
-    ApiResonse.created(res, "Trip created successfully", trip);
+    ApiResponse.created(res, "Trip created successfully", trip);
 };
 
 const getTrips = async (req, res) => {
     const trips = await tripService.getTrips(req.user.id);
 
-    ApiResonse.ok(res, "Trips fetched successfully", trips);
+    ApiResponse.ok(res, "Trips fetched successfully", trips);
 };
 
 const getTrip = async (req, res) => {
     const trip = await tripService.getTrip(req.params.tripId, req.user.id);
 
-    ApiResonse.ok(res, "Trip fetched successfully", trip);
+    ApiResponse.ok(res, "Trip fetched successfully", trip);
 };
 
 const updateTrip = async (req, res) => {
@@ -26,7 +26,7 @@ const updateTrip = async (req, res) => {
         req.body,
     );
 
-    ApiResonse.ok(res, "Trip updated successfully", updatedTrip);
+    ApiResponse.ok(res, "Trip updated successfully", updatedTrip);
 };
 
 const deleteTrip = async (req, res) => {
@@ -35,7 +35,7 @@ const deleteTrip = async (req, res) => {
         req.user.id,
     );
 
-    ApiResonse.ok(res, "Trip deleted successfully", deletedTrip);
+    ApiResponse.ok(res, "Trip deleted successfully", deletedTrip);
 };
 
 const tripInvitation = async (req, res) => {
@@ -46,7 +46,16 @@ const tripInvitation = async (req, res) => {
         req.user.id,
     );
 
-    ApiResonse.ok(res, "Trip invitation sent", invitation);
+    ApiResponse.ok(res, "Trip invitation sent", invitation);
+};
+
+const getInvitation = async (req, res) => {
+    const invitation = await tripService.getInvitation(
+        req.params.token,
+        req.user.id,
+    );
+
+    ApiResponse.ok(res, "Trip invitation fetched", invitation);
 };
 
 const acceptInvitation = async (req, res) => {
@@ -55,7 +64,7 @@ const acceptInvitation = async (req, res) => {
         req.user.id,
     );
 
-    ApiResonse.ok(res, "Trip invitation accepted", result);
+    ApiResponse.ok(res, "Trip invitation accepted", result);
 };
 
 const declineInvitation = async (req, res) => {
@@ -64,7 +73,7 @@ const declineInvitation = async (req, res) => {
         req.user.id,
     );
 
-    ApiResonse.ok(res, "Trip invitation declined", result);
+    ApiResponse.ok(res, "Trip invitation declined", result);
 };
 
 export {
@@ -74,6 +83,7 @@ export {
     updateTrip,
     deleteTrip,
     tripInvitation,
+    getInvitation,
     acceptInvitation,
     declineInvitation,
 };

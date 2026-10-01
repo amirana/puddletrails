@@ -10,7 +10,7 @@ import Dashboard from "./pages/Dashboard.jsx";
 import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 import CreateTrip from "./pages/trip/CreateTrip.jsx";
 import TripDetails from "./pages/trip/TripDetails.jsx";
-import Invitation from "./pages/trip/invitation.jsx";
+import Invitation from "./pages/trip/Invitation.jsx";
 
 function App() {
     return (

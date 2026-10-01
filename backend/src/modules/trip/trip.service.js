@@ -114,11 +114,11 @@ const deleteTrip = async (tripId) => {
     return deletedTrip;
 };
 
-const token = crypto.randomBytes(32).toString("hex");
 const hashToken = (token) =>
     crypto.createHash("sha256").update(token).digest("hex");
 
 const createInvitation = async (tripId, email, role, userId) => {
+    const token = crypto.randomBytes(32).toString("hex");
     const trip = await Trip.findOne({
         _id: tripId,
         owner: userId,
@@ -158,6 +158,35 @@ const createInvitation = async (tripId, email, role, userId) => {
 
         throw error;
     }
+};
+
+const getInvitation = async (token, userId) => {
+    const hashedToken = hashToken(token);
+
+    const invitation = await tripInvitation.findOne({
+        token: hashedToken,
+    });
+
+    const user = await User.findById(userId);
+
+    if (!invitation) {
+        throw ApiError.notFound("Trip invitation not found");
+    }
+
+    if (!user) {
+        throw ApiError.notFound("User not found");
+    }
+
+    if (invitation.email !== user.email) {
+        throw ApiError.unAuthorized("Unauthorized access");
+    }
+
+    return {
+        status: invitation.status,
+        trip: invitation.trip,
+        role: invitation.role,
+        expiresAt: invitation.expiresAt,
+    };
 };
 
 const acceptInvitation = async (token, userId) => {
@@ -256,6 +285,7 @@ export {
     updateTrip,
     deleteTrip,
     createInvitation,
+    getInvitation,
     acceptInvitation,
     declineInvitation,
 };
