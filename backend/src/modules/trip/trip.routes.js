@@ -4,12 +4,77 @@ import CreateTripDto from "./dto/create-trip.dto.js";
 import { authenticate } from "../auth/auth.middleware.js";
 import validate from "../../common/middleware/validate.middleware.js";
 import UpdateTripDto from "./dto/update-trip.dto.js";
+import TripDaysParamsDto from "./dto/trip-days-params.dto.js";
+import * as itineraryController from "../itinerary/itinerary.controller.js";
+import * as activityController from "../itinerary/activity.controller.js";
+import DayActivitiesParamsDto from "../itinerary/dto/day-activities-params.dto.js";
+import ActivityParamsDto from "../itinerary/dto/activity-params.dto.js";
+import CreateActivityDto from "../itinerary/dto/create-activity.dto.js";
+import UpdateActivityDto from "../itinerary/dto/update-activity.dto.js";
+import ReorderActivitiesDto from "../itinerary/dto/reorder-activities.dto.js";
 import {
     loadMembership,
     requireRole,
 } from "../../common/middleware/trip-permission.middleware.js";
 
 const tripRoute = Router();
+
+tripRoute.get(
+    "/:tripId/days/:dayId/activities",
+    authenticate,
+    validate(DayActivitiesParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    activityController.getActivitiesForDay,
+);
+
+tripRoute.post(
+    "/:tripId/days/:dayId/activities",
+    authenticate,
+    validate(DayActivitiesParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(CreateActivityDto),
+    activityController.createActivity,
+);
+
+tripRoute.patch(
+    "/:tripId/activities/reorder",
+    authenticate,
+    validate(TripDaysParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(ReorderActivitiesDto),
+    activityController.reorderActivities,
+);
+
+tripRoute.patch(
+    "/:tripId/activities/:activityId",
+    authenticate,
+    validate(ActivityParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(UpdateActivityDto),
+    activityController.updateActivity,
+);
+
+tripRoute.delete(
+    "/:tripId/activities/:activityId",
+    authenticate,
+    validate(ActivityParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    activityController.deleteActivity,
+);
+
+tripRoute.get(
+    "/:tripId/days",
+    authenticate,
+    validate(TripDaysParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    itineraryController.getTripDays,
+);
 
 tripRoute.post(
     "/",

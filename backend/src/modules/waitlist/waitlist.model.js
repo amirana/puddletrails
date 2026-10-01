@@ -10,6 +10,12 @@ const waitlistSchema = new mongoose.Schema(
             required: true,
             unique: true,
         },
+        source: {
+            type: String,
+            trim: true,
+            maxlength: 100,
+            default: "landing_page",
+        },
     },
     { timestamps: true },
 );

@@ -5,6 +5,11 @@ import User from "../auth/auth.model.js";
 import crypto from "crypto";
 import ApiError from "../../common/utils/api-error.js";
 import { sendInvitationEmail } from "../../common/config/email.js";
+import {
+    assertDateChangeKeepsActivities,
+    deleteTripDays,
+    syncTripDays,
+} from "../itinerary/itinerary.service.js";
 
 const createTrip = async (tripData, userId) => {
     const trip = await Trip.create({
@@ -21,6 +26,8 @@ const createTrip = async (tripData, userId) => {
         user: userId,
         role: "owner",
     });
+
+    await syncTripDays(trip);
 
     return trip;
 };
@@ -78,6 +85,15 @@ const getTrip = async (tripId, userId) => {
 };
 
 const updateTrip = async (tripId, tripData) => {
+    const trip = await Trip.findById(tripId);
+    if (!trip) throw ApiError.notFound("Trip not found");
+
+    await assertDateChangeKeepsActivities(
+        trip,
+        tripData.startDate ?? trip.startDate,
+        tripData.endDate ?? trip.endDate,
+    );
+
     const updatedTrip = await Trip.findOneAndUpdate(
         {
             _id: tripId,
@@ -92,6 +108,8 @@ const updateTrip = async (tripId, tripData) => {
     if (updatedTrip === null) {
         throw ApiError.notFound("Trip not found");
     }
+
+    await syncTripDays(updatedTrip);
 
     return updatedTrip;
 };
@@ -140,6 +158,8 @@ const deleteTrip = async (tripId) => {
     if (!deletedTrip) {
         throw ApiError.notFound("Trip not found");
     }
+
+    await deleteTripDays(tripId);
 
     return deletedTrip;
 };

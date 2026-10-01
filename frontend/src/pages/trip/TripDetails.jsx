@@ -6,8 +6,10 @@ import AuthContext from "../../context/AuthContext.jsx";
 import AppHeader from "../../components/layout/AppHeader.jsx";
 import Footer from "../../components/layout/Footer.jsx";
 import EditTripForm from "./EditTripForm.jsx";
+import TripItinerary from "../../components/trip/TripItinerary.jsx";
 import {
     getTrip as getTripService,
+    getTripDays as getTripDaysService,
     leaveTrip as leaveTripService,
     removeTripMember as removeTripMemberService,
     sendInvitation as sendInvitationService,
@@ -26,6 +28,10 @@ const TripDetails = () => {
     } = useForm({ mode: "onTouched", defaultValues: { role: "viewer" } });
 
     const [trip, setTrip] = useState(null);
+    const [tripDays, setTripDays] = useState([]);
+    const [daysLoading, setDaysLoading] = useState(true);
+    const [daysError, setDaysError] = useState("");
+    const tripReady = trip?._id === tripId;
     const [loading, setLoading] = useState(true);
     const [pageError, setPageError] = useState("");
     const [inviteState, setInviteState] = useState({ busy: false, message: "", error: "" });
@@ -51,6 +57,26 @@ const TripDetails = () => {
             cancelled = true;
         };
     }, [tripId, accessToken]);
+
+    useEffect(() => {
+        let cancelled = false;
+        const fetchDays = async () => {
+            setDaysLoading(true);
+            setDaysError("");
+            try {
+                const response = await getTripDaysService(tripId, accessToken);
+                if (!cancelled) setTripDays(response.data);
+            } catch (error) {
+                if (!cancelled) setDaysError(error.message);
+            } finally {
+                if (!cancelled) setDaysLoading(false);
+            }
+        };
+        if (accessToken && tripReady) fetchDays();
+        return () => {
+            cancelled = true;
+        };
+    }, [tripId, accessToken, tripReady, trip?.startDate, trip?.endDate]);
 
     const handleSendInvitation = async (data) => {
         setInviteState({ busy: true, message: "", error: "" });
@@ -134,6 +160,16 @@ const TripDetails = () => {
                 ) : trip ? (
                     <>
                         <EditTripForm trip={trip} setTrip={setTrip} />
+
+                        <TripItinerary
+                            tripId={tripId}
+                            accessToken={accessToken}
+                            canEdit={trip.role === "owner" || trip.role === "editor"}
+                            days={tripDays}
+                            setDays={setTripDays}
+                            loading={daysLoading}
+                            error={daysError}
+                        />
 
                         <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:p-7">
                             <div className="flex flex-wrap items-start justify-between gap-4">

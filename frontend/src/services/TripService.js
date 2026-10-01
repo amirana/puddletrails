@@ -19,6 +19,20 @@ const getTrip = async (tripId, accessToken) => {
     return result;
 };
 
+const getTripDays = async (tripId, accessToken) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/days`,
+        {
+            method: "GET",
+            credentials: "include",
+            headers: { Authorization: `Bearer ${accessToken}` },
+        },
+    );
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "Unable to load the itinerary.");
+    return result;
+};
+
 const getTrips = async (accessToken) => {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/api/trips`, {
         method: "GET",
@@ -207,6 +221,7 @@ const declineInvitation = async (token, accessToken) => {
 
 export {
     getTrip,
+    getTripDays,
     getTrips,
     updateTrip,
     deleteTrip,
