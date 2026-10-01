@@ -11,13 +11,15 @@ const EditTripForm = ({ trip, setTrip }) => {
     const { accessToken } = useContext(AuthContext);
 
     const [isEditing, setIsEditing] = useState(false);
+    const [submitError, setSubmitError] = useState("");
 
     const {
         register,
         handleSubmit,
         reset,
         control,
-        formState: { isSubmitting },
+        getValues,
+        formState: { isSubmitting, errors },
     } = useForm({
         defaultValues: {
             title: "",
@@ -45,17 +47,31 @@ const EditTripForm = ({ trip, setTrip }) => {
     }, [trip, reset]);
 
     const onSubmit = async (data) => {
+        setSubmitError("");
         try {
             const response = await updateTripService(tripId, data, accessToken);
 
             setTrip((prev) => ({
                 ...response.data,
                 role: prev.role,
+                members: prev.members,
             }));
             setIsEditing(false);
         } catch (error) {
-            console.error(error);
+            setSubmitError(error.message || "Unable to save trip changes.");
         }
+    };
+
+    const cancelEditing = () => {
+        reset({
+            title: trip.title || "",
+            destination: trip.destination || "",
+            startDate: trip.startDate ? new Date(trip.startDate).toISOString().split("T")[0] : "",
+            endDate: trip.endDate ? new Date(trip.endDate).toISOString().split("T")[0] : "",
+            description: trip.description || "",
+        });
+        setSubmitError("");
+        setIsEditing(false);
     };
 
     const startDate = trip?.startDate
@@ -76,7 +92,7 @@ const EditTripForm = ({ trip, setTrip }) => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="block">
-            <div className="mt-5 overflow-hidden rounded-[30px] border border-[#DDE7F3] bg-white shadow-[0_24px_80px_rgba(23,32,51,0.08)]">
+            <div className="overflow-hidden rounded-[30px] border border-[#DDE7F3] bg-white shadow-[0_24px_80px_rgba(23,32,51,0.08)]">
                 <div className="border-b border-[#EDF2F7] bg-gradient-to-r from-[#EAF3FF] via-white to-[#F7F4EE] p-6 sm:p-8 lg:p-10">
                     <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                         <div className="space-y-4">
@@ -91,7 +107,10 @@ const EditTripForm = ({ trip, setTrip }) => {
                                         <input
                                             {...register("title", {
                                                 required: "Title is required",
+                                                minLength: { value: 2, message: "Use at least 2 characters." },
+                                                maxLength: { value: 100, message: "Keep the title under 100 characters." },
                                             })}
+                                            aria-invalid={Boolean(errors.title)}
                                             className="w-full max-w-md rounded-xl border border-[#D7E5FF] bg-white px-3.5 py-2.5 text-2xl font-semibold tracking-[-0.04em] text-[#172033] outline-none transition-colors focus:border-[#3B82F6] focus:ring-4 focus:ring-[#3B82F6]/10 sm:text-3xl"
                                         />
                                     ) : (
@@ -105,14 +124,8 @@ const EditTripForm = ({ trip, setTrip }) => {
                                             trip.role === "editor") && (
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    if (
-                                                        trip.role !== "viewer"
-                                                    ) {
-                                                        setIsEditing(true);
-                                                    }
-                                                }}
-                                                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#D6E4FF] bg-white px-3 py-2 text-xs font-medium text-[#172033] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#A7C2FF] hover:shadow-[0_12px_28px_rgba(59,130,246,0.10)] disabled:cursor-not-allowed disabled:opacity-50 disabled:cursor-not-allowed disabled:opacity-50"
+                                                onClick={() => { setSubmitError(""); setIsEditing(true); }}
+                                                className="inline-flex items-center justify-center gap-2 rounded-full border border-[#D6E4FF] bg-white px-3 py-2 text-xs font-medium text-[#172033] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#A7C2FF] hover:shadow-[0_12px_28px_rgba(59,130,246,0.10)]"
                                                 aria-label="Edit trip"
                                             >
                                                 <Pencil className="h-3.5 w-3.5 text-[#3B82F6]" />
@@ -124,6 +137,7 @@ const EditTripForm = ({ trip, setTrip }) => {
                                         <div className="flex flex-wrap items-center gap-2">
                                             <button
                                                 type="submit"
+                                                disabled={isSubmitting}
                                                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[#D6E4FF] bg-white px-3 py-2 text-xs font-medium text-[#172033] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#A7C2FF] hover:shadow-[0_12px_28px_rgba(59,130,246,0.10)]"
                                                 aria-label="Save trip"
                                             >
@@ -134,10 +148,7 @@ const EditTripForm = ({ trip, setTrip }) => {
 
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    reset();
-                                                    setIsEditing(false);
-                                                }}
+                                                onClick={cancelEditing}
                                                 className="inline-flex items-center justify-center gap-2 rounded-full border border-[#D6E4FF] bg-white px-3 py-2 text-xs font-medium text-[#172033] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#A7C2FF] hover:shadow-[0_12px_28px_rgba(59,130,246,0.10)]"
                                                 aria-label="Cancel editing"
                                             >
@@ -146,9 +157,15 @@ const EditTripForm = ({ trip, setTrip }) => {
                                         </div>
                                     )}
                                 </div>
+                                {isEditing && errors.title && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.title.message}
+                                    </p>
+                                )}
 
                                 <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-[#172033]/70">
                                     {isEditing ? (
+                                        <>
                                         <Controller
                                             name="destination"
                                             control={control}
@@ -173,6 +190,8 @@ const EditTripForm = ({ trip, setTrip }) => {
                                                 />
                                             )}
                                         />
+                                        {errors.destination && <p className="basis-full text-xs text-red-600">{errors.destination.message}</p>}
+                                        </>
                                     ) : (
                                         <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5 text-sm text-[#172033]/70">
                                             <MapPin className="h-4 w-4 text-[#3B82F6]" />
@@ -190,15 +209,17 @@ const EditTripForm = ({ trip, setTrip }) => {
                                                 })}
                                                 className="rounded-lg border border-[#DEE7F3] bg-[#F9FBFF] px-2.5 py-2 text-sm text-[#172033] outline-none focus:border-[#3B82F6] focus:ring-4 focus:ring-[#3B82F6]/10"
                                             />
-
                                             <input
                                                 type="date"
                                                 {...register("endDate", {
                                                     required:
                                                         "End date is required",
+                                                    validate: (value) => value >= getValues("startDate") || "End date must be on or after the start date.",
                                                 })}
                                                 className="rounded-lg border border-[#DEE7F3] bg-[#F9FBFF] px-2.5 py-2 text-sm text-[#172033] outline-none focus:border-[#3B82F6] focus:ring-4 focus:ring-[#3B82F6]/10"
                                             />
+                                            {errors.startDate && <p className="basis-full text-xs text-red-600">{errors.startDate.message}</p>}
+                                            {errors.endDate && <p className="basis-full text-xs text-red-600">{errors.endDate.message}</p>}
                                         </div>
                                     ) : (
                                         <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3 py-1.5 text-sm text-[#172033]/70">
@@ -270,6 +291,8 @@ const EditTripForm = ({ trip, setTrip }) => {
                         </div>
                     </aside>
                 </div>
+
+                {submitError && <p className="mx-6 mb-6 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700 sm:mx-8 lg:mx-10" role="alert">{submitError}</p>}
             </div>
         </form>
     );

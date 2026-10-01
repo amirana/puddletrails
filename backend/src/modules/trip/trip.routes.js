@@ -37,6 +37,30 @@ tripRoute.patch(
 );
 
 tripRoute.delete(
+    "/:tripId/members/me",
+    authenticate,
+    loadMembership,
+    requireRole("editor", "viewer"),
+    tripController.leaveTrip,
+);
+
+tripRoute.patch(
+    "/:tripId/members/:memberId",
+    authenticate,
+    loadMembership,
+    requireRole("owner"),
+    tripController.updateTripMember,
+);
+
+tripRoute.delete(
+    "/:tripId/members/:memberId",
+    authenticate,
+    loadMembership,
+    requireRole("owner"),
+    tripController.removeTripMember,
+);
+
+tripRoute.delete(
     "/:tripId",
     authenticate,
     loadMembership,

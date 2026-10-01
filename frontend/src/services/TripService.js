@@ -79,6 +79,49 @@ const deleteTrip = async (tripId, accessToken) => {
     return result;
 };
 
+const updateTripMember = async (tripId, memberId, role, accessToken) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/members/${memberId}`,
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${accessToken}`,
+            },
+            body: JSON.stringify({ role }),
+        },
+    );
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "Unable to update role.");
+    return result;
+};
+
+const removeTripMember = async (tripId, memberId, accessToken) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/members/${memberId}`,
+        {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${accessToken}` },
+        },
+    );
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "Unable to remove member.");
+    return result;
+};
+
+const leaveTrip = async (tripId, accessToken) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/members/me`,
+        {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${accessToken}` },
+        },
+    );
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "Unable to leave trip.");
+    return result;
+};
+
 const sendInvitation = async (tripId, email, role, accessToken) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/trips/${tripId}/invitations`,
@@ -167,6 +210,9 @@ export {
     getTrips,
     updateTrip,
     deleteTrip,
+    updateTripMember,
+    removeTripMember,
+    leaveTrip,
     sendInvitation,
     getInvitation,
     acceptInvitation,

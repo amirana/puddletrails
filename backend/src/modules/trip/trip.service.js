@@ -49,7 +49,6 @@ const getTrips = async (userId) => {
 };
 
 const getTrip = async (tripId, userId) => {
-    console.log("GET TRIP:", { tripId, userId });
     const trip = await Trip.findOne({
         _id: tripId,
     });
@@ -58,30 +57,23 @@ const getTrip = async (tripId, userId) => {
         throw ApiError.notFound("Trip not found");
     }
 
-    console.log("TRIP OWNER:", trip.owner.toString());
-    console.log("CURRENT USER:", userId.toString());
-
-    // Owner always has access
-    if (trip.owner.toString() === userId.toString()) {
-        return {
-            ...trip.toObject(),
-            role: "owner",
-        };
-    }
-
-    // Otherwise check membership
     const member = await TripMember.findOne({
         trip: tripId,
         user: userId,
     });
 
-    if (!member) {
-        throw ApiError.unauthorized("You do not have access to this trip");
+    if (trip.owner.toString() !== userId.toString() && !member) {
+        throw ApiError.unAuthorized("You do not have access to this trip");
     }
+
+    const members = await TripMember.find({ trip: tripId })
+        .populate("user", "firstName lastName email avatar")
+        .sort({ createdAt: 1 });
 
     return {
         ...trip.toObject(),
-        role: member.role,
+        role: trip.owner.toString() === userId.toString() ? "owner" : member.role,
+        members,
     };
 };
 
@@ -102,6 +94,44 @@ const updateTrip = async (tripId, tripData) => {
     }
 
     return updatedTrip;
+};
+
+const updateTripMember = async (tripId, memberId, role) => {
+    if (!["editor", "viewer"].includes(role)) {
+        throw ApiError.badRequest("Member role must be editor or viewer");
+    }
+
+    const member = await TripMember.findOne({ _id: memberId, trip: tripId });
+    if (!member) throw ApiError.notFound("Trip member not found");
+    if (member.role === "owner") {
+        throw ApiError.forbidden("The trip owner role cannot be changed");
+    }
+
+    member.role = role;
+    await member.save();
+    return member.populate("user", "firstName lastName email avatar");
+};
+
+const removeTripMember = async (tripId, memberId) => {
+    const member = await TripMember.findOne({ _id: memberId, trip: tripId });
+    if (!member) throw ApiError.notFound("Trip member not found");
+    if (member.role === "owner") {
+        throw ApiError.forbidden("The trip owner cannot be removed");
+    }
+
+    await member.deleteOne();
+    return member;
+};
+
+const leaveTrip = async (tripId, userId) => {
+    const member = await TripMember.findOne({ trip: tripId, user: userId });
+    if (!member) throw ApiError.notFound("Trip membership not found");
+    if (member.role === "owner") {
+        throw ApiError.forbidden("The trip owner cannot leave their trip");
+    }
+
+    await member.deleteOne();
+    return member;
 };
 
 const deleteTrip = async (tripId) => {
@@ -283,6 +313,9 @@ export {
     getTrips,
     getTrip,
     updateTrip,
+    updateTripMember,
+    removeTripMember,
+    leaveTrip,
     deleteTrip,
     createInvitation,
     getInvitation,

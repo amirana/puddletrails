@@ -22,11 +22,29 @@ const getTrip = async (req, res) => {
 const updateTrip = async (req, res) => {
     const updatedTrip = await tripService.updateTrip(
         req.params.tripId,
-        req.user.id,
         req.body,
     );
 
     ApiResponse.ok(res, "Trip updated successfully", updatedTrip);
+};
+
+const updateTripMember = async (req, res) => {
+    const member = await tripService.updateTripMember(
+        req.params.tripId,
+        req.params.memberId,
+        req.body.role,
+    );
+    ApiResponse.ok(res, "Trip member role updated", member);
+};
+
+const removeTripMember = async (req, res) => {
+    await tripService.removeTripMember(req.params.tripId, req.params.memberId);
+    ApiResponse.ok(res, "Trip member removed");
+};
+
+const leaveTrip = async (req, res) => {
+    await tripService.leaveTrip(req.params.tripId, req.user.id);
+    ApiResponse.ok(res, "You left the trip");
 };
 
 const deleteTrip = async (req, res) => {
@@ -81,6 +99,9 @@ export {
     getTrips,
     getTrip,
     updateTrip,
+    updateTripMember,
+    removeTripMember,
+    leaveTrip,
     deleteTrip,
     tripInvitation,
     getInvitation,
