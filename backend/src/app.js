@@ -4,12 +4,13 @@ import authRoute from "./modules/auth/auth.routes.js";
 import tripRoute from "./modules/trip/trip.routes.js";
 import cors from "cors";
 import ApiError from "./common/utils/api-error.js";
+import waitlistRoute from "./modules/waitlist/waitlist.routes.js";
 
 const app = express();
 
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: process.env.FRONTEND_URL || "http://localhost:5173",
         credentials: true,
     }),
 );
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoute);
 
 app.use("/api/trips", tripRoute);
+app.use("/api/waitlist", waitlistRoute);
 
 // Catch-all for undefined routes
 app.all("{*path}", (req, res) => {

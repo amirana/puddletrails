@@ -51,6 +51,16 @@ const sendInvitationEmail = async (email, token, tripTitle, role) => {
     );
 };
 
+const sendWaitlistConfirmationEmail = async (email) => {
+    await sendEmail(
+        email,
+        "You’re on the Traverse beta waitlist",
+        `<h2>You’re on the list!</h2>
+        <p>Thanks for joining the Traverse beta waitlist. We’re building a calmer place to plan trips together, and we’ll email you when beta invites are ready.</p>
+        <p>This is a waitlist confirmation, not a beta invite. No need to reply.</p>`,
+    );
+};
+
 const sendOrderConfirmationEmail = async (email, order) => {
     const items = order.items
         .map((i) => `<li>${i.title} x${i.quantity} — ₹${i.price}</li>`)
@@ -70,5 +80,6 @@ export {
     sendVerificationEmail,
     sendResetPasswordEmail,
     sendInvitationEmail,
+    sendWaitlistConfirmationEmail,
     sendOrderConfirmationEmail,
 };
