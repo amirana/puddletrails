@@ -8,6 +8,7 @@ import Footer from "../../components/layout/Footer.jsx";
 import EditTripForm from "./EditTripForm.jsx";
 import TripItinerary from "../../components/trip/TripItinerary.jsx";
 import TripBudget from "../../components/trip/TripBudget.jsx";
+import TripChecklists from "../../components/trip/TripChecklists.jsx";
 import {
     getTrip as getTripService,
     getTripDays as getTripDaysService,
@@ -178,6 +179,7 @@ const TripDetails = () => {
                             accessToken={accessToken}
                             canEdit={trip.role === "owner" || trip.role === "editor"}
                         />
+                        <TripChecklists tripId={tripId} accessToken={accessToken} role={trip.role} />
 
                         <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:p-7">
                             <div className="flex flex-wrap items-start justify-between gap-4">

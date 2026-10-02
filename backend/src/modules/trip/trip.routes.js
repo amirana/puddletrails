@@ -22,12 +22,86 @@ import ExpenseParamsDto from "../budget/dto/expense-params.dto.js";
 import UpdateBudgetDto from "../budget/dto/update-budget.dto.js";
 import CreateExpenseDto from "../budget/dto/create-expense.dto.js";
 import UpdateExpenseDto from "../budget/dto/update-expense.dto.js";
+import * as checklistController from "../checklist/checklist.controller.js";
+import ChecklistParamsDto from "../checklist/dto/checklist-params.dto.js";
+import ChecklistItemParamsDto from "../checklist/dto/checklist-item-params.dto.js";
+import CreateChecklistDto from "../checklist/dto/create-checklist.dto.js";
+import UpdateChecklistDto from "../checklist/dto/update-checklist.dto.js";
+import ChecklistItemDto from "../checklist/dto/checklist-item.dto.js";
+import CreateChecklistItemDto from "../checklist/dto/create-checklist-item.dto.js";
 import {
     loadMembership,
     requireRole,
 } from "../../common/middleware/trip-permission.middleware.js";
 
 const tripRoute = Router();
+
+tripRoute.get(
+    "/:tripId/checklists",
+    authenticate,
+    validate(TripBudgetParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    checklistController.getChecklists,
+);
+
+tripRoute.post(
+    "/:tripId/checklists",
+    authenticate,
+    validate(TripBudgetParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(CreateChecklistDto),
+    checklistController.createChecklist,
+);
+
+tripRoute.patch(
+    "/:tripId/checklists/:checklistId",
+    authenticate,
+    validate(ChecklistParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(UpdateChecklistDto),
+    checklistController.updateChecklist,
+);
+
+tripRoute.delete(
+    "/:tripId/checklists/:checklistId",
+    authenticate,
+    validate(ChecklistParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    checklistController.deleteChecklist,
+);
+
+tripRoute.post(
+    "/:tripId/checklists/:checklistId/items",
+    authenticate,
+    validate(ChecklistParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(CreateChecklistItemDto),
+    checklistController.createItem,
+);
+
+tripRoute.patch(
+    "/:tripId/checklists/:checklistId/items/:itemId",
+    authenticate,
+    validate(ChecklistItemParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    validate(ChecklistItemDto),
+    checklistController.updateItem,
+);
+
+tripRoute.delete(
+    "/:tripId/checklists/:checklistId/items/:itemId",
+    authenticate,
+    validate(ChecklistItemParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    checklistController.deleteItem,
+);
 
 tripRoute.get(
     "/:tripId/budget",
