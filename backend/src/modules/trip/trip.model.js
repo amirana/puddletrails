@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { CURRENCIES } from "../budget/budget.constants.js";
 
 const tripSchema = new mongoose.Schema(
     {
@@ -22,6 +23,17 @@ const tripSchema = new mongoose.Schema(
         },
         description: {
             type: String,
+        },
+        totalBudgetMinorUnits: {
+            type: Number,
+            min: 0,
+            default: 0,
+            validate: Number.isSafeInteger,
+        },
+        currency: {
+            type: String,
+            enum: CURRENCIES,
+            default: null,
         },
         owner: {
             type: mongoose.Schema.Types.ObjectId,

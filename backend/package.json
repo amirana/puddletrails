@@ -12,6 +12,7 @@
         "nodemailer": "^9.0.5"
     },
     "scripts": {
-        "start": "node server.js"
+        "start": "node server.js",
+        "migrate:budget-minor-units": "node scripts/migrate-budget-minor-units.js"
     }
 }

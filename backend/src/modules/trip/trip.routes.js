@@ -12,12 +12,66 @@ import ActivityParamsDto from "../itinerary/dto/activity-params.dto.js";
 import CreateActivityDto from "../itinerary/dto/create-activity.dto.js";
 import UpdateActivityDto from "../itinerary/dto/update-activity.dto.js";
 import ReorderActivitiesDto from "../itinerary/dto/reorder-activities.dto.js";
+import * as budgetController from "../budget/budget.controller.js";
+import TripBudgetParamsDto from "../budget/dto/trip-budget-params.dto.js";
+import ExpenseParamsDto from "../budget/dto/expense-params.dto.js";
+import UpdateBudgetDto from "../budget/dto/update-budget.dto.js";
+import CreateExpenseDto from "../budget/dto/create-expense.dto.js";
+import UpdateExpenseDto from "../budget/dto/update-expense.dto.js";
 import {
     loadMembership,
     requireRole,
 } from "../../common/middleware/trip-permission.middleware.js";
 
 const tripRoute = Router();
+
+tripRoute.get(
+    "/:tripId/budget",
+    authenticate,
+    validate(TripBudgetParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    budgetController.getBudget,
+);
+
+tripRoute.patch(
+    "/:tripId/budget",
+    authenticate,
+    validate(TripBudgetParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(UpdateBudgetDto),
+    budgetController.updateBudget,
+);
+
+tripRoute.post(
+    "/:tripId/expenses",
+    authenticate,
+    validate(TripBudgetParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(CreateExpenseDto),
+    budgetController.createExpense,
+);
+
+tripRoute.patch(
+    "/:tripId/expenses/:expenseId",
+    authenticate,
+    validate(ExpenseParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(UpdateExpenseDto),
+    budgetController.updateExpense,
+);
+
+tripRoute.delete(
+    "/:tripId/expenses/:expenseId",
+    authenticate,
+    validate(ExpenseParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    budgetController.deleteExpense,
+);
 
 tripRoute.get(
     "/:tripId/days/:dayId/activities",

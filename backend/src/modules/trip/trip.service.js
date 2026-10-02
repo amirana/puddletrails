@@ -5,6 +5,7 @@ import User from "../auth/auth.model.js";
 import crypto from "crypto";
 import ApiError from "../../common/utils/api-error.js";
 import { sendInvitationEmail } from "../../common/config/email.js";
+import { deleteExpensesForTrip } from "../budget/budget.service.js";
 import {
     assertDateChangeKeepsActivities,
     deleteTripDays,
@@ -160,6 +161,7 @@ const deleteTrip = async (tripId) => {
     }
 
     await deleteTripDays(tripId);
+    await deleteExpensesForTrip(tripId);
 
     return deletedTrip;
 };

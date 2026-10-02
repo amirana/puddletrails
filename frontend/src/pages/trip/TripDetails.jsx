@@ -7,6 +7,7 @@ import AppHeader from "../../components/layout/AppHeader.jsx";
 import Footer from "../../components/layout/Footer.jsx";
 import EditTripForm from "./EditTripForm.jsx";
 import TripItinerary from "../../components/trip/TripItinerary.jsx";
+import TripBudget from "../../components/trip/TripBudget.jsx";
 import {
     getTrip as getTripService,
     getTripDays as getTripDaysService,
@@ -169,6 +170,11 @@ const TripDetails = () => {
                             setDays={setTripDays}
                             loading={daysLoading}
                             error={daysError}
+                        />
+                        <TripBudget
+                            tripId={tripId}
+                            accessToken={accessToken}
+                            canEdit={trip.role === "owner" || trip.role === "editor"}
                         />
 
                         <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:p-7">
