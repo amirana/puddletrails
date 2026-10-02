@@ -161,6 +161,7 @@ const TripItinerary = ({
                 <ol className="mt-5 space-y-4">
                     {days.map((day) => {
                         const dayActivities = day.activities || [];
+                        const dayReservations = day.reservations || [];
                         const dayDate = new Date(day.date).toLocaleDateString("en-GB", {
                             weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
                         });
@@ -282,6 +283,22 @@ const TripItinerary = ({
                                     <p className="mt-4 rounded-xl border border-dashed border-slate-200 px-4 py-3 text-xs text-slate-500">
                                         {canEdit ? "No activities yet. Add a stop, meal, or anything your group wants to do." : "No activities have been planned for this day yet."}
                                     </p>
+                                )}
+
+                                {dayReservations.length > 0 && (
+                                    <div className="mt-4 rounded-xl border border-violet-100 bg-violet-50/50 p-3">
+                                        <p className="text-[11px] font-semibold uppercase tracking-wide text-violet-800">Reservations</p>
+                                        <ul className="mt-2 space-y-2">
+                                            {dayReservations.map((reservation) => (
+                                                <li key={reservation._id} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-700">
+                                                    <span className="font-semibold">{reservation.title}</span>
+                                                    <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-medium text-violet-800">{reservation.type}</span>
+                                                    {reservation.time && <span>{reservation.time}</span>}
+                                                    <span className={reservation.confirmed ? "text-emerald-700" : "text-slate-500"}>{reservation.confirmed ? "Confirmed" : "Not confirmed"}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 )}
 
                                 {editor?.dayId === day._id && !editor.activity && (

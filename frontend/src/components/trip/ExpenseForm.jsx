@@ -25,6 +25,8 @@ const today = () => {
 };
 
 const ExpenseForm = ({ expense, onSave, onCancel, busy, currency }) => {
+    const minDate = today();
+    const originalDate = expense?.date ? new Date(expense.date).toISOString().slice(0, 10) : "";
     const {
         register,
         handleSubmit,
@@ -71,7 +73,7 @@ const ExpenseForm = ({ expense, onSave, onCancel, busy, currency }) => {
             </label>
             <label className="text-xs font-semibold text-slate-700">
                 Date
-                <input type="date" aria-invalid={Boolean(errors.date)} {...register("date", { required: "Choose the expense date." })} className="mt-1.5 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100" />
+                <input type="date" min={minDate} aria-invalid={Boolean(errors.date)} {...register("date", { required: "Choose the expense date.", validate: (value) => value >= minDate || value === originalDate || "Expense date cannot be before today." })} className="mt-1.5 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100" />
                 {errors.date && <span className="mt-1 block text-xs font-normal text-red-600">{errors.date.message}</span>}
             </label>
             <label className="text-xs font-semibold text-slate-700">

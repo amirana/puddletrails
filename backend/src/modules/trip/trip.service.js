@@ -7,6 +7,7 @@ import ApiError from "../../common/utils/api-error.js";
 import { sendInvitationEmail } from "../../common/config/email.js";
 import { deleteExpensesForTrip } from "../budget/budget.service.js";
 import { deleteChecklistsForTrip } from "../checklist/checklist.service.js";
+import { deleteReservationsForTrip } from "../reservation/reservation.service.js";
 import {
     assertDateChangeKeepsActivities,
     deleteTripDays,
@@ -86,10 +87,26 @@ const getTrip = async (tripId, userId) => {
     };
 };
 
+const utcDay = (value) => {
+    const date = new Date(value);
+    return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+};
+
+const assertChangedTripDatesAreNotPast = (trip, tripData) => {
+    const now = new Date();
+    const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+    for (const field of ["startDate", "endDate"]) {
+        if (tripData[field] && utcDay(tripData[field]) !== utcDay(trip[field]) && utcDay(tripData[field]) < today) {
+            throw ApiError.badRequest(`${field === "startDate" ? "Start" : "End"} date cannot be before today`);
+        }
+    }
+};
+
 const updateTrip = async (tripId, tripData) => {
     const trip = await Trip.findById(tripId);
     if (!trip) throw ApiError.notFound("Trip not found");
     const { confirmCommentDeletion, ...tripUpdates } = tripData;
+    assertChangedTripDatesAreNotPast(trip, tripUpdates);
 
     await assertDateChangeKeepsActivities(
         trip,
@@ -166,6 +183,7 @@ const deleteTrip = async (tripId) => {
     await deleteTripDays(tripId);
     await deleteExpensesForTrip(tripId);
     await deleteChecklistsForTrip(tripId);
+    await deleteReservationsForTrip(tripId);
 
     return deletedTrip;
 };

@@ -12,6 +12,11 @@ const EditTripForm = ({ trip, setTrip, days = [] }) => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [submitError, setSubmitError] = useState("");
+    const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    const todayDate = today.toISOString().slice(0, 10);
+    const originalStartDate = trip?.startDate ? new Date(trip.startDate).toISOString().slice(0, 10) : "";
+    const originalEndDate = trip?.endDate ? new Date(trip.endDate).toISOString().slice(0, 10) : "";
 
     const {
         register,
@@ -225,18 +230,24 @@ const EditTripForm = ({ trip, setTrip, days = [] }) => {
                                         <div className="flex flex-wrap items-center gap-2 rounded-xl border border-[#DDE7F3] bg-white/80 p-2">
                                             <input
                                                 type="date"
+                                                min={todayDate}
                                                 {...register("startDate", {
                                                     required:
                                                         "Start date is required",
+                                                    validate: (value) => value >= todayDate || value === originalStartDate || "Start date cannot be before today.",
                                                 })}
                                                 className="rounded-lg border border-[#DEE7F3] bg-[#F9FBFF] px-2.5 py-2 text-sm text-[#172033] outline-none focus:border-[#3B82F6] focus:ring-4 focus:ring-[#3B82F6]/10"
                                             />
                                             <input
                                                 type="date"
+                                                min={todayDate}
                                                 {...register("endDate", {
                                                     required:
                                                         "End date is required",
-                                                    validate: (value) => value >= getValues("startDate") || "End date must be on or after the start date.",
+                                                    validate: (value) => {
+                                                        if (value < todayDate && value !== originalEndDate) return "End date cannot be before today.";
+                                                        return value >= getValues("startDate") || "End date must be on or after the start date.";
+                                                    },
                                                 })}
                                                 className="rounded-lg border border-[#DEE7F3] bg-[#F9FBFF] px-2.5 py-2 text-sm text-[#172033] outline-none focus:border-[#3B82F6] focus:ring-4 focus:ring-[#3B82F6]/10"
                                             />

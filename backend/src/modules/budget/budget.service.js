@@ -5,6 +5,17 @@ import { CURRENCY_MINOR_UNIT_SCALE } from "./budget.constants.js";
 
 const getScale = (currency) => CURRENCY_MINOR_UNIT_SCALE[currency] ?? 2;
 
+const utcDay = (value) => {
+    const date = new Date(value);
+    return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+};
+
+const ensureNotPastExpenseDate = (value) => {
+    if (utcDay(value) < utcDay(new Date())) {
+        throw ApiError.badRequest("Expense date cannot be before today");
+    }
+};
+
 const toMinorUnits = (amount, currency) => {
     const scale = getScale(currency);
     const multiplier = 10 ** scale;
@@ -62,6 +73,7 @@ const updateBudget = async (tripId, { totalBudget, currency }) => {
 };
 
 const createExpense = async (tripId, expenseData) => {
+    ensureNotPastExpenseDate(expenseData.date);
     const trip = await Trip.findById(tripId);
     if (!trip) throw ApiError.notFound("Trip not found");
     if (!trip.currency) {
@@ -88,6 +100,9 @@ const updateExpense = async (tripId, expenseId, expenseData) => {
     ]);
     if (!existingExpense) throw ApiError.notFound("Expense not found");
     if (!trip) throw ApiError.notFound("Trip not found");
+    if (expenseData.date !== undefined && utcDay(expenseData.date) !== utcDay(existingExpense.date)) {
+        ensureNotPastExpenseDate(expenseData.date);
+    }
 
     const category = expenseData.category ?? existingExpense.category;
     const transportType = category === "transport"

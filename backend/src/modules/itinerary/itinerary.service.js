@@ -3,7 +3,9 @@ import Trip from "../trip/trip.model.js";
 import TripDay from "./trip-day.model.js";
 import Activity from "./activity.model.js";
 import DayComment from "./day-comment.model.js";
+import Reservation from "../reservation/reservation.model.js";
 import { deleteCommentsForDays } from "./day-comment.service.js";
+import { detachReservationsFromDays } from "../reservation/reservation.service.js";
 
 const utcDate = (value) => {
     const date = new Date(value);
@@ -71,6 +73,7 @@ const syncTripDays = async (trip) => {
         const removedDayIds = removedDays.map((day) => day._id);
         await Activity.deleteMany({ trip: trip._id, tripDay: { $in: removedDayIds } });
         await deleteCommentsForDays(trip._id, removedDayIds);
+        await detachReservationsFromDays(trip._id, removedDayIds);
         await TripDay.deleteMany({ _id: { $in: removedDayIds } });
     }
     return days;
@@ -100,6 +103,9 @@ const getTripDays = async (tripId) => {
         .populate("createdBy", "firstName lastName")
         .sort({ createdAt: 1 })
         .lean();
+    const reservations = await Reservation.find({ trip: tripId, tripDayId: { $ne: null } })
+        .sort({ date: 1, time: 1, createdAt: 1 })
+        .lean();
     const commentsByDay = new Map();
     for (const comment of comments) {
         const dayId = comment.tripDay.toString();
@@ -107,11 +113,19 @@ const getTripDays = async (tripId) => {
         dayComments.push(comment);
         commentsByDay.set(dayId, dayComments);
     }
+    const reservationsByDay = new Map();
+    for (const reservation of reservations) {
+        const dayId = reservation.tripDayId.toString();
+        const dayReservations = reservationsByDay.get(dayId) || [];
+        dayReservations.push(reservation);
+        reservationsByDay.set(dayId, dayReservations);
+    }
 
     return days.map((day) => ({
         ...day,
         activities: activitiesByDay.get(day._id.toString()) || [],
         comments: commentsByDay.get(day._id.toString()) || [],
+        reservations: reservationsByDay.get(day._id.toString()) || [],
     }));
 };
 

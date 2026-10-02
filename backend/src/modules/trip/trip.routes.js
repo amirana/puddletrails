@@ -29,12 +29,54 @@ import CreateChecklistDto from "../checklist/dto/create-checklist.dto.js";
 import UpdateChecklistDto from "../checklist/dto/update-checklist.dto.js";
 import ChecklistItemDto from "../checklist/dto/checklist-item.dto.js";
 import CreateChecklistItemDto from "../checklist/dto/create-checklist-item.dto.js";
+import * as reservationController from "../reservation/reservation.controller.js";
+import ReservationParamsDto from "../reservation/dto/reservation-params.dto.js";
+import CreateReservationDto from "../reservation/dto/create-reservation.dto.js";
+import UpdateReservationDto from "../reservation/dto/update-reservation.dto.js";
 import {
     loadMembership,
     requireRole,
 } from "../../common/middleware/trip-permission.middleware.js";
 
 const tripRoute = Router();
+
+tripRoute.get(
+    "/:tripId/reservations",
+    authenticate,
+    validate(TripBudgetParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    reservationController.getReservations,
+);
+
+tripRoute.post(
+    "/:tripId/reservations",
+    authenticate,
+    validate(TripBudgetParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(CreateReservationDto),
+    reservationController.createReservation,
+);
+
+tripRoute.patch(
+    "/:tripId/reservations/:reservationId",
+    authenticate,
+    validate(ReservationParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    validate(UpdateReservationDto),
+    reservationController.updateReservation,
+);
+
+tripRoute.delete(
+    "/:tripId/reservations/:reservationId",
+    authenticate,
+    validate(ReservationParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    reservationController.deleteReservation,
+);
 
 tripRoute.get(
     "/:tripId/checklists",
