@@ -8,6 +8,7 @@ class UpdateTripDto extends BaseDto {
         startDate: Joi.date(),
         endDate: Joi.date().min(Joi.ref("startDate")),
         description: Joi.string().trim().empty("").default(null),
+        confirmCommentDeletion: Joi.boolean().default(false),
     });
 }
 

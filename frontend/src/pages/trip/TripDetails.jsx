@@ -160,11 +160,13 @@ const TripDetails = () => {
                     <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700" role="alert">{pageError}</div>
                 ) : trip ? (
                     <>
-                        <EditTripForm trip={trip} setTrip={setTrip} />
+                        <EditTripForm trip={trip} setTrip={setTrip} days={tripDays} />
 
                         <TripItinerary
                             tripId={tripId}
                             accessToken={accessToken}
+                            user={user}
+                            role={trip.role}
                             canEdit={trip.role === "owner" || trip.role === "editor"}
                             days={tripDays}
                             setDays={setTripDays}

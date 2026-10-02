@@ -11,6 +11,7 @@ import {
     Trash2,
 } from "lucide-react";
 import ActivityForm from "./ActivityForm.jsx";
+import DayComments from "./DayComments.jsx";
 import {
     createActivity,
     deleteActivity,
@@ -21,6 +22,8 @@ import {
 const TripItinerary = ({
     tripId,
     accessToken,
+    user,
+    role,
     canEdit,
     days,
     setDays,
@@ -288,6 +291,14 @@ const TripItinerary = ({
                                         onSave={handleSaveActivity}
                                     />
                                 )}
+                                <DayComments
+                                    tripId={tripId}
+                                    day={day}
+                                    accessToken={accessToken}
+                                    user={user}
+                                    role={role}
+                                    setDays={setDays}
+                                />
                             </li>
                         );
                     })}

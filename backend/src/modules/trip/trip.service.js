@@ -88,18 +88,20 @@ const getTrip = async (tripId, userId) => {
 const updateTrip = async (tripId, tripData) => {
     const trip = await Trip.findById(tripId);
     if (!trip) throw ApiError.notFound("Trip not found");
+    const { confirmCommentDeletion, ...tripUpdates } = tripData;
 
     await assertDateChangeKeepsActivities(
         trip,
         tripData.startDate ?? trip.startDate,
         tripData.endDate ?? trip.endDate,
+        confirmCommentDeletion,
     );
 
     const updatedTrip = await Trip.findOneAndUpdate(
         {
             _id: tripId,
         },
-        tripData,
+        tripUpdates,
         {
             returnDocument: "after",
             runValidators: true,

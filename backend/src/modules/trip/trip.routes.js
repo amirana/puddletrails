@@ -7,7 +7,11 @@ import UpdateTripDto from "./dto/update-trip.dto.js";
 import TripDaysParamsDto from "./dto/trip-days-params.dto.js";
 import * as itineraryController from "../itinerary/itinerary.controller.js";
 import * as activityController from "../itinerary/activity.controller.js";
+import * as dayCommentController from "../itinerary/day-comment.controller.js";
 import DayActivitiesParamsDto from "../itinerary/dto/day-activities-params.dto.js";
+import DayCommentParamsDto from "../itinerary/dto/day-comment-params.dto.js";
+import DayCommentDto from "../itinerary/dto/day-comment.dto.js";
+import UpdateDayCommentDto from "../itinerary/dto/update-day-comment.dto.js";
 import ActivityParamsDto from "../itinerary/dto/activity-params.dto.js";
 import CreateActivityDto from "../itinerary/dto/create-activity.dto.js";
 import UpdateActivityDto from "../itinerary/dto/update-activity.dto.js";
@@ -52,6 +56,35 @@ tripRoute.post(
     requireRole("owner", "editor"),
     validate(CreateExpenseDto),
     budgetController.createExpense,
+);
+
+tripRoute.post(
+    "/:tripId/days/:dayId/comments",
+    authenticate,
+    validate(DayActivitiesParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    validate(DayCommentDto),
+    dayCommentController.createComment,
+);
+
+tripRoute.patch(
+    "/:tripId/comments/:commentId",
+    authenticate,
+    validate(DayCommentParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    validate(UpdateDayCommentDto),
+    dayCommentController.updateComment,
+);
+
+tripRoute.delete(
+    "/:tripId/comments/:commentId",
+    authenticate,
+    validate(DayCommentParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor", "viewer"),
+    dayCommentController.deleteComment,
 );
 
 tripRoute.patch(

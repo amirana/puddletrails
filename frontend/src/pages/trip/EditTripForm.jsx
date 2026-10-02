@@ -6,7 +6,7 @@ import { updateTrip as updateTripService } from "../../services/TripService.js";
 import { CalendarDays, MapPin, PlaneTakeoff, Pencil } from "lucide-react";
 import AuthContext from "../../context/AuthContext.jsx";
 
-const EditTripForm = ({ trip, setTrip }) => {
+const EditTripForm = ({ trip, setTrip, days = [] }) => {
     const { tripId } = useParams();
     const { accessToken } = useContext(AuthContext);
 
@@ -49,7 +49,29 @@ const EditTripForm = ({ trip, setTrip }) => {
     const onSubmit = async (data) => {
         setSubmitError("");
         try {
-            const response = await updateTripService(tripId, data, accessToken);
+            const utcDay = (value) => Date.UTC(...value.split("-").map((part, index) => index === 1 ? Number(part) - 1 : Number(part)));
+            const nextDayCount = Math.floor((utcDay(data.endDate) - utcDay(data.startDate)) / 86_400_000) + 1;
+            const currentDayCount = Math.floor((utcDay(trip.endDate.slice(0, 10)) - utcDay(trip.startDate.slice(0, 10))) / 86_400_000) + 1;
+            const commentsOnRemovedDays = nextDayCount < currentDayCount
+                ? days.filter((day) => day.dayNumber > nextDayCount).reduce((count, day) => count + (day.comments?.length || 0), 0)
+                : 0;
+            if (commentsOnRemovedDays && !window.confirm(`Shortening this trip will delete ${commentsOnRemovedDays} comment${commentsOnRemovedDays === 1 ? "" : "s"} and any replies on the removed days. Continue?`)) return;
+
+            const tripUpdate = {
+                ...data,
+                ...(commentsOnRemovedDays ? { confirmCommentDeletion: true } : {}),
+            };
+            let response;
+            try {
+                response = await updateTripService(tripId, tripUpdate, accessToken);
+            } catch (error) {
+                if (!tripUpdate.confirmCommentDeletion && error.message.includes("Confirm to continue")) {
+                    if (!window.confirm("Shortening this trip will delete comments and replies on the removed days. Continue?")) return;
+                    response = await updateTripService(tripId, { ...tripUpdate, confirmCommentDeletion: true }, accessToken);
+                } else {
+                    throw error;
+                }
+            }
 
             setTrip((prev) => ({
                 ...response.data,
