@@ -1,4 +1,5 @@
 import ApiResponse from "../../common/utils/api-response.js";
+import ApiError from "../../common/utils/api-error.js";
 import * as reservationService from "./reservation.service.js";
 
 const getReservations = async (req, res) => {
@@ -25,4 +26,32 @@ const deleteReservation = async (req, res) => {
     ApiResponse.ok(res, "Reservation deleted successfully");
 };
 
-export { getReservations, createReservation, updateReservation, deleteReservation };
+const uploadReservationAttachment = async (req, res) => {
+    if (!req.file) {
+        throw ApiError.badRequest("Choose a file to upload");
+    }
+    const reservation = await reservationService.addAttachment(
+        req.params.tripId,
+        req.params.reservationId,
+        req.file,
+    );
+    ApiResponse.created(res, "Reservation attachment uploaded successfully", reservation);
+};
+
+const deleteReservationAttachment = async (req, res) => {
+    const reservation = await reservationService.deleteAttachment(
+        req.params.tripId,
+        req.params.reservationId,
+        req.params.attachmentId,
+    );
+    ApiResponse.ok(res, "Reservation attachment deleted successfully", reservation);
+};
+
+export {
+    getReservations,
+    createReservation,
+    updateReservation,
+    deleteReservation,
+    uploadReservationAttachment,
+    deleteReservationAttachment,
+};

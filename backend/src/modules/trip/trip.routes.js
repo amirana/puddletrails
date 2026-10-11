@@ -33,6 +33,7 @@ import * as reservationController from "../reservation/reservation.controller.js
 import ReservationParamsDto from "../reservation/dto/reservation-params.dto.js";
 import CreateReservationDto from "../reservation/dto/create-reservation.dto.js";
 import UpdateReservationDto from "../reservation/dto/update-reservation.dto.js";
+import { uploadReservationAttachment } from "../../common/middleware/multer.middleware.js";
 import {
     loadMembership,
     requireRole,
@@ -76,6 +77,25 @@ tripRoute.delete(
     loadMembership,
     requireRole("owner", "editor"),
     reservationController.deleteReservation,
+);
+
+tripRoute.post(
+    "/:tripId/reservations/:reservationId/attachments",
+    authenticate,
+    validate(ReservationParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    uploadReservationAttachment,
+    reservationController.uploadReservationAttachment,
+);
+
+tripRoute.delete(
+    "/:tripId/reservations/:reservationId/attachments/:attachmentId",
+    authenticate,
+    validate(ReservationParamsDto, "params"),
+    loadMembership,
+    requireRole("owner", "editor"),
+    reservationController.deleteReservationAttachment,
 );
 
 tripRoute.get(

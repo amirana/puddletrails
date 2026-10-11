@@ -5,6 +5,7 @@ class ReservationParamsDto extends BaseDto {
     static schema = Joi.object({
         tripId: Joi.string().hex().length(24).required(),
         reservationId: Joi.string().hex().length(24).required(),
+        attachmentId: Joi.string().hex().length(24),
     });
 }
 

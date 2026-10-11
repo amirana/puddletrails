@@ -1,6 +1,14 @@
 import mongoose from "mongoose";
 
 const RESERVATION_TYPES = ["Flight", "Hotel", "Restaurant", "Transport", "Other"];
+const reservationAttachmentSchema = new mongoose.Schema({
+    url: { type: String, required: true },
+    publicId: { type: String, required: true },
+    resourceType: { type: String, required: true },
+    originalName: { type: String, required: true, maxlength: 255 },
+    format: { type: String, default: "" },
+    bytes: { type: Number, required: true },
+});
 
 const reservationSchema = new mongoose.Schema(
     {
@@ -17,6 +25,7 @@ const reservationSchema = new mongoose.Schema(
         confirmationNumber: { type: String, trim: true, maxlength: 100, default: "" },
         confirmed: { type: Boolean, default: false },
         notes: { type: String, trim: true, maxlength: 2000, default: "" },
+        attachments: { type: [reservationAttachmentSchema], default: [] },
     },
     { timestamps: true },
 );
