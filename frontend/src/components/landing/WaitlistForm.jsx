@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 import { joinWaitlist } from "../../services/WaitlistService.js";
 
 const WaitlistForm = ({ buttonLabel = "Join waitlist" }) => {
+    const emailId = useId();
+    const emailErrorId = `${emailId}-error`;
     const [searchParams] = useSearchParams();
     const source = searchParams.get("ref") || "landing_page";
     const [serverMessage, setServerMessage] = useState("");
@@ -31,9 +33,9 @@ const WaitlistForm = ({ buttonLabel = "Join waitlist" }) => {
 
     if (submitted) {
         return (
-            <div className="text-sm font-medium text-[#172033]" role="status">
+            <div className="rounded-2xl border border-[#E9D9CA] bg-[#FFF2E8] p-4 text-left text-sm font-bold text-[#29201D]" role="status">
                 <p>{serverMessage}</p>
-                <p className="mt-1 text-xs font-normal leading-5 text-[#6C6878]">
+                <p className="mt-1 text-xs leading-5 text-[#65554D]">
                     {confirmationEmailSent
                         ? "A confirmation is on its way. We’ll email you when beta invites open."
                         : alreadyJoined
@@ -45,13 +47,15 @@ const WaitlistForm = ({ buttonLabel = "Join waitlist" }) => {
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2 sm:flex-row sm:items-start" noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 sm:flex-row sm:items-start" noValidate>
             <div className="flex-1">
+                <label className="sr-only" htmlFor={emailId}>Email address</label>
                 <input
+                    id={emailId}
                     type="email"
                     placeholder="you@example.com"
-                    className={`w-full rounded-full border px-4 py-2.5 text-sm text-[#172033] outline-none transition-colors focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 ${
-                        errors.email ? "border-red-400" : "border-black/10"
+                    className={`min-h-12 w-full rounded-full border bg-white px-5 py-3 text-sm text-[#29201D] outline-none transition placeholder:text-[#94877E] focus:border-[#E9573F] focus:ring-2 focus:ring-[#E9573F]/20 ${
+                        errors.email ? "border-[#C94F46]" : "border-[#E0D7CD]"
                     }`}
                     {...register("email", {
                         required: "Email is required.",
@@ -59,14 +63,15 @@ const WaitlistForm = ({ buttonLabel = "Join waitlist" }) => {
                         pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email." },
                     })}
                     aria-invalid={Boolean(errors.email || serverMessage)}
+                    aria-describedby={errors.email ? emailErrorId : undefined}
                 />
-                {errors.email && <span className="mt-1 block text-xs text-red-500">{errors.email.message}</span>}
-                {serverMessage && <p className="mt-1 text-xs text-red-600" role="alert">{serverMessage}</p>}
+                {errors.email && <span id={emailErrorId} className="mt-1 block text-xs font-semibold text-[#A43D35]">{errors.email.message}</span>}
+                {serverMessage && <p className="mt-1 text-xs font-semibold text-[#A43D35]" role="alert">{serverMessage}</p>}
             </div>
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-full bg-[#3B82F6] px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#2563EB] disabled:cursor-not-allowed disabled:opacity-60"
+                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#E9573F] px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-[#CF4639] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#29201D] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
             >
                 {isSubmitting ? "Joining…" : buttonLabel}
             </button>

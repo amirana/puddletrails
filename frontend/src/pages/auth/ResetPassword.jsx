@@ -31,7 +31,7 @@ const ResetPassword = () => {
             <main className="flex min-h-screen items-center justify-center bg-[#f8f8f8] px-6 py-12">
                 <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-8 text-center shadow-sm sm:p-10">
                     <Link to="/" className="text-xl font-semibold tracking-tight text-[#08060d] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174c36]">
-                        Traverse
+                        PuddleTrails
                     </Link>
                     <h1 className="mb-0 mt-8 text-3xl font-semibold tracking-tight !text-[#08060d]">
                         Password updated
@@ -52,7 +52,7 @@ const ResetPassword = () => {
             <div className="w-full max-w-md rounded-2xl border border-black/10 bg-white p-7 text-left shadow-sm sm:p-10">
                 <div className="flex items-center justify-between gap-4">
                     <Link to="/" className="text-xl font-semibold tracking-tight text-[#08060d] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174c36]">
-                        Traverse
+                        PuddleTrails
                     </Link>
                     <Link to="/login" className="text-sm font-medium text-[#4d8063] transition-colors hover:text-[#174c36] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36]">
                         Back to login

@@ -51,7 +51,7 @@ const VerifyEmail = () => {
                         to="/"
                         className="text-xl font-semibold tracking-tight text-[#08060d] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174c36]"
                     >
-                        Traverse
+                        PuddleTrails
                     </Link>
                     <p className="mt-8 text-base leading-relaxed text-[#6b6375]">
                         Verifying your email...
@@ -70,7 +70,7 @@ const VerifyEmail = () => {
                     to="/"
                     className="text-xl font-semibold tracking-tight text-[#08060d] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174c36]"
                 >
-                    Traverse
+                    PuddleTrails
                 </Link>
 
                 {isVerified ? (

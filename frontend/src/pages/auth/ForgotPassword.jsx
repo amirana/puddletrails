@@ -33,7 +33,7 @@ const ForgotPassword = () => {
                         to="/"
                         className="text-xl font-semibold tracking-tight text-[#08060d] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174c36]"
                     >
-                        Traverse
+                        PuddleTrails
                     </Link>
                     <h1 className="mb-0 mt-8 text-3xl font-semibold tracking-tight !text-[#08060d]">
                         Check your inbox
@@ -61,7 +61,7 @@ const ForgotPassword = () => {
                         to="/"
                         className="text-xl font-semibold tracking-tight text-[#08060d] transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#174c36]"
                     >
-                        Traverse
+                        PuddleTrails
                     </Link>
                     <Link
                         to="/login"

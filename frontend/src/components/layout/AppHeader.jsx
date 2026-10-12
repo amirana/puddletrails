@@ -20,7 +20,7 @@ const AppHeader = () => {
         <header className="flex items-center justify-between border-b border-black/10 px-6 py-4 sm:px-10">
             <Link to="/" className="flex items-center gap-2 text-lg font-semibold tracking-tight text-[#172033]">
                 <Compass className="h-5 w-5 text-[#3B82F6]" strokeWidth={2} />
-                Traverse
+                PuddleTrails
             </Link>
             <button
                 type="button"

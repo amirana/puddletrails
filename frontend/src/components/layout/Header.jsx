@@ -9,7 +9,7 @@ const Navbar = () => {
                     to="/"
                     className="text-xl font-bold tracking-[-0.055em] text-slate-950 transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-slate-950"
                 >
-                    Traverse
+                    PuddleTrails
                 </Link>
 
                 {/* Nav links */}

@@ -45,7 +45,7 @@ const HeroSection = () => {
                         </div>
                         <div className="grid min-h-[360px] md:grid-cols-[210px_1fr]">
                             <aside className="hidden border-r border-slate-200 bg-slate-50 p-5 md:block">
-                                <p className="text-lg font-bold tracking-[-0.04em] text-slate-950">Traverse</p>
+                                <p className="text-lg font-bold tracking-[-0.04em] text-slate-950">PuddleTrails</p>
                                 <div className="mt-8 space-y-2 text-sm font-medium text-slate-500">
                                     <p className="rounded-lg bg-emerald-50 px-3 py-2.5 text-emerald-800">Overview</p>
                                     <p className="px-3 py-2.5">Itinerary</p>
