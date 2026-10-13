@@ -16,35 +16,66 @@ import {
 const hashToken = (token) =>
     crypto.createHash("sha256").update(token).digest("hex");
 
+const deliverVerificationEmail = async (user) => {
+    const { rawToken, hashedToken } = generateResetToken();
+    user.verificationToken = hashedToken;
+    user.verificationEmailSentAt = new Date();
+    await user.save({ validateBeforeSave: false });
+
+    try {
+        await sendVerificationEmail(user.email, rawToken);
+        return true;
+    } catch (error) {
+        // Keep the account so the user can retry, but log enough SMTP metadata
+        // to diagnose provider/configuration errors without logging credentials.
+        console.error("Failed to send verification email", {
+            email: user.email,
+            code: error.code,
+            responseCode: error.responseCode,
+            command: error.command,
+            message: error.message,
+        });
+        user.verificationEmailSentAt = undefined;
+        await user.save({ validateBeforeSave: false });
+        return false;
+    }
+};
+
 const register = async ({ firstName, lastName, email, password }) => {
     // user registration
     const existing = await User.findOne({ email });
 
     if (existing) throw ApiError.conflict("Email already exists");
 
-    const { rawToken, hashedToken } = generateResetToken();
-
     const user = await User.create({
         firstName,
         lastName,
         email,
         password,
-        verificationToken: hashedToken,
     });
 
-    // Don't let email failure crash registration — user is already created
-    try {
-        await sendVerificationEmail(email, rawToken);
-    } catch (error) {
-        console.error("Failed to send verification email:", error.message);
-    }
+    const verificationEmailSent = await deliverVerificationEmail(user);
 
     const userObj = user.toObject();
     delete userObj.password;
     delete userObj.verificationToken;
     delete userObj._id;
 
-    return userObj;
+    return { ...userObj, verificationEmailSent };
+};
+
+const resendVerificationEmail = async (email) => {
+    const user = await User.findOne({ email }).select(
+        "+verificationToken +verificationEmailSentAt",
+    );
+
+    // Keep the response indistinguishable for missing and already verified
+    // accounts, and throttle repeated requests per address.
+    if (!user || user.isVerified) return;
+    const sentAt = user.verificationEmailSentAt?.getTime();
+    if (sentAt && Date.now() - sentAt < 60_000) return;
+
+    await deliverVerificationEmail(user);
 };
 
 const login = async ({ email, password }) => {
@@ -172,13 +203,9 @@ const verifyEmail = async (token) => {
     // so we also try a direct match on the stored value.
 
     const hashedInput = hashToken(trimmed);
-    console.log(trimmed);
-    console.log(hashedInput);
     let user = await User.findOne({ verificationToken: hashedInput }).select(
         "+verificationToken",
     );
-
-    console.log(user);
 
     // if user not found
     if (!user) {
@@ -207,6 +234,7 @@ const profile = async (userId) => {
 
 export {
     register,
+    resendVerificationEmail,
     login,
     logout,
     forgotPassword,

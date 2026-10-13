@@ -3,7 +3,22 @@ import ApiResponse from "../../common/utils/api-response.js";
 
 const register = async (req, res) => {
     const user = await authService.register(req.body);
-    ApiResponse.created(res, "Registration success", user);
+    const verificationEmailSent = user.verificationEmailSent;
+    ApiResponse.created(
+        res,
+        verificationEmailSent
+            ? "Registration successful. Check your inbox for a verification link."
+            : "Account created, but we couldn't send the verification email. Try requesting a new link.",
+        user,
+    );
+};
+
+const resendVerificationEmail = async (req, res) => {
+    await authService.resendVerificationEmail(req.body.email);
+    ApiResponse.ok(
+        res,
+        "If an unverified account exists for that email, a verification link will be sent. Check your inbox shortly.",
+    );
 };
 
 const login = async (req, res) => {
@@ -70,6 +85,7 @@ const profile = async (req, res) => {
 
 export {
     register,
+    resendVerificationEmail,
     login,
     refreshToken,
     logout,

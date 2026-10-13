@@ -2,23 +2,49 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ArrowRight, MapPin, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { register as registerUser } from "../../services/authService.js";
+import {
+    register as registerUser,
+    resendVerificationEmail,
+} from "../../services/authService.js";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
 
 const fieldClass = "mt-2 block min-h-12 w-full rounded-xl border border-[#E9D9CA] bg-white px-4 py-3 text-base text-[#29201D] outline-none transition placeholder:text-[#A5988E] focus:border-[#E9573F] focus:ring-4 focus:ring-[#FFE4D8]";
 const primaryButton = buttonStyles({ size: "form", className: "w-full" });
 
 const Signup = () => {
-    const { register, handleSubmit, formState: { errors, isSubmitSuccessful, isSubmitting } } = useForm({ mode: "onTouched" });
+    const { register, handleSubmit, getValues, formState: { errors, isSubmitSuccessful, isSubmitting } } = useForm({ mode: "onTouched" });
     const [submitError, setSubmitError] = useState("");
+    const [verificationEmailSent, setVerificationEmailSent] = useState(true);
+    const [resendStatus, setResendStatus] = useState("");
+    const [isResending, setIsResending] = useState(false);
 
     const onSubmit = async (data) => {
         setSubmitError("");
+        setResendStatus("");
         try {
-            await registerUser(data);
+            const result = await registerUser(data);
+            setVerificationEmailSent(Boolean(result.data?.verificationEmailSent));
         } catch (error) {
             setSubmitError(error.message || "Registration failed.");
             throw error;
+        }
+    };
+
+    const handleResend = async (email) => {
+        if (!email) {
+            setResendStatus("Enter your email address above first.");
+            return;
+        }
+
+        setIsResending(true);
+        setResendStatus("");
+        try {
+            const result = await resendVerificationEmail(email);
+            setResendStatus(result.message);
+        } catch (error) {
+            setResendStatus(error.message || "Unable to send a verification link.");
+        } finally {
+            setIsResending(false);
         }
     };
 
@@ -30,8 +56,10 @@ const Signup = () => {
                         <div className="py-5 text-center sm:py-8">
                             <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#FFE4D8] text-[#C94F46]"><MapPin className="h-6 w-6" aria-hidden="true" /></span>
                             <p className="mt-5 font-label text-xs font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">One quick pit stop</p>
-                            <h1 id="signup-title" className="mb-0 mt-3 text-3xl font-black sm:text-4xl">Check your inbox!</h1>
-                            <p className="mt-3 text-sm leading-6 text-[#786A62]">We sent you a verification link. Tap it to finish signing up and get your trip on the map.</p>
+                            <h1 id="signup-title" className="mb-0 mt-3 text-3xl font-black sm:text-4xl">{verificationEmailSent ? "Check your inbox!" : "Account created"}</h1>
+                            <p className="mt-3 text-sm leading-6 text-[#786A62]">{verificationEmailSent ? "We sent you a verification link. Tap it to finish signing up and get your trip on the map." : "Your account is ready, but we couldn't send the verification email. Request a fresh link below."}</p>
+                            {!verificationEmailSent && <button type="button" onClick={() => handleResend(getValues("email"))} disabled={isResending} className="mt-6 text-sm font-bold text-[#C94F46] underline-offset-4 hover:underline disabled:opacity-60">{isResending ? "Sending…" : "Resend verification email"}</button>}
+                            {resendStatus && <p className="mt-3 text-sm text-[#786A62]" role="status">{resendStatus}</p>}
                             <Link to="/login" className={`${primaryButton} mt-7`}>Back to log in <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
                         </div>
                     ) : (
@@ -62,6 +90,7 @@ const Signup = () => {
                                     <span className="mt-1.5 block text-xs font-normal text-[#786A62]">At least 8 characters, with a number and mixed case.</span>
                                 </label>
                                 {submitError && <p className="rounded-xl bg-[#FFF0ED] px-4 py-3 text-sm text-[#A33128]" role="alert">{submitError}</p>}
+                                {submitError.toLowerCase().includes("email already exists") && <div className="-mt-2"><button type="button" onClick={() => handleResend(getValues("email"))} disabled={isResending} className="text-sm font-bold text-[#C94F46] underline-offset-4 hover:underline disabled:opacity-60">{isResending ? "Sending…" : "Resend verification email"}</button>{resendStatus && <p className="mt-2 text-xs text-[#786A62]" role="status">{resendStatus}</p>}</div>}
                                 <button className={primaryButton} type="submit" disabled={isSubmitting}>{isSubmitting ? "Making your account…" : <>Create my account <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" /></>}</button>
                             </form>
                             <p className="mt-5 text-center text-xs text-[#786A62]">No trip spreadsheet required. Promise.</p>

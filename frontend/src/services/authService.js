@@ -16,6 +16,24 @@ const register = async (data) => {
     return result;
 };
 
+const resendVerificationEmail = async (email) => {
+    const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/resend-verification`,
+        {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+        },
+    );
+    const result = await response.json();
+
+    if (!response.ok) {
+        throw new Error(result.message || "Unable to send a verification link.");
+    }
+
+    return result;
+};
+
 const login = async (data) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/login`,
@@ -136,4 +154,13 @@ const resetPassword = async (token, data) => {
     return result;
 };
 
-export { register, login, logout, refresh, profile, forgotPassword, resetPassword };
+export {
+    register,
+    resendVerificationEmail,
+    login,
+    logout,
+    refresh,
+    profile,
+    forgotPassword,
+    resetPassword,
+};

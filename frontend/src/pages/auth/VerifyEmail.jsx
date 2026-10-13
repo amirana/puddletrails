@@ -22,7 +22,7 @@ const VerifyEmail = () => {
                 }
 
                 const response = await fetch(
-                    `http://localhost:4000/api/auth/verify-email/${token}`,
+                    `${import.meta.env.VITE_API_URL}/api/auth/verify-email/${token}`,
                 );
 
                 const result = await response.json();

@@ -4,25 +4,48 @@ import { ArrowRight, X } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AuthContext from "../../context/AuthContext.jsx";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
+import { resendVerificationEmail } from "../../services/authService.js";
 
 const fieldClass = "mt-2 block min-h-12 w-full rounded-xl border border-[#E9D9CA] bg-white px-4 py-3 text-base text-[#29201D] outline-none transition placeholder:text-[#A5988E] focus:border-[#E9573F] focus:ring-4 focus:ring-[#FFE4D8]";
 const primaryButton = buttonStyles({ size: "form", className: "w-full" });
 
 const Login = () => {
     const [submitError, setSubmitError] = useState("");
-    const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({ mode: "onTouched" });
+    const [resendStatus, setResendStatus] = useState("");
+    const [isResending, setIsResending] = useState(false);
+    const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = useForm({ mode: "onTouched" });
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
     const [searchParams] = useSearchParams();
 
     const onSubmit = async (data) => {
         setSubmitError("");
+        setResendStatus("");
         try {
             await login(data);
             const redirect = searchParams.get("redirect");
             redirect ? navigate(redirect) : navigate("/dashboard");
         } catch (error) {
             setSubmitError(error.message || "Unable to log in.");
+        }
+    };
+
+    const handleResend = async () => {
+        const email = getValues("email");
+        if (!email) {
+            setResendStatus("Enter your email address above first.");
+            return;
+        }
+
+        setIsResending(true);
+        setResendStatus("");
+        try {
+            const result = await resendVerificationEmail(email);
+            setResendStatus(result.message);
+        } catch (error) {
+            setResendStatus(error.message || "Unable to send a verification link.");
+        } finally {
+            setIsResending(false);
         }
     };
 
@@ -47,6 +70,7 @@ const Login = () => {
                         </label>
                         <div className="-mt-2 text-right"><Link to="/forgot-password" className="text-sm font-bold text-[#C94F46] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">Forgot password?</Link></div>
                         {submitError && <p className="rounded-xl bg-[#FFF0ED] px-4 py-3 text-sm text-[#A33128]" role="alert">{submitError}</p>}
+                        {submitError.toLowerCase().includes("verify your email") && <div className="-mt-3"><button type="button" onClick={handleResend} disabled={isResending} className="text-sm font-bold text-[#C94F46] underline-offset-4 hover:underline disabled:opacity-60">{isResending ? "Sending…" : "Resend verification email"}</button>{resendStatus && <p className="mt-2 text-xs text-[#786A62]" role="status">{resendStatus}</p>}</div>}
                         <button className={primaryButton} type="submit" disabled={isSubmitting}>{isSubmitting ? "Logging in…" : <>Log in <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" /></>}</button>
                     </form>
                     <p className="mt-6 text-center text-xs text-[#786A62]">New to PuddleTrails? <Link to="/signup" className="font-bold text-[#C94F46] underline-offset-4 hover:underline">Sign up</Link></p>

@@ -49,6 +49,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             select: false, // do not want to return the field while creating an object
         },
+        verificationEmailSentAt: {
+            type: Date,
+            select: false,
+        },
         refreshToken: {
             type: String,
             select: false,

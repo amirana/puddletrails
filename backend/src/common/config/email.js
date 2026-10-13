@@ -1,9 +1,15 @@
 import nodemailer from "nodemailer";
 
-// SMTP transporter — works with Mailtrap, Gmail, SendGrid, or any SMTP provider
+const port = Number(process.env.SMTP_PORT) || 587;
+
+// Resend SMTP uses implicit TLS on 465. Other SMTP providers commonly use STARTTLS.
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 587,
+    port,
+    secure: port === 465,
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
@@ -11,12 +17,13 @@ const transporter = nodemailer.createTransport({
 });
 
 const sendEmail = async (to, subject, html) => {
-    await transporter.sendMail({
+    const info = await transporter.sendMail({
         from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
         to,
         subject,
         html,
     });
+    return info;
 };
 
 const sendVerificationEmail = async (email, token) => {
