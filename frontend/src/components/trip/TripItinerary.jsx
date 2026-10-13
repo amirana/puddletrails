@@ -35,6 +35,8 @@ const TripItinerary = ({
     const [activityError, setActivityError] = useState("");
     const [draggedActivityId, setDraggedActivityId] = useState("");
     const [dragOverDayId, setDragOverDayId] = useState("");
+    const [activeDayId, setActiveDayId] = useState("");
+    const activeDay = days.find((day) => day._id === activeDayId) || days[0];
 
     const memberName = (member) =>
         [member?.firstName, member?.lastName].filter(Boolean).join(" ") || "Unknown member";
@@ -137,15 +139,15 @@ const TripItinerary = ({
     };
 
     return (
-        <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:p-7">
+        <section className="rounded-2xl bg-transparent p-0">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">The itinerary</p>
-                    <h2 className="mb-0 mt-2 !text-2xl font-semibold text-slate-900">Day by day</h2>
-                    <p className="mt-1 text-sm text-slate-500">Add the stops you’re excited about, then shape the days together.</p>
+                    <p className="font-label text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">The itinerary</p>
+                    <h2 className="mb-0 mt-2 text-2xl font-extrabold text-[#29201D]">Day by day</h2>
+                    <p className="mt-2 text-sm text-[#786A62]">Pick a day to see its plans and updates.</p>
                 </div>
                 {!loading && !error && (
-                    <span className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1.5 text-sm font-medium text-slate-700">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-[#FFF2E8] px-3 py-1.5 text-sm font-semibold text-[#9B4A3E]">
                         <CalendarDays className="h-4 w-4" /> {days.length} {days.length === 1 ? "day" : "days"}
                     </span>
                 )}
@@ -158,8 +160,20 @@ const TripItinerary = ({
                     <div className="h-20 animate-pulse rounded-2xl bg-slate-100" />
                 </div>
             ) : !error && (
-                <ol className="mt-5 space-y-4">
-                    {days.map((day) => {
+                <>
+                {days.length > 0 && <div className="mt-6 overflow-x-auto pb-2" role="group" aria-label="Choose itinerary day">
+                    <div className="flex w-max gap-2">
+                        {days.map((day) => {
+                            const shortDate = new Date(day.date).toLocaleDateString("en-GB", {
+                                weekday: "short", day: "numeric", month: "short", timeZone: "UTC",
+                            });
+                            const isActive = activeDay?._id === day._id;
+                            return <button key={day._id} type="button" aria-pressed={isActive} onClick={() => setActiveDayId(day._id)} className={`flex min-w-24 flex-col items-start rounded-xl border px-4 py-3 text-left transition ${isActive ? "border-[#E9573F] bg-[#FFF2E8] text-[#29201D]" : "border-[#EAE2D9] bg-white text-[#786A62] hover:border-[#E8B899] hover:bg-[#FFFCF7]"}`}><span className="text-[10px] font-bold uppercase tracking-wide">Day {day.dayNumber}</span><span className="mt-1 text-sm font-semibold">{shortDate}</span></button>;
+                        })}
+                    </div>
+                </div>}
+                {activeDay ? <ol className="mt-4 space-y-4">
+                    {[activeDay].map((day) => {
                         const dayActivities = day.activities || [];
                         const dayReservations = day.reservations || [];
                         const dayDate = new Date(day.date).toLocaleDateString("en-GB", {
@@ -319,7 +333,8 @@ const TripItinerary = ({
                             </li>
                         );
                     })}
-                </ol>
+                </ol> : <p className="mt-6 rounded-2xl border border-dashed border-[#EAE2D9] bg-white p-6 text-sm text-[#786A62]">Trip dates haven’t been set yet, so there are no itinerary days to show.</p>}
+                </>
             )}
         </section>
     );

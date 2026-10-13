@@ -7,3 +7,34 @@
     --font-label: "Space Mono", monospace;
     --font-scoutie: "Scoutie Sans", sans-serif;
 }
+
+@keyframes autumn-sway {
+    0%, 100% { transform: rotate(-7deg); }
+    50% { transform: rotate(7deg); }
+}
+
+.autumn-leaf {
+    transform-origin: 50% 85%;
+    animation: autumn-sway 5s ease-in-out infinite;
+}
+
+.landing-reveal-ready [data-scroll-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 550ms ease, transform 550ms ease;
+}
+
+.landing-reveal-ready [data-scroll-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .autumn-leaf { animation: none; }
+    .landing-reveal-ready [data-scroll-reveal],
+    .landing-reveal-ready [data-scroll-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoutes.jsx";
 import CreateTrip from "./pages/trip/CreateTrip.jsx";
 import TripDetails from "./pages/trip/TripDetails.jsx";
 import Invitation from "./pages/trip/Invitation.jsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
 
 function App() {
     return (
@@ -52,6 +53,7 @@ function App() {
                 }
             ></Route>
             <Route path="/invitations/:token" element={<Invitation />}></Route>
+            <Route path="/privacy" element={<PrivacyPolicy />}></Route>
         </Routes>
     );
 }

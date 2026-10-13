@@ -1,39 +1,26 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import AuthContext from "../../context/AuthContext.jsx";
+import logo from "../../assets/logo.png";
 
 const Footer = () => {
+    const { user } = useContext(AuthContext);
+
     return (
-        <footer className="border-t border-slate-200 bg-white px-6 py-16 text-left sm:py-20">
-            <div className="mx-auto max-w-6xl">
-                <div className="grid gap-12 md:grid-cols-[2fr_repeat(2,1fr)] md:gap-8">
-                    <div className="max-w-sm">
-                        <h2 className="m-0 text-xl font-bold tracking-[-0.05em] !text-slate-950">
-                            PuddleTrails
-                        </h2>
-                        <p className="mt-4 text-sm font-medium text-slate-900">
-                            Plan trips. Together.
-                        </p>
-                        <p className="mt-2 text-sm leading-relaxed text-slate-500">
-                            Your shared space for planning the next adventure.
-                        </p>
-                    </div>
-
-                    <div className="flex flex-col gap-3 text-sm">
-                        <h3 className="m-0 mb-1 font-medium text-slate-900">Legal</h3>
-                        <Link className="text-slate-500 transition-colors hover:text-slate-950" to="/privacy">Privacy</Link>
-                        <Link className="text-slate-500 transition-colors hover:text-slate-950" to="/terms">Terms</Link>
-                    </div>
-
-                    <div className="flex flex-col gap-3 text-sm">
-                        <h3 className="m-0 mb-1 font-medium text-slate-900">Social</h3>
-                        <a className="text-slate-500 transition-colors hover:text-slate-950" href="#">Instagram</a>
-                        <a className="text-slate-500 transition-colors hover:text-slate-950" href="#">X</a>
-                    </div>
+        <footer className="border-t border-[#29201D]/10 px-5 py-6 sm:px-8 sm:py-7">
+            <div className="mx-auto grid max-w-7xl gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+                <div className="flex flex-col items-start gap-0.5">
+                    <Link to={user ? "/dashboard" : "/"} aria-label="PuddleTrails home" className="inline-flex rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]">
+                        <img src={logo} alt="PuddleTrails" className="h-10 w-auto mix-blend-multiply" />
+                    </Link>
+                    <span className="text-xs font-medium text-[#786A62]">Take the scenic route.</span>
                 </div>
-
-                <div className="mt-16 flex flex-col gap-2 border-t border-slate-200 pt-6 text-sm text-slate-500 sm:flex-row sm:justify-between">
-                    <p>© 2026 PuddleTrails</p>
-                    <p>Made for travelers.</p>
-                </div>
+                <nav aria-label="Footer links" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold text-[#65554D]">
+                    <Link to="/privacy" className="transition-colors hover:text-[#C94F46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]">Privacy policy</Link>
+                    <a href="https://x.com/yourhandle" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#C94F46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]">X</a>
+                    <a href="https://www.instagram.com/yourhandle/" target="_blank" rel="noreferrer" className="transition-colors hover:text-[#C94F46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]">Instagram</a>
+                </nav>
+                <p className="text-xs font-semibold text-[#786A62] sm:justify-self-end">© {new Date().getFullYear()} PuddleTrails</p>
             </div>
         </footer>
     );
