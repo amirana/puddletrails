@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, CalendarDays, ClipboardList, Mail, MapPin, Pencil, ReceiptText, UserRound, Users } from "lucide-react";
+import { ArrowLeft, CalendarDays, ClipboardList, Mail, MapPin, Pencil, Plane, Plus, ReceiptText, UserRound, Users, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import AuthContext from "../../context/AuthContext.jsx";
 import AppHeader from "../../components/layout/AppHeader.jsx";
@@ -27,6 +27,14 @@ const tripTabs = [
     { id: "reservations", label: "Bookings", title: "Your reservations", note: "Keep the booking details close at hand.", icon: MapPin },
     { id: "people", label: "People", title: "Your travel crew", note: "Manage who’s coming and what they can do.", icon: Users },
 ];
+const tripTabIconTones = {
+    itinerary: "text-[#7D9869]",
+    details: "text-[#E9573F]",
+    budget: "text-[#D49A27]",
+    checklists: "text-[#6F8D62]",
+    reservations: "text-[#C94F46]",
+    people: "text-[#78966D]",
+};
 
 const formatDate = (date) => date
     ? new Date(date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
@@ -53,6 +61,7 @@ const TripDetails = () => {
     const [inviteState, setInviteState] = useState({ busy: false, message: "", error: "" });
     const [memberBusyId, setMemberBusyId] = useState("");
     const [memberError, setMemberError] = useState("");
+    const [inviteModalOpen, setInviteModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("itinerary");
 
     useEffect(() => {
@@ -157,33 +166,65 @@ const TripDetails = () => {
 
     return (
         <div className="flex min-h-screen flex-col bg-[#FFFCF7] text-[#29201D]">
-            <AppHeader />
-            <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-7 sm:py-10">
+            <AppHeader compact />
+            <main className="mx-auto w-full max-w-[1760px] flex-1 px-4 py-4 sm:px-7 sm:py-5">
                 {loading ? (
                     <div className="h-[70vh] animate-pulse rounded-3xl border border-[#EAE2D9] bg-white" aria-label="Loading trip" />
                 ) : pageError ? (
                     <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700" role="alert">{pageError}</div>
                 ) : trip ? (
-                    <div className="overflow-hidden rounded-3xl border border-[#EAE2D9] bg-white shadow-[0_12px_36px_rgba(60,40,30,0.07)]">
-                        <div className="border-b border-[#EEE7DF] p-5 sm:p-7">
-                            <div className="flex flex-wrap items-center justify-between gap-4">
-                                <div className="flex min-w-0 items-center gap-4">
-                                <Link to="/dashboard" aria-label="Back to all trips" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#EAE2D9] text-[#65554D] transition hover:bg-[#FFF4E3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]"><ArrowLeft className="h-4 w-4" /></Link>
-                                <div className="min-w-0">
-                                    <p className="truncate text-xl font-extrabold sm:text-2xl">{trip.title || "Your trip"}</p>
-                                    <p className="mt-1 truncate text-sm text-[#786A62]">{trip.destination || "Destination to be decided"} <span aria-hidden="true">·</span> {formatDate(trip.startDate)} – {formatDate(trip.endDate)}</p>
-                                    {trip.description && <p className="mt-1 line-clamp-2 max-w-3xl text-sm leading-6 text-[#786A62]">{trip.description}</p>}
+                    <div className="space-y-4">
+                        <div className="flex min-h-9 flex-wrap items-center justify-between gap-3">
+                            <Link to="/dashboard" className="inline-flex min-h-9 items-center gap-2 rounded-full px-2.5 text-sm font-semibold text-[#65554D] transition hover:bg-[#FFF0DF] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
+                                <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All trips
+                            </Link>
+                            <div className="flex items-center gap-2.5">
+                                <div className="flex -space-x-2" aria-label={`${trip.members?.length || 0} trip travelers`}>
+                                    {(trip.members || []).slice(0, 4).map((member) => {
+                                        const name = [member.user?.firstName, member.user?.lastName].filter(Boolean).join(" ") || member.user?.email || "Traveler";
+                                        const initials = name.split(/[\s._-]+/).filter(Boolean).slice(0, 2).map((part) => part[0].toUpperCase()).join("");
+                                        return member.user?.avatar
+                                            ? <img key={member._id} src={member.user.avatar} alt={name} title={name} className="h-8 w-8 rounded-full border-2 border-[#FFFCF7] object-cover" />
+                                            : <span key={member._id} title={name} aria-label={name} className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#FFFCF7] bg-[#FFE4D8] text-[10px] font-bold text-[#9B4A3E]">{initials}</span>;
+                                    })}
                                 </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <span className="hidden rounded-full bg-[#FFF2E8] px-3 py-1.5 text-xs font-semibold text-[#9B4A3E] sm:inline-flex">{trip.members?.length || 0} {trip.members?.length === 1 ? "traveler" : "travelers"}</span>
-                                    {trip.role !== "owner" && <button type="button" onClick={handleLeaveTrip} disabled={memberBusyId === "me"} className="shrink-0 rounded-lg border border-[#EAE2D9] px-3 py-2 text-xs font-semibold text-[#65554D] transition hover:bg-[#FFF4E3] disabled:opacity-60">{memberBusyId === "me" ? "Leaving…" : "Leave trip"}</button>}
-                                </div>
+                                {trip.role === "owner" && (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            reset({ email: "", role: "viewer" });
+                                            setInviteState({ busy: false, message: "", error: "" });
+                                            setInviteModalOpen(true);
+                                        }}
+                                        aria-label="Invite travelers"
+                                        title="Invite travelers"
+                                        className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#EAE2D9] bg-white text-[#9B4A3E] transition hover:border-[#F1D7C0] hover:bg-[#FFF4E3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]"
+                                    >
+                                        <Plus className="h-4 w-4" aria-hidden="true" />
+                                    </button>
+                                )}
+                                <span className="text-sm font-medium text-[#786A62]">{trip.members?.length || 0} {trip.members?.length === 1 ? "traveler" : "travelers"}</span>
+                                {trip.role !== "owner" && <button type="button" onClick={handleLeaveTrip} disabled={memberBusyId === "me"} className="rounded-full border border-[#EAE2D9] px-3 py-2 text-xs font-semibold text-[#65554D] transition hover:bg-white disabled:opacity-60">{memberBusyId === "me" ? "Leaving…" : "Leave trip"}</button>}
                             </div>
-                            <div role="tablist" aria-label="Trip sections" className="mt-6 flex min-w-0 gap-2 overflow-x-auto pb-1">
+                        </div>
+
+                        <section className="flex items-center justify-between gap-4 rounded-[28px] bg-[#FFF0DF] px-5 py-5 sm:px-8 sm:py-7" aria-label="Trip overview">
+                            <div className="min-w-0">
+                                <p className="font-label text-[9px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Your next adventure</p>
+                                <h1 className="mb-0 mt-1 truncate text-2xl font-extrabold leading-tight tracking-[-0.04em] text-[#29201D] sm:text-3xl">{trip.title || "Your trip"}</h1>
+                            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-[#65554D]">
+                                <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4 text-[#D65343]" />{trip.destination || "Destination to be decided"}</span>
+                                <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-4 w-4 text-[#D65343]" />{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</span>
+                            </div>
+                            </div>
+                            <span aria-hidden="true" className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FFD34E] text-[#29201D] sm:flex"><Plane className="h-5 w-5 -rotate-12" /></span>
+                        </section>
+
+                        <div className="min-w-0">
+                                <nav role="tablist" aria-label="Trip sections" aria-orientation="horizontal" className="flex gap-1 overflow-x-auto border-b border-[#EAE2D9] px-1">
                                     {tripTabs.map(({ id, label, icon: Icon }) => (
                                         <button key={id} id={`trip-tab-${id}`} type="button" role="tab" aria-selected={activeTab === id} aria-controls={`trip-panel-${id}`} tabIndex={activeTab === id ? 0 : -1} onClick={() => setActiveTab(id)} onKeyDown={(event) => {
-                                            if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
+                                            if (["ArrowRight", "ArrowLeft"].includes(event.key)) {
                                                 event.preventDefault();
                                                 const direction = event.key === "ArrowRight" ? 1 : -1;
                                                 const currentIndex = tripTabs.findIndex((tab) => tab.id === id);
@@ -191,22 +232,14 @@ const TripDetails = () => {
                                                 setActiveTab(next.id);
                                                 document.getElementById(`trip-tab-${next.id}`)?.focus();
                                             }
-                                        }} className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-xl border px-4 text-sm font-semibold transition ${activeTab === id ? "border-[#E8B899] bg-[#FFF4E3] text-[#29201D]" : "border-transparent bg-[#F8F6F2] text-[#786A62] hover:border-[#EAE2D9] hover:bg-white hover:text-[#29201D]"}`}>
-                                            <Icon className="h-4 w-4" aria-hidden="true" />{label}
+                                        }} className={`inline-flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 text-sm font-semibold transition ${activeTab === id ? "border-[#E9573F] text-[#9B4A3E]" : "border-transparent text-[#786A62] hover:border-[#F1D7C0] hover:text-[#29201D]"}`}>
+                                            <Icon className={`h-4 w-4 ${activeTab === id ? "text-[#E9573F]" : tripTabIconTones[id]}`} aria-hidden="true" /><span>{label}</span>
                                         </button>
                                     ))}
-                            </div>
-                        </div>
+                                </nav>
 
-                        <div>
-                            <div className="min-w-0">
-                                <div className="border-b border-[#EEE7DF] bg-[#FFF8EF] px-6 py-6 sm:px-9 sm:py-8">
-                                    <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">{tripTabs.find((tab) => tab.id === activeTab)?.label}</p>
-                                    <h2 className="mb-0 mt-2 text-2xl font-black leading-tight sm:text-3xl">{tripTabs.find((tab) => tab.id === activeTab)?.title}</h2>
-                                    <p className="mt-2 text-sm text-[#786A62]">{tripTabs.find((tab) => tab.id === activeTab)?.note}</p>
-                                </div>
-
-                                <div className="min-w-0 p-5 sm:p-8 lg:p-10">
+                            <section className="mt-5 min-w-0 px-1 py-3 sm:px-3 sm:py-5">
+                                <div className="min-w-0">
                                     <div id="trip-panel-itinerary" role="tabpanel" aria-labelledby="trip-tab-itinerary" tabIndex={0} hidden={activeTab !== "itinerary"}>
                                         <TripItinerary tripId={tripId} accessToken={accessToken} user={user} role={trip.role} canEdit={trip.role === "owner" || trip.role === "editor"} days={tripDays} setDays={setTripDays} loading={daysLoading} error={daysError} />
                                     </div>
@@ -223,7 +256,7 @@ const TripDetails = () => {
                                         <TripReservations tripId={tripId} accessToken={accessToken} role={trip.role} days={tripDays} setDays={setTripDays} />
                                     </div>
                                     <div id="trip-panel-people" role="tabpanel" aria-labelledby="trip-tab-people" tabIndex={0} hidden={activeTab !== "people"}>
-                                        <section className="rounded-3xl border border-[#EAE2D9] bg-white p-5 shadow-[0_8px_28px_rgba(60,40,30,0.04)] sm:p-7">
+                                        <section className="space-y-4">
                                             <div className="flex flex-wrap items-start justify-between gap-4">
                                                 <div><p className="font-label text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">Trip group</p><h3 className="mb-0 mt-2 text-2xl font-extrabold text-[#29201D]">Travelers</h3><p className="mt-1 text-sm text-[#786A62]">People who can access this trip and their roles.</p></div>
                                                 <span className="inline-flex items-center gap-2 rounded-full bg-[#FFF4E3] px-3 py-1.5 text-sm font-semibold text-[#51443E]"><Users className="h-4 w-4" /> {trip.members?.length || 0}</span>
@@ -238,14 +271,55 @@ const TripDetails = () => {
                                                 })}
                                             </div>
                                         </section>
-                                        {trip.role === "owner" && <section className="mt-5 rounded-3xl border border-[#EAE2D9] bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:p-7"><p className="font-label text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">Grow the group</p><h3 className="mb-0 mt-2 text-2xl font-extrabold">Invite someone</h3><p className="mt-1 text-sm text-[#786A62]">They’ll receive an email invitation to join this trip.</p>{inviteState.message && <p className="mt-4 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status">{inviteState.message}</p>}{inviteState.error && <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{inviteState.error}</p>}<form className="mt-5 grid gap-4 sm:grid-cols-[1fr_180px_auto] sm:items-end" onSubmit={handleSubmit(handleSendInvitation)}><label className="block text-sm font-medium text-[#51443E]">Email address<input type="email" placeholder="name@example.com" {...register("email", { required: "Email is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email" } })} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] px-3 py-2.5 text-sm outline-none focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]" />{errors.email && <span className="mt-1 block text-xs text-red-600">{errors.email.message}</span>}</label><label className="block text-sm font-medium text-[#51443E]">Role<select {...register("role", { required: "Role is required" })} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm outline-none focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]"><option value="viewer">Viewer</option><option value="editor">Editor</option></select></label><button type="submit" disabled={inviteState.busy} className="rounded-lg bg-[#E9573F] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#CF4639] disabled:cursor-wait disabled:opacity-60">{inviteState.busy ? "Sending…" : "Send invite"}</button></form></section>}
                                     </div>
                                 </div>
-                            </div>
+                            </section>
                         </div>
                     </div>
                 ) : null}
             </main>
+            {inviteModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-[#29201D]/35 p-4 backdrop-blur-[2px]"
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget) setInviteModalOpen(false);
+                    }}
+                    onKeyDown={(event) => {
+                        if (event.key === "Escape") setInviteModalOpen(false);
+                    }}
+                >
+                    <section role="dialog" aria-modal="true" aria-labelledby="invite-dialog-title" className="w-full max-w-md rounded-3xl border border-[#EAE2D9] bg-[#FFFCF7] p-6 shadow-[0_24px_80px_rgba(41,32,29,0.2)] sm:p-7">
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Bring your crew</p>
+                                <h2 id="invite-dialog-title" className="mb-0 mt-2 text-2xl font-extrabold text-[#29201D]">Invite a traveler</h2>
+                                <p className="mt-1 text-sm text-[#786A62]">They’ll receive an email invitation to join this trip.</p>
+                            </div>
+                            <button type="button" onClick={() => setInviteModalOpen(false)} aria-label="Close invite dialog" className="rounded-full p-2 text-[#786A62] transition hover:bg-[#F7F0E8] hover:text-[#29201D]">
+                                <X className="h-5 w-5" />
+                            </button>
+                        </div>
+                        {inviteState.message && <p className="mt-5 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800" role="status">{inviteState.message}</p>}
+                        {inviteState.error && <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{inviteState.error}</p>}
+                        <form className="mt-5 space-y-4" onSubmit={handleSubmit(handleSendInvitation)}>
+                            <label className="block text-sm font-semibold text-[#51443E]">Email address
+                                <input autoFocus type="email" placeholder="name@example.com" {...register("email", { required: "Email is required", pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Enter a valid email" } })} className="mt-1.5 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal outline-none focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]" />
+                                {errors.email && <span className="mt-1 block text-xs font-normal text-red-600">{errors.email.message}</span>}
+                            </label>
+                            <label className="block text-sm font-semibold text-[#51443E]">Role
+                                <select {...register("role", { required: "Role is required" })} className="mt-1.5 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal outline-none focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]">
+                                    <option value="viewer">Viewer</option>
+                                    <option value="editor">Editor</option>
+                                </select>
+                            </label>
+                            <div className="flex justify-end gap-2 pt-1">
+                                <button type="button" onClick={() => setInviteModalOpen(false)} className="rounded-full px-4 py-2.5 text-sm font-semibold text-[#65554D] transition hover:bg-[#F7F0E8]">Cancel</button>
+                                <button type="submit" disabled={inviteState.busy} className="rounded-full bg-[#E9573F] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#CF4639] disabled:cursor-wait disabled:opacity-60">{inviteState.busy ? "Sending…" : "Send invite"}</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            )}
             <Footer />
         </div>
     );

@@ -112,15 +112,15 @@ const DestinationCombobox = ({ value, onChange, error }) => {
                 onKeyDown={handleKeyDown}
                 autoComplete="off"
                 placeholder="e.g. Goa, India"
-                className={`w-full rounded-lg border px-4 py-2.5 text-sm text-[#172033] outline-none transition-colors focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 ${
-                    error ? "border-red-400" : "border-black/10"
+                className={`w-full rounded-xl border px-3.5 py-3 text-sm font-normal text-[#29201D] outline-none transition-colors placeholder:text-[#A99A90] focus:border-[#E9573F] focus:ring-2 focus:ring-[#E9573F]/15 ${
+                    error ? "border-red-400" : "border-[#EAE2D9]"
                 }`}
             />
             {isOpen && suggestions.length > 0 && (
                 <ul
                     id={listboxId}
                     role="listbox"
-                    className="absolute z-10 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-black/10 bg-white py-1 text-sm shadow-lg"
+                    className="absolute z-20 mt-1 max-h-56 w-full overflow-y-auto rounded-xl border border-[#EAE2D9] bg-white py-1 text-sm shadow-[0_12px_32px_rgba(60,40,30,0.14)]"
                 >
                     {suggestions.map((option, index) => (
                         <li
@@ -131,12 +131,12 @@ const DestinationCombobox = ({ value, onChange, error }) => {
                             onMouseDown={() => selectOption(option)}
                             className={`cursor-pointer px-4 py-2 ${
                                 index === activeIndex
-                                    ? "bg-[#3B82F6]/10"
-                                    : "hover:bg-black/5"
+                                    ? "bg-[#FFF0C4]"
+                                    : "hover:bg-[#FFF8F0]"
                             }`}
                         >
                             {option.label}
-                            <span className="ml-1.5 text-xs text-[#172033]/40">
+                            <span className="ml-1.5 text-xs text-[#9B4A3E]">
                                 {option.type === "city" ? "City" : "Country"}
                             </span>
                         </li>

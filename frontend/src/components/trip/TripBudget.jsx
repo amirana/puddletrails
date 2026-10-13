@@ -73,9 +73,13 @@ const BudgetSettingsForm = ({ budget, onSave, onCancel, error, busy }) => {
     });
 
     return (
-        <form onSubmit={handleSubmit(submitBudget)} className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5" noValidate>
-            <div className="grid gap-4 sm:grid-cols-2">
-                <label className="text-sm font-semibold text-slate-700">
+        <form onSubmit={handleSubmit(submitBudget)} className="mt-5 max-w-5xl bg-[#FFF4E3]/70 px-4 py-5 sm:px-6 sm:py-6" noValidate>
+            <div className="mb-5">
+                <p className="text-sm font-semibold text-[#29201D]">Set your trip budget</p>
+                <p className="mt-1 text-xs text-[#786A62]">Choose a shared spending limit and the currency you’ll track.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-[1.1fr_0.9fr]">
+                <label className="text-sm font-semibold text-[#51443E]">
                     Total budget
                     <input
                         type="number"
@@ -92,17 +96,17 @@ const BudgetSettingsForm = ({ budget, onSave, onCancel, error, busy }) => {
                                 return Number.isInteger(value * (10 ** scale)) || `Use no more than ${scale} decimal places.`;
                             },
                         })}
-                        className="mt-1.5 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
+                        className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal outline-none focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]"
                     />
                     {errors.totalBudget && <span className="mt-1 block text-xs font-normal text-red-600">{errors.totalBudget.message}</span>}
                 </label>
-                <label className="text-sm font-semibold text-slate-700">
+                <label className="text-sm font-semibold text-[#51443E]">
                     Currency
                     <select
                         disabled={currencyLocked}
                         aria-invalid={Boolean(errors.currency)}
                         {...register("currency", { required: "Choose a currency." })}
-                        className="mt-1.5 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-normal outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-100 disabled:bg-slate-100 disabled:text-slate-500"
+                        className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal outline-none focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8] disabled:bg-[#F7F0E8] disabled:text-[#786A62]"
                     >
                         <option value="">Choose a currency</option>
                         {CURRENCIES.map(([code, name]) => <option key={code} value={code}>{code} · {name}</option>)}
@@ -110,15 +114,15 @@ const BudgetSettingsForm = ({ budget, onSave, onCancel, error, busy }) => {
                     {errors.currency && <span className="mt-1 block text-xs font-normal text-red-600">{errors.currency.message}</span>}
                 </label>
             </div>
-            <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-5 text-amber-900">
+            <p className="mt-4 max-w-3xl border-l-2 border-[#FFD34E] pl-3 text-xs leading-5 text-[#78543F]">
                 {currencyLocked
-                    ? "This trip’s currency is locked. Currency conversion isn’t available yet. To use another currency, you’ll need to create a new trip."
-                    : "Choose carefully: you can’t change this trip’s currency after saving. If you choose the wrong one, you’ll need to create a new trip. Currency conversion isn’t available yet."}
+                    ? `This trip uses ${budget.currency}. Currency conversion isn’t available yet.`
+                    : "Currency can’t be changed after saving. Choose the currency your group will use for trip expenses."}
             </p>
             {error && <p className="mt-3 text-sm text-red-700" role="alert">{error}</p>}
-            <div className="mt-4 flex justify-end gap-2">
-                {onCancel && <button type="button" onClick={onCancel} disabled={busy || isSubmitting} className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-200 disabled:opacity-50">Cancel</button>}
-                <button type="submit" disabled={busy || isSubmitting} className="rounded-lg bg-violet-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-violet-800 disabled:cursor-wait disabled:opacity-60">{isSubmitting ? "Saving…" : currencyLocked ? "Save budget" : "Save budget & currency"}</button>
+            <div className="mt-5 flex justify-end gap-2">
+                {onCancel && <button type="button" onClick={onCancel} disabled={busy || isSubmitting} className="rounded-lg px-3 py-2 text-sm font-semibold text-[#65554D] hover:bg-[#F1EAE2] disabled:opacity-50">Cancel</button>}
+                <button type="submit" disabled={busy || isSubmitting} className="rounded-lg bg-[#E9573F] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#CF4639] disabled:cursor-wait disabled:opacity-60">{isSubmitting ? "Saving…" : currencyLocked ? "Save budget" : "Save budget & currency"}</button>
             </div>
         </form>
     );
@@ -223,15 +227,15 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
     };
 
     return (
-        <section className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-[0_8px_28px_rgba(15,23,42,0.04)] sm:p-7">
+        <section className="space-y-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700">Trip money</p>
-                    <h2 className="mb-0 mt-2 !text-2xl font-semibold text-slate-900">Budget</h2>
-                    <p className="mt-1 text-sm text-slate-500">Keep shared trip costs visible as they add up.</p>
+                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B4A3E]">Trip money</p>
+                    <h2 className="mb-0 mt-2 !text-2xl font-semibold text-[#29201D]">Budget</h2>
+                    <p className="mt-1 text-sm text-[#786A62]">Keep shared trip costs visible as they add up.</p>
                 </div>
                 {budget?.currency && canEdit && !editingBudget && (
-                    <button type="button" onClick={() => { setFormError(""); setEditingBudget(true); }} className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                    <button type="button" onClick={() => { setFormError(""); setEditingBudget(true); }} className="inline-flex items-center gap-1.5 rounded-lg border border-[#EAE2D9] px-3 py-2 text-xs font-semibold text-[#51443E] hover:bg-[#FFFCF7]">
                         <Pencil className="h-3.5 w-3.5" /> Edit budget
                     </button>
                 )}
@@ -239,9 +243,9 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
 
             {loading ? (
                 <div className="mt-5 grid gap-3 sm:grid-cols-3" aria-label="Loading trip budget">
-                    <div className="h-24 animate-pulse rounded-2xl bg-slate-100" />
-                    <div className="h-24 animate-pulse rounded-2xl bg-slate-100" />
-                    <div className="h-24 animate-pulse rounded-2xl bg-slate-100" />
+                    <div className="h-24 animate-pulse rounded-2xl bg-[#F7F0E8]" />
+                    <div className="h-24 animate-pulse rounded-2xl bg-[#F7F0E8]" />
+                    <div className="h-24 animate-pulse rounded-2xl bg-[#F7F0E8]" />
                 </div>
             ) : loadError ? (
                 <div className="mt-5 rounded-xl bg-red-50 p-4 text-sm text-red-700" role="alert">
@@ -250,21 +254,21 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                 </div>
             ) : budget && !budget.currency ? (
                 <>
-                    <p className="mt-4 text-sm text-slate-600">Set the budget amount and choose the currency your group will use for every expense.</p>
+                    <p className="mt-4 text-sm text-[#65554D]">Set the budget amount and choose the currency your group will use for every expense.</p>
                     {canEdit ? (
                         <BudgetSettingsForm budget={budget} onSave={handleBudgetSave} error={formError} busy={busy} />
                     ) : (
-                        <p className="mt-4 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600">The trip owner or an editor needs to choose a budget currency before expenses can be added.</p>
+                        <p className="mt-4 rounded-xl bg-[#FFFCF7] px-4 py-3 text-sm text-[#65554D]">The trip owner or an editor needs to choose a budget currency before expenses can be added.</p>
                     )}
                 </>
             ) : budget && (
                 <>
-                    <div className="mt-5 grid gap-3 sm:grid-cols-3">
-                        <SummaryCard label="Total budget" amount={budget.totalBudget} currency={budget.currency} icon={<Wallet className="h-4 w-4" />} />
-                        <SummaryCard label="Total spent" amount={budget.totalSpent} currency={budget.currency} icon={<CircleDollarSign className="h-4 w-4" />} />
-                        <SummaryCard label="Remaining" amount={budget.remaining} currency={budget.currency} icon={<CircleDollarSign className="h-4 w-4" />} negative={budget.remaining < 0} />
+                    <div className="mt-5 grid gap-4 bg-[#FFF4E3]/70 px-4 py-4 sm:grid-cols-3 sm:gap-0 sm:px-5">
+                        <SummaryCard label="Total budget" amount={budget.totalBudget} currency={budget.currency} icon={<Wallet className="h-4 w-4" />} accent="yellow" />
+                        <SummaryCard label="Total spent" amount={budget.totalSpent} currency={budget.currency} icon={<CircleDollarSign className="h-4 w-4" />} accent="coral" />
+                        <SummaryCard label="Remaining" amount={budget.remaining} currency={budget.currency} icon={<CircleDollarSign className="h-4 w-4" />} accent="green" negative={budget.remaining < 0} />
                     </div>
-                    <p className="mt-3 text-xs leading-5 text-slate-500">Currency is locked to {budget.currency} for this trip. Conversion isn’t available yet.</p>
+                    <p className="mt-3 text-xs leading-5 text-[#786A62]">Currency is locked to {budget.currency} for this trip. Conversion isn’t available yet.</p>
 
                     {editingBudget && (
                         <BudgetSettingsForm
@@ -276,14 +280,14 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                         />
                     )}
 
-                    <div className="mt-7 border-t border-slate-100 pt-5">
+                    <div className="mt-7 border-t border-[#F1EAE2] pt-5">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
-                                <h3 className="text-base font-semibold text-slate-900">Expenses</h3>
-                                <p className="mt-1 text-xs text-slate-500">Every expense is recorded in {budget.currency}.</p>
+                                <h3 className="text-base font-semibold text-[#29201D]">Expenses</h3>
+                                <p className="mt-1 text-xs text-[#786A62]">Every expense is recorded in {budget.currency}.</p>
                             </div>
                             {canEdit && !expenseEditor && (
-                                <button type="button" onClick={() => { setExpenseError(""); setDeleteConfirmationId(""); setExpenseEditor({ mode: "create" }); }} className="inline-flex items-center gap-1.5 rounded-lg bg-violet-700 px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-violet-800">
+                                <button type="button" onClick={() => { setExpenseError(""); setDeleteConfirmationId(""); setExpenseEditor({ mode: "create" }); }} className="inline-flex items-center gap-1.5 rounded-lg bg-[#E9573F] px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-[#CF4639]">
                                     <Plus className="h-4 w-4" /> Add expense
                                 </button>
                             )}
@@ -297,12 +301,12 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                         )}
 
                         {budget.expenses.length === 0 ? (
-                            <div className="mt-4 rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center">
-                                <p className="text-sm font-medium text-slate-700">No expenses yet</p>
-                                <p className="mt-1 text-xs text-slate-500">Add the first shared cost to start tracking your trip spend.</p>
+                            <div className="mt-4 rounded-2xl border border-dashed border-[#EAE2D9] px-4 py-8 text-center">
+                                <p className="text-sm font-medium text-[#51443E]">No expenses yet</p>
+                                <p className="mt-1 text-xs text-[#786A62]">Add the first shared cost to start tracking your trip spend.</p>
                             </div>
                         ) : (
-                            <ul className="mt-4 divide-y divide-slate-100">
+                            <ul className="mt-4 divide-y divide-[#F1EAE2]">
                                 {budget.expenses.map((expense) => (
                                     <li key={expense._id} className="py-4 first:pt-1 last:pb-0">
                                         {expenseEditor?.mode === "edit" && expenseEditor.expense._id === expense._id ? (
@@ -310,23 +314,23 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                                         ) : (
                                             <div className="flex flex-wrap items-start justify-between gap-3">
                                                 <div className="min-w-0">
-                                                    <p className="truncate text-sm font-semibold text-slate-900">{expense.description}</p>
-                                                    <p className="mt-1 text-xs text-slate-500">
+                                                    <p className="truncate text-sm font-semibold text-[#29201D]">{expense.description}</p>
+                                                    <p className="mt-1 text-xs text-[#786A62]">
                                                         {CATEGORY_LABELS[expense.category]}{expense.transportType ? ` · ${expense.transportType[0].toUpperCase()}${expense.transportType.slice(1)}` : ""} · {formatDate(expense.date)}
                                                     </p>
                                                 </div>
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-sm font-semibold tabular-nums text-slate-900">{formatMoney(expense.amount, budget.currency)}</span>
+                                                    <span className="text-sm font-semibold tabular-nums text-[#29201D]">{formatMoney(expense.amount, budget.currency)}</span>
                                                     {canEdit && (
                                                         <>
-                                                            <button type="button" onClick={() => { setExpenseError(""); setDeleteConfirmationId(""); setExpenseEditor({ mode: "edit", expense }); }} disabled={Boolean(busyExpenseId)} className="rounded-md p-1.5 text-slate-500 hover:bg-slate-100 hover:text-violet-700 disabled:opacity-50" aria-label={`Edit ${expense.description}`}><Pencil className="h-3.5 w-3.5" /></button>
+                                                            <button type="button" onClick={() => { setExpenseError(""); setDeleteConfirmationId(""); setExpenseEditor({ mode: "edit", expense }); }} disabled={Boolean(busyExpenseId)} className="rounded-md p-1.5 text-[#786A62] hover:bg-[#F7F0E8] hover:text-[#C94F3D] disabled:opacity-50" aria-label={`Edit ${expense.description}`}><Pencil className="h-3.5 w-3.5" /></button>
                                                             {deleteConfirmationId === expense._id ? (
                                                                 <>
                                                                     <button type="button" onClick={() => handleDeleteExpense(expense._id)} disabled={Boolean(busyExpenseId)} className="rounded-md px-2 py-1 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50">Confirm</button>
-                                                                    <button type="button" onClick={() => setDeleteConfirmationId("")} className="rounded-md px-2 py-1 text-xs text-slate-500 hover:bg-slate-100">Cancel</button>
+                                                                    <button type="button" onClick={() => setDeleteConfirmationId("")} className="rounded-md px-2 py-1 text-xs text-[#786A62] hover:bg-[#F7F0E8]">Cancel</button>
                                                                 </>
                                                             ) : (
-                                                                <button type="button" onClick={() => handleDeleteExpense(expense._id)} disabled={Boolean(busyExpenseId)} className="rounded-md p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-700 disabled:opacity-50" aria-label={`Delete ${expense.description}`}><Trash2 className="h-3.5 w-3.5" /></button>
+                                                                <button type="button" onClick={() => handleDeleteExpense(expense._id)} disabled={Boolean(busyExpenseId)} className="rounded-md p-1.5 text-[#786A62] hover:bg-red-50 hover:text-red-700 disabled:opacity-50" aria-label={`Delete ${expense.description}`}><Trash2 className="h-3.5 w-3.5" /></button>
                                                             )}
                                                         </>
                                                     )}
@@ -344,10 +348,10 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
     );
 };
 
-const SummaryCard = ({ label, amount, currency, icon, negative = false }) => (
-    <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
-        <div className="flex items-center gap-2 text-xs font-medium text-slate-500">{icon}{label}</div>
-        <p className={`mt-3 text-xl font-semibold tabular-nums tracking-tight ${negative ? "text-red-700" : "text-slate-900"}`}>
+const SummaryCard = ({ label, amount, currency, icon, accent = "coral", negative = false }) => (
+    <div className="px-1 py-1 sm:border-l sm:border-[#EBDCC9] sm:px-5 sm:first:border-l-0">
+        <div className="flex items-center gap-2 text-xs font-medium text-[#786A62]"><span className={`flex h-7 w-7 items-center justify-center rounded-full ${accent === "yellow" ? "bg-[#FFD34E] text-[#51443E]" : accent === "green" ? "bg-[#7D9869] text-white" : "bg-[#FFE4D8] text-[#C94F46]"}`}>{icon}</span>{label}</div>
+        <p className={`mt-3 text-xl font-semibold tabular-nums tracking-tight ${negative ? "text-red-700" : "text-[#29201D]"}`}>
             {formatMoney(amount, currency)}
         </p>
     </div>

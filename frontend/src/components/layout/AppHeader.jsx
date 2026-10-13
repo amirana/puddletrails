@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import AuthContext from "../../context/AuthContext.jsx";
 import logo from "../../assets/logo.png";
 
-const AppHeader = () => {
+const AppHeader = ({ compact = false }) => {
     const { logout, user } = useContext(AuthContext);
     const navigate = useNavigate();
     const displayName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || user?.email?.split("@")[0] || "Traveler";
@@ -25,9 +25,9 @@ const AppHeader = () => {
     };
 
     return (
-        <header className="flex items-center justify-between border-b border-[#29201D]/10 bg-[#FFFCF7] px-5 py-4 sm:px-8">
+        <header className={`flex items-center justify-between border-b border-[#29201D]/10 bg-[#FFFCF7] px-5 sm:px-8 ${compact ? "py-2 sm:py-2.5" : "py-4"}`}>
             <Link to={user ? "/dashboard" : "/"} aria-label="PuddleTrails home" className="flex shrink-0 items-center">
-                <img src={logo} alt="PuddleTrails" className="h-12 w-auto mix-blend-multiply sm:h-16" />
+                <img src={logo} alt="PuddleTrails" className={`w-auto mix-blend-multiply ${compact ? "h-10 sm:h-12" : "h-12 sm:h-16"}`} />
             </Link>
             <div className="flex items-center gap-3 sm:gap-5">
                 <div className="flex items-center gap-2.5" aria-label={`Signed in as ${displayName}`}>
