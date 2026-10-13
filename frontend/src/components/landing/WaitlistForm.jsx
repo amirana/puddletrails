@@ -2,6 +2,7 @@ import { useId, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSearchParams } from "react-router-dom";
 import { joinWaitlist } from "../../services/WaitlistService.js";
+import { buttonStyles } from "../ui/buttonStyles.js";
 
 const WaitlistForm = ({ buttonLabel = "Join waitlist" }) => {
     const emailId = useId();
@@ -54,7 +55,7 @@ const WaitlistForm = ({ buttonLabel = "Join waitlist" }) => {
                     id={emailId}
                     type="email"
                     placeholder="you@example.com"
-                    className={`min-h-12 w-full rounded-full border bg-white px-5 py-3 text-sm text-[#29201D] outline-none transition placeholder:text-[#94877E] focus:border-[#E9573F] focus:ring-2 focus:ring-[#E9573F]/20 ${
+                    className={`min-h-11 w-full rounded-full border bg-white px-4 py-2.5 text-sm text-[#29201D] outline-none transition placeholder:text-[#94877E] focus:border-[#E9573F] focus:ring-2 focus:ring-[#E9573F]/20 ${
                         errors.email ? "border-[#C94F46]" : "border-[#E0D7CD]"
                     }`}
                     {...register("email", {
@@ -71,7 +72,7 @@ const WaitlistForm = ({ buttonLabel = "Join waitlist" }) => {
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="group inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#E9573F] px-6 py-3 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-[#CF4639] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#29201D] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+                className={buttonStyles({ size: "inline" })}
             >
                 {isSubmitting ? "Joining…" : buttonLabel}
             </button>
