@@ -1,29 +1,32 @@
-import nodemailer from "nodemailer";
-
-const port = Number(process.env.SMTP_PORT) || 587;
-
-// Resend SMTP uses implicit TLS on 465. Other SMTP providers commonly use STARTTLS.
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port,
-    secure: port === 465,
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 20_000,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
-});
-
 const sendEmail = async (to, subject, html) => {
-    const info = await transporter.sendMail({
-        from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
-        to,
-        subject,
-        html,
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) throw new Error("RESEND_API_KEY is not configured");
+
+    const fromEmail = process.env.RESEND_FROM_EMAIL;
+    if (!fromEmail) throw new Error("RESEND_FROM_EMAIL is not configured");
+
+    const fromName = process.env.RESEND_FROM_NAME || "PuddleTrails";
+    const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            from: `${fromName} <${fromEmail}>`,
+            to: [to],
+            subject,
+            html,
+        }),
     });
-    return info;
+
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        const detail = result.message || result.name || `HTTP ${response.status}`;
+        throw new Error(`Resend API rejected the email: ${detail}`);
+    }
+
+    return result;
 };
 
 const sendVerificationEmail = async (email, token) => {
