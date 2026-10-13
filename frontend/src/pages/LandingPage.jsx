@@ -59,10 +59,10 @@ const LandingPage = () => {
             ref={pageRef}
             className="min-h-screen overflow-hidden bg-[#FFFCF7] font-copy text-[#29201D]"
         >
-            <header className="px-5 py-2 sm:px-8">
+            <header className="px-4 py-2 sm:px-8">
                 <nav
                     aria-label="Main navigation"
-                    className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4"
+                    className="mx-auto flex min-h-14 max-w-7xl items-center justify-between gap-2 sm:min-h-16 sm:gap-4"
                 >
                     <Link
                         to="/"
@@ -72,13 +72,13 @@ const LandingPage = () => {
                         <img
                             src={logo}
                             alt="PuddleTrails"
-                            className="h-12 w-auto mix-blend-multiply sm:h-14"
+                            className="h-10 w-auto mix-blend-multiply sm:h-14"
                         />
                     </Link>
-                    <div className="flex items-center gap-1 sm:gap-4">
+                    <div className="flex shrink-0 items-center gap-1.5 sm:gap-4">
                         <Link
                             to="/login"
-                            className="hidden rounded-full px-3 py-2 text-sm font-semibold text-[#65554D] transition-colors hover:bg-[#FFF2E8] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29201D] sm:inline-flex"
+                            className="inline-flex rounded-full px-2 py-2 text-xs font-semibold text-[#65554D] transition-colors hover:bg-[#FFF2E8] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29201D] sm:px-3 sm:text-sm"
                         >
                             Log in
                         </Link>
