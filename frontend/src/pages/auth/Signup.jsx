@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { ArrowRight, MapPin, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { register as registerUser } from "../../services/AuthService.js";
+import { register as registerUser } from "../../services/authService.js";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
 
 const fieldClass = "mt-2 block min-h-12 w-full rounded-xl border border-[#E9D9CA] bg-white px-4 py-3 text-base text-[#29201D] outline-none transition placeholder:text-[#A5988E] focus:border-[#E9573F] focus:ring-4 focus:ring-[#FFE4D8]";

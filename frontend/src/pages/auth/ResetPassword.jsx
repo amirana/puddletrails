@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { resetPassword } from "../../services/AuthService.js";
+import { resetPassword } from "../../services/authService.js";
 import { Link, useParams } from "react-router-dom";
 
 const ResetPassword = () => {
