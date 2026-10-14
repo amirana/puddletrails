@@ -82,82 +82,110 @@ const Dashboard = () => {
     return (
         <div className="flex min-h-screen flex-col bg-[#FFFCF7] text-[#29201D]">
             <AppHeader />
-            <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6 sm:px-8 sm:py-8">
-                <div>
-                    <div className="flex flex-col gap-5 border-b border-[#EEE7DF] py-4 sm:flex-row sm:items-center sm:justify-between sm:py-5">
-                        <div className="flex items-center gap-3">
-                            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FFD34E] text-[#29201D]"><Compass className="h-5 w-5" /></span>
-                            <div><h1 className="mb-0 mt-0 text-xl font-extrabold leading-tight">Your trips</h1><p className="mt-1 text-xs leading-5 text-[#786A62]">A little space for big plans.</p></div>
-                        </div>
-                        <div className="flex items-center justify-between gap-3">
-                            <div role="tablist" aria-label="Filter trips" className="flex gap-3 overflow-x-auto border-b border-[#EEE7DF]">
-                                {filters.map(({ id, label, count }) => <button key={id} id={`dashboard-tab-${id}`} type="button" role="tab" aria-selected={activeFilter === id} aria-controls="dashboard-trip-list" tabIndex={activeFilter === id ? 0 : -1} onClick={() => setActiveFilter(id)} onKeyDown={(event) => {
-                                    if (event.key === "ArrowRight" || event.key === "ArrowLeft") {
-                                        event.preventDefault();
-                                        const direction = event.key === "ArrowRight" ? 1 : -1;
-                                        const currentIndex = filters.findIndex((filter) => filter.id === id);
-                                        const next = filters[(currentIndex + direction + filters.length) % filters.length];
-                                        setActiveFilter(next.id);
-                                        document.getElementById(`dashboard-tab-${next.id}`)?.focus();
-                                    }
-                                }} className={`inline-flex min-h-10 shrink-0 items-center gap-2 border-b-2 px-1 text-xs font-semibold transition sm:text-sm ${activeFilter === id ? "border-[#E9573F] text-[#9B4A3E]" : "border-transparent text-[#786A62] hover:text-[#29201D]"}`}>{label}<span className="text-[10px] font-medium text-[#9A8B80]">{count}</span></button>)}
-                            </div>
-                            <button type="button" onClick={() => setCreateTripOpen(true)} className="inline-flex min-h-9 shrink-0 items-center gap-2 rounded-full bg-[#E9573F] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#CF4639] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29201D] sm:text-sm"><Plus className="h-4 w-4" /> New trip</button>
-                        </div>
+            <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-6 sm:px-8 sm:py-9">
+                <div className="mb-7 flex flex-col gap-4 sm:mb-9 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                        <p className="mb-2 inline-flex items-center gap-2 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">
+                            <Compass className="h-4 w-4 text-[#E9573F]" aria-hidden="true" /> Your travel desk
+                        </p>
+                        <h1 className="mb-0 mt-0 text-3xl font-black leading-tight tracking-[-0.04em] sm:text-4xl">Your trips, all in one place.</h1>
+                        <p className="mt-2 text-sm text-[#786A62] sm:text-base">A little space for big plans with your crew.</p>
                     </div>
+                    <button type="button" onClick={() => setCreateTripOpen(true)} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 self-start rounded-full bg-[#E9573F] px-5 py-2.5 text-sm font-bold text-white shadow-[0_5px_0_#C94F46] transition hover:-translate-y-0.5 hover:bg-[#D94F3B] hover:shadow-[0_6px_0_#C94F46] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29201D] sm:self-auto"><Plus className="h-4 w-4" /> New trip</button>
+                </div>
 
-                    <div className="mt-5 grid items-start gap-6 lg:grid-cols-[320px_minmax(0,1fr)]">
-                        <aside className="self-start border-l-2 border-[#FFD34E] py-1 pl-5 sm:pl-6">
-                            <div className="flex items-baseline gap-2">
-                                <p className="text-3xl font-black text-[#C94F46]">{trips.length}</p>
-                                <p className="text-sm font-semibold text-[#786A62]">{trips.length === 1 ? "trip planned" : "trips planned"}</p>
-                            </div>
-                            {nextTrip ? (
-                                <div className="mt-4 border-t border-[#EEE7DF] pt-4">
-                                    <p className="font-label text-[10px] font-bold uppercase tracking-[0.08em] text-[#5F7F59]">Up next</p>
-                                    <p className="mt-2 font-bold leading-snug">{nextTrip.title || nextTrip.destination || "Your next trip"}</p>
-                                    <p className="mt-1 text-xs text-[#786A62]">{formatDate(nextTrip.startDate)}</p>
-                                </div>
-                            ) : (
-                                <p className="mt-3 text-sm text-[#786A62]">Your next trip starts here.</p>
-                            )}
-                        </aside>
+                <div className="grid items-start gap-7 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-9">
+                    <aside className="grid gap-5 sm:grid-cols-2 lg:sticky lg:top-6 lg:grid-cols-1">
+                        <section className="relative overflow-hidden rounded-[1.75rem] bg-[#FFF0DF] p-5 sm:p-6">
+                            <span className="absolute -right-4 -top-4 flex h-20 w-20 rotate-12 items-center justify-center rounded-[1.5rem] bg-[#FFD34E] text-[#29201D]" aria-hidden="true"><Plane className="h-8 w-8" /></span>
+                            <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">On the horizon</p>
+                            <p className="mb-0 mt-4 text-5xl font-black leading-none tracking-tight text-[#D95140]">{trips.length}</p>
+                            <p className="mt-2 text-sm font-semibold text-[#65554D]">{trips.length === 1 ? "trip planned" : "trips planned"}</p>
+                            <p className="mt-5 border-t border-[#E9D9CA] pt-3 text-[11px] text-[#786A62]">Every good trip starts with an idea.</p>
+                        </section>
 
-                        <section id="dashboard-trip-list" role="tabpanel" aria-labelledby={`dashboard-tab-${activeFilter}`} tabIndex={0} className="min-w-0 p-1 outline-none sm:p-3" aria-label={`${filters.find((filter) => filter.id === activeFilter)?.label} list`}>
-                            <div className="mb-7 flex items-center justify-between gap-4">
-                                <div><p className="font-label text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">Your crew’s adventures</p><h2 className="mb-0 mt-2 text-2xl font-extrabold">{filters.find((filter) => filter.id === activeFilter)?.label}</h2></div>
-                                <span className="hidden items-center gap-2 rounded-full bg-[#FFF4E3] px-3 py-1.5 text-xs font-semibold text-[#65554D] sm:inline-flex"><Plane className="h-4 w-4 text-[#C94F46]" /> {visibleTrips.length} to explore</span>
+                        <section className="rounded-[1.75rem] border border-[#EEE7DF] bg-white p-4 sm:p-5">
+                            <p className="mb-3 px-2 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#786A62]">Trip views</p>
+                            <div role="tablist" aria-label="Filter trips" aria-orientation="vertical" className="grid gap-1">
+                                {filters.map(({ id, label, count }) => {
+                                    const FilterIcon = id === "past" ? CalendarDays : id === "upcoming" ? Plane : Compass;
+                                    return <button key={id} id={`dashboard-tab-${id}`} type="button" role="tab" aria-selected={activeFilter === id} aria-controls="dashboard-trip-list" tabIndex={activeFilter === id ? 0 : -1} onClick={() => setActiveFilter(id)} onKeyDown={(event) => {
+                                        if (["ArrowDown", "ArrowUp", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+                                            event.preventDefault();
+                                            const direction = event.key === "ArrowDown" || event.key === "ArrowRight" ? 1 : -1;
+                                            const currentIndex = filters.findIndex((filter) => filter.id === id);
+                                            const next = filters[(currentIndex + direction + filters.length) % filters.length];
+                                            setActiveFilter(next.id);
+                                            document.getElementById(`dashboard-tab-${next.id}`)?.focus();
+                                        }
+                                    }} className={`flex min-h-11 items-center gap-3 rounded-xl px-3 text-left text-sm font-semibold transition ${activeFilter === id ? "bg-[#FFF0DF] text-[#9B4A3E]" : "text-[#786A62] hover:bg-[#FFFCF7] hover:text-[#29201D]"}`}>
+                                        <FilterIcon className={`h-4 w-4 ${activeFilter === id ? "text-[#E9573F]" : "text-[#8C7D74]"}`} aria-hidden="true" />
+                                        <span className="flex-1">{label}</span>
+                                        <span className={`rounded-full px-2 py-0.5 text-[10px] ${activeFilter === id ? "bg-white text-[#9B4A3E]" : "bg-[#F4EEE6] text-[#786A62]"}`}>{count}</span>
+                                    </button>;
+                                })}
                             </div>
-                            {error && <p className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error}</p>}
-                            {loading ? (
-                                <div className="space-y-3" aria-label="Loading trips">{[1, 2, 3].map((item) => <div key={item} className="h-28 animate-pulse rounded-2xl border border-[#EAE2D9] bg-white" />)}</div>
-                            ) : visibleTrips.length === 0 ? (
-                                <div className="rounded-2xl border border-dashed border-[#E8B899] bg-[#FFFCF7] px-6 py-14 text-center">
-                                    <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FFE4D8] text-[#C94F46]"><Compass className="h-6 w-6" /></span>
-                                    <h3 className="mb-0 mt-4 text-xl font-extrabold">{activeFilter === "past" ? "No past trips yet" : trips.length ? "Nothing on the calendar yet" : "Your next trip starts here"}</h3>
-                                    <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#786A62]">{activeFilter === "past" ? "Your finished adventures will show up here." : "Pick a place, invite your people, and start making plans."}</p>
-                                    {activeFilter !== "past" && <button type="button" onClick={() => setCreateTripOpen(true)} className="mt-5 inline-flex min-h-9 items-center gap-2 rounded-full bg-[#E9573F] px-4 py-2 text-sm font-bold text-white hover:bg-[#CF4639]"><Plus className="h-4 w-4" /> Create a trip</button>}
+                        </section>
+                    </aside>
+
+                    <section id="dashboard-trip-list" role="tabpanel" aria-labelledby={`dashboard-tab-${activeFilter}`} tabIndex={0} className="min-w-0 outline-none" aria-label={`${filters.find((filter) => filter.id === activeFilter)?.label} list`}>
+                        {nextTrip && (
+                            <Link to={`/trips/${nextTrip._id}`} className="group relative mb-7 block overflow-hidden rounded-[1.75rem] bg-[#FFF4E3] p-5 transition-transform hover:-translate-y-0.5 sm:p-7">
+                                <span aria-hidden="true" className="absolute -right-7 -top-10 hidden h-44 w-44 rotate-12 items-center justify-center rounded-[2.5rem] bg-[#FFD34E] text-[#29201D] sm:flex"><Plane className="h-16 w-16 -rotate-12" /></span>
+                                <div className="relative max-w-2xl">
+                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 font-label text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B4A3E]"><Compass className="h-3.5 w-3.5" /> Your next adventure</span>
+                                    <h2 className="mb-0 mt-4 text-2xl font-black tracking-[-0.035em] sm:text-3xl">{nextTrip.title || "A trip with your crew"}</h2>
+                                    <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-medium text-[#65554D]">
+                                        <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4 text-[#E9573F]" />{nextTrip.destination || "Destination TBD"}</span>
+                                        <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-4 w-4 text-[#7D9869]" />{formatDate(nextTrip.startDate)} – {formatDate(nextTrip.endDate)}</span>
+                                    </div>
                                 </div>
-                            ) : (
-                                <div className="divide-y divide-[#EEE7DF]">
-                                    {visibleTrips.map((trip, index) => (
-                                        <article key={trip._id} className="group flex flex-col gap-5 py-5 transition-colors hover:bg-[#FFF9F1]/70 sm:flex-row sm:items-center sm:px-3 sm:py-6">
-                                            <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${tripAccentTones[index % tripAccentTones.length]}`}><MapPin className="h-4 w-4" /></span>
-                                            <div className="min-w-0 flex-1">
-                                                <div className="flex flex-wrap items-center gap-2"><h3 className="mb-0 text-lg font-extrabold">{trip.title || "Untitled trip"}</h3><span className="rounded-full bg-[#E7EFD9] px-2.5 py-1 text-[10px] font-bold capitalize text-[#5F7F59]">{trip.role || "member"}</span></div>
-                                                <p className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[#786A62]"><span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-[#E9573F]" />{trip.destination || "Destination TBD"}</span><span className="inline-flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5 text-[#7D9869]" />{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</span></p>
-                                                {trip.description && <p className="mt-2 line-clamp-1 text-xs text-[#786A62]">{trip.description}</p>}
+                                <span aria-hidden="true" className="absolute bottom-5 right-5 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#9B4A3E] transition-transform group-hover:translate-x-1 sm:bottom-7 sm:right-7"><ArrowRight className="h-5 w-5" /></span>
+                            </Link>
+                        )}
+
+                        <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                            <div>
+                                <p className="mb-1 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#C94F46]">Your crew’s adventures</p>
+                                <h2 className="mb-0 text-2xl font-extrabold tracking-tight">{filters.find((filter) => filter.id === activeFilter)?.label}</h2>
+                            </div>
+                            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-[#E7EFD9] px-3 py-1.5 text-xs font-semibold text-[#4F6B49]"><Plane className="h-4 w-4" /> {visibleTrips.length} {visibleTrips.length === 1 ? "trip" : "trips"}</span>
+                        </div>
+
+                        {error && <p className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error}</p>}
+                        {loading ? (
+                            <div className="grid gap-4 sm:grid-cols-2" aria-label="Loading trips">{[1, 2, 3].map((item) => <div key={item} className="h-56 animate-pulse rounded-[1.5rem] bg-[#F5EFE8]" />)}</div>
+                        ) : visibleTrips.length === 0 ? (
+                            <div className="rounded-[1.75rem] bg-[#FFF0DF] px-6 py-12 text-center sm:py-16">
+                                <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-[#FFD34E] text-[#29201D]"><Compass className="h-7 w-7" /></span>
+                                <h3 className="mb-0 mt-4 text-xl font-extrabold">{activeFilter === "past" ? "No past trips yet" : trips.length ? "Nothing on the calendar yet" : "Your next trip starts here"}</h3>
+                                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#786A62]">{activeFilter === "past" ? "Your finished adventures will show up here." : "Pick a place, invite your people, and start making plans."}</p>
+                                {activeFilter !== "past" && <button type="button" onClick={() => setCreateTripOpen(true)} className="mt-5 inline-flex min-h-10 items-center gap-2 rounded-full bg-[#E9573F] px-5 py-2 text-sm font-bold text-white transition hover:bg-[#CF4639]"><Plus className="h-4 w-4" /> Create a trip</button>}
+                            </div>
+                        ) : (
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                {visibleTrips.map((trip, index) => (
+                                    <article key={trip._id} className="group relative flex min-h-[230px] flex-col overflow-hidden rounded-[1.5rem] border border-[#EEE7DF] bg-white transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_32px_rgba(60,40,30,0.10)]">
+                                        <div className={`h-2 w-full ${["bg-[#E9573F]", "bg-[#7D9869]", "bg-[#FFD34E]"][index % 3]}`} />
+                                        <div className="flex flex-1 flex-col p-5 sm:p-6">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <span className={`flex h-11 w-11 items-center justify-center rounded-2xl ${tripAccentTones[index % tripAccentTones.length]}`}><MapPin className="h-5 w-5" /></span>
+                                                <span className="rounded-full bg-[#E7EFD9] px-2.5 py-1 text-[10px] font-bold capitalize text-[#5F7F59]">{trip.role || "member"}</span>
                                             </div>
-                                            <div className="flex shrink-0 items-center justify-between gap-3 border-t border-[#EEE7DF] pt-3 sm:border-0 sm:pt-0">
+                                            <h3 className="mb-0 mt-5 text-lg font-extrabold leading-snug">{trip.title || "Untitled trip"}</h3>
+                                            <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-[#786A62]"><MapPin className="h-3.5 w-3.5 text-[#E9573F]" />{trip.destination || "Destination TBD"}</p>
+                                            <p className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[#65554D]"><CalendarDays className="h-3.5 w-3.5 text-[#7D9869]" />{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</p>
+                                            {trip.description && <p className="mt-2 line-clamp-2 text-xs leading-5 text-[#786A62]">{trip.description}</p>}
+                                            <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#F0EAE3] pt-4">
                                                 <Link to={`/trips/${trip._id}`} className="inline-flex min-h-9 items-center gap-2 rounded-full bg-[#FFF0C4] px-4 py-2 text-xs font-bold text-[#51443E] transition hover:bg-[#FFD34E]">Open trip <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></Link>
                                                 {trip.role === "owner" && <button type="button" onClick={() => handleDelete(trip._id)} disabled={deletingId === trip._id} className="rounded-lg px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50">{deletingId === trip._id ? "Deleting…" : "Delete"}</button>}
                                             </div>
-                                        </article>
-                                    ))}
-                                </div>
-                            )}
-                        </section>
-                    </div>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        )}
+                    </section>
                 </div>
             </main>
             {createTripOpen && <CreateTrip modal onClose={closeCreateTrip} />}
