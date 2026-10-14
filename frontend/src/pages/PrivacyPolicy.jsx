@@ -1,7 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from "../components/layout/Footer.jsx";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.webp";
 
 const sections = [
     {
@@ -61,29 +61,66 @@ const sections = [
 const PrivacyPolicy = () => (
     <div className="flex min-h-screen flex-col bg-[#FFFCF7] text-[#29201D]">
         <header className="px-5 py-2 sm:px-8">
-            <nav aria-label="Privacy page navigation" className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4">
-                <Link to="/" aria-label="PuddleTrails home" className="inline-flex rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]">
-                    <img src={logo} alt="PuddleTrails" className="h-12 w-auto mix-blend-multiply sm:h-14" />
+            <nav
+                aria-label="Privacy page navigation"
+                className="mx-auto flex min-h-16 max-w-7xl items-center justify-between gap-4"
+            >
+                <Link
+                    to="/"
+                    aria-label="PuddleTrails home"
+                    className="inline-flex rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]"
+                >
+                    <img
+                        src={logo}
+                        alt="PuddleTrails"
+                        className="h-12 w-auto mix-blend-multiply sm:h-14"
+                    />
                 </Link>
-                <Link to="/" className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-[#65554D] transition-colors hover:bg-[#FFF0DF] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C94F46]"><ArrowLeft className="h-4 w-4" /> Back home</Link>
+                <Link
+                    to="/"
+                    className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-[#65554D] transition-colors hover:bg-[#FFF0DF] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C94F46]"
+                >
+                    <ArrowLeft className="h-4 w-4" /> Back home
+                </Link>
             </nav>
         </header>
 
         <main className="mx-auto w-full max-w-3xl flex-1 px-5 pb-16 pt-10 sm:px-8 sm:pt-14">
-            <p className="font-label text-xs font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">The fine print, made readable</p>
-            <h1 className="mb-0 mt-3 text-4xl font-black leading-tight sm:text-5xl">Privacy policy</h1>
-            <p className="mt-3 text-sm text-[#786A62]">Last updated October 13, 2026</p>
-            <p className="mt-6 text-base leading-7 text-[#65554D]">This policy explains what information PuddleTrails collects, how we use it, and the choices you have when you use our trip-planning service.</p>
+            <p className="font-label text-xs font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">
+                The fine print, made readable
+            </p>
+            <h1 className="mb-0 mt-3 text-4xl font-black leading-tight sm:text-5xl">
+                Privacy policy
+            </h1>
+            <p className="mt-3 text-sm text-[#786A62]">
+                Last updated October 13, 2026
+            </p>
+            <p className="mt-6 text-base leading-7 text-[#65554D]">
+                This policy explains what information PuddleTrails collects, how
+                we use it, and the choices you have when you use our
+                trip-planning service.
+            </p>
 
             <div className="mt-6 rounded-xl border border-[#E8B899] bg-[#FFF4E3] px-4 py-3 text-sm leading-6 text-[#65554D]">
-                <strong className="text-[#29201D]">Setup note:</strong> This is a general starter policy. Replace the bracketed operator and contact details, confirm it against your final service providers and practices, and have it reviewed for the places where you operate before publishing.
+                <strong className="text-[#29201D]">Setup note:</strong> This is
+                a general starter policy. Replace the bracketed operator and
+                contact details, confirm it against your final service providers
+                and practices, and have it reviewed for the places where you
+                operate before publishing.
             </div>
 
             <div className="mt-8 divide-y divide-[#EEE7DF]">
                 {sections.map(({ title, paragraphs }) => (
                     <section key={title} className="py-6 first:pt-0">
                         <h2 className="mb-0 text-xl font-extrabold">{title}</h2>
-                        {paragraphs.map((paragraph) => <p key={paragraph} className="mt-3 text-sm leading-7 text-[#65554D]">{paragraph}</p>)}
+                        {paragraphs.map((paragraph) => (
+                            <p
+                                key={paragraph}
+                                className="mt-3 text-sm leading-7 text-[#65554D]"
+                            >
+                                {paragraph}
+                            </p>
+                        ))}
                     </section>
                 ))}
             </div>

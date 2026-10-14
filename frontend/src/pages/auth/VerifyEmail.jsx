@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, BadgeCheck, CircleAlert, LoaderCircle, X } from "lucide-react";
+import {
+    ArrowRight,
+    BadgeCheck,
+    CircleAlert,
+    LoaderCircle,
+    X,
+} from "lucide-react";
 import { Link, useParams } from "react-router-dom";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.webp";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
 
 const VerifyEmail = () => {
@@ -28,7 +34,9 @@ const VerifyEmail = () => {
                 const result = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(result.message || "Email verification failed.");
+                    throw new Error(
+                        result.message || "Email verification failed.",
+                    );
                 }
 
                 setStatus("success");
@@ -63,50 +71,111 @@ const VerifyEmail = () => {
                 </Link>
 
                 <div className="px-6 pb-8 pt-10 text-center sm:px-12 sm:pb-11 sm:pt-12">
-                    <Link to="/" aria-label="PuddleTrails home" className="inline-flex">
-                        <img src={logo} alt="PuddleTrails" className="h-12 w-auto object-contain mix-blend-multiply" />
+                    <Link
+                        to="/"
+                        aria-label="PuddleTrails home"
+                        className="inline-flex"
+                    >
+                        <img
+                            src={logo}
+                            alt="PuddleTrails"
+                            className="h-12 w-auto object-contain mix-blend-multiply"
+                        />
                     </Link>
 
-                    <div className={`mx-auto mt-8 flex h-16 w-16 items-center justify-center rounded-[1.35rem] ${isVerified ? "bg-[#E7EFD9] text-[#5F7F59]" : isLoading ? "bg-[#FFF0C4] text-[#9B4A3E]" : "bg-[#FFE4D8] text-[#C94F46]"}`}>
+                    <div
+                        className={`mx-auto mt-8 flex h-16 w-16 items-center justify-center rounded-[1.35rem] ${isVerified ? "bg-[#E7EFD9] text-[#5F7F59]" : isLoading ? "bg-[#FFF0C4] text-[#9B4A3E]" : "bg-[#FFE4D8] text-[#C94F46]"}`}
+                    >
                         {isVerified ? (
-                            <BadgeCheck className="h-8 w-8" strokeWidth={1.8} aria-hidden="true" />
+                            <BadgeCheck
+                                className="h-8 w-8"
+                                strokeWidth={1.8}
+                                aria-hidden="true"
+                            />
                         ) : isLoading ? (
-                            <LoaderCircle className="h-8 w-8 animate-spin" strokeWidth={1.8} aria-hidden="true" />
+                            <LoaderCircle
+                                className="h-8 w-8 animate-spin"
+                                strokeWidth={1.8}
+                                aria-hidden="true"
+                            />
                         ) : (
-                            <CircleAlert className="h-8 w-8" strokeWidth={1.8} aria-hidden="true" />
+                            <CircleAlert
+                                className="h-8 w-8"
+                                strokeWidth={1.8}
+                                aria-hidden="true"
+                            />
                         )}
                     </div>
 
                     <p className="mt-6 font-label text-[11px] font-bold uppercase tracking-[0.14em] text-[#9B4A3E]">
-                        {isVerified ? "All set for the getaway" : isLoading ? "One quick pit stop" : "Let’s get you back on track"}
+                        {isVerified
+                            ? "All set for the getaway"
+                            : isLoading
+                              ? "One quick pit stop"
+                              : "Let’s get you back on track"}
                     </p>
-                    <h1 id="verification-title" className="mb-0 mt-2 text-3xl font-black leading-tight tracking-[-0.04em] sm:text-4xl">
-                        {isVerified ? "You’re verified!" : isLoading ? "Checking your email…" : "This link needs a refresh."}
+                    <h1
+                        id="verification-title"
+                        className="mb-0 mt-2 text-3xl font-black leading-tight tracking-[-0.04em] sm:text-4xl"
+                    >
+                        {isVerified
+                            ? "You’re verified!"
+                            : isLoading
+                              ? "Checking your email…"
+                              : "This link needs a refresh."}
                     </h1>
                     <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-[#786A62]">
                         {isVerified
                             ? "Your email is confirmed. Your crew and your next trip are just a login away."
                             : isLoading
                               ? "We’re confirming your email address now. This should only take a moment."
-                              : message || "This verification link may have expired or already been used. Sign in to request a fresh one."}
+                              : message ||
+                                "This verification link may have expired or already been used. Sign in to request a fresh one."}
                     </p>
 
                     {isVerified ? (
                         <>
-                            <Link to="/login" className={buttonStyles({ size: "form", className: "mt-7 w-full" })}>
-                                Log in to PuddleTrails <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                            <Link
+                                to="/login"
+                                className={buttonStyles({
+                                    size: "form",
+                                    className: "mt-7 w-full",
+                                })}
+                            >
+                                Log in to PuddleTrails{" "}
+                                <ArrowRight
+                                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                                    aria-hidden="true"
+                                />
                             </Link>
                             <p className="mt-5 text-xs text-[#786A62]">
-                                Ready when you are. <Link to="/" className="font-bold text-[#C94F46] underline-offset-4 hover:underline">Back to home</Link>
+                                Ready when you are.{" "}
+                                <Link
+                                    to="/"
+                                    className="font-bold text-[#C94F46] underline-offset-4 hover:underline"
+                                >
+                                    Back to home
+                                </Link>
                             </p>
                         </>
                     ) : !isLoading ? (
                         <div className="mt-7 flex flex-col gap-3">
-                            <Link to="/login" className={buttonStyles({ size: "form", className: "w-full" })}>
-                                Go to log in <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                            <Link
+                                to="/login"
+                                className={buttonStyles({
+                                    size: "form",
+                                    className: "w-full",
+                                })}
+                            >
+                                Go to log in{" "}
+                                <ArrowRight
+                                    className="h-4 w-4 transition-transform group-hover:translate-x-1"
+                                    aria-hidden="true"
+                                />
                             </Link>
                             <p className="text-xs leading-5 text-[#786A62]">
-                                You can request a fresh verification link from the login page.
+                                You can request a fresh verification link from
+                                the login page.
                             </p>
                         </div>
                     ) : null}

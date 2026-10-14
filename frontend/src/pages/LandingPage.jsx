@@ -11,9 +11,9 @@ import {
     Users,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import tripIllustration from "../assets/illustration1.png";
-import travelIllustration from "../assets/illustration2.png";
-import logo from "../assets/logo.png";
+import tripIllustration from "../assets/illustration1.webp";
+import travelIllustration from "../assets/illustration2.webp";
+import logo from "../assets/logo.webp";
 import autumnLeaf from "../assets/autumn-leaf.svg";
 import { buttonStyles } from "../components/ui/buttonStyles.js";
 import Footer from "../components/layout/Footer.jsx";

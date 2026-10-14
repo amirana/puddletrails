@@ -2,12 +2,15 @@ import { LogOut } from "lucide-react";
 import { useContext } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import AuthContext from "../../context/AuthContext.jsx";
-import logo from "../../assets/logo.png";
+import logo from "../../assets/logo.webp";
 
 const AppHeader = ({ compact = false }) => {
     const { logout, user } = useContext(AuthContext);
     const navigate = useNavigate();
-    const displayName = [user?.firstName, user?.lastName].filter(Boolean).join(" ") || user?.email?.split("@")[0] || "Traveler";
+    const displayName =
+        [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
+        user?.email?.split("@")[0] ||
+        "Traveler";
     const initials = displayName
         .split(/[\s._-]+/)
         .filter(Boolean)
@@ -25,14 +28,35 @@ const AppHeader = ({ compact = false }) => {
     };
 
     return (
-        <header className={`flex items-center justify-between border-b border-[#29201D]/10 bg-[#FFFCF7] px-5 sm:px-8 ${compact ? "py-2 sm:py-2.5" : "py-4"}`}>
-            <Link to={user ? "/dashboard" : "/"} aria-label="PuddleTrails home" className="flex shrink-0 items-center">
-                <img src={logo} alt="PuddleTrails" className={`w-auto mix-blend-multiply ${compact ? "h-10 sm:h-12" : "h-12 sm:h-16"}`} />
+        <header
+            className={`flex items-center justify-between border-b border-[#29201D]/10 bg-[#FFFCF7] px-5 sm:px-8 ${compact ? "py-2 sm:py-2.5" : "py-4"}`}
+        >
+            <Link
+                to={user ? "/dashboard" : "/"}
+                aria-label="PuddleTrails home"
+                className="flex shrink-0 items-center"
+            >
+                <img
+                    src={logo}
+                    alt="PuddleTrails"
+                    className={`w-auto mix-blend-multiply ${compact ? "h-10 sm:h-12" : "h-12 sm:h-16"}`}
+                />
             </Link>
             <div className="flex items-center gap-3 sm:gap-5">
-                <Link to="/me" aria-label={`View profile for ${displayName}`} className="flex items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
-                    <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FFE4D8] text-xs font-bold text-[#9B4A3E] ring-1 ring-[#F2D2C4]">{initials}</span>
-                    <span className="hidden max-w-36 truncate text-sm font-semibold text-[#29201D] sm:block">{displayName}</span>
+                <Link
+                    to="/me"
+                    aria-label={`View profile for ${displayName}`}
+                    className="flex items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]"
+                >
+                    <span
+                        aria-hidden="true"
+                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FFE4D8] text-xs font-bold text-[#9B4A3E] ring-1 ring-[#F2D2C4]"
+                    >
+                        {initials}
+                    </span>
+                    <span className="hidden max-w-36 truncate text-sm font-semibold text-[#29201D] sm:block">
+                        {displayName}
+                    </span>
                 </Link>
                 <button
                     type="button"
