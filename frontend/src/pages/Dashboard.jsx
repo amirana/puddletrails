@@ -7,15 +7,16 @@ import {
     Plane,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useCallback, useContext, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useContext, useEffect, useState } from "react";
 import AppHeader from "../components/layout/AppHeader.jsx";
 import Footer from "../components/layout/Footer.jsx";
 import AuthContext from "../context/AuthContext.jsx";
-import CreateTrip from "./trip/CreateTrip.jsx";
 import {
     deleteTrip as deleteTripService,
     getTrips as getTripsService,
 } from "../services/TripService.js";
+
+const CreateTrip = lazy(() => import("./trip/CreateTrip.jsx"));
 
 const formatDate = (date) =>
     date
@@ -442,7 +443,11 @@ const Dashboard = () => {
                     </section>
                 </div>
             </main>
-            {createTripOpen && <CreateTrip modal onClose={closeCreateTrip} />}
+            {createTripOpen && (
+                <Suspense fallback={<div className="fixed inset-0 z-50 grid place-items-center bg-[#29201D]/30" role="status"><span className="rounded-xl bg-[#FFFCF7] px-4 py-3 text-sm text-[#65554D]">Preparing your trip form…</span></div>}>
+                    <CreateTrip modal onClose={closeCreateTrip} />
+                </Suspense>
+            )}
             <Footer />
         </div>
     );

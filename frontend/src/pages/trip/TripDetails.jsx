@@ -1,15 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { lazy, Suspense, useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, CalendarDays, ClipboardList, Mail, MapPin, Pencil, Plane, Plus, ReceiptText, UserRound, Users, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import AuthContext from "../../context/AuthContext.jsx";
 import AppHeader from "../../components/layout/AppHeader.jsx";
 import Footer from "../../components/layout/Footer.jsx";
-import EditTripForm from "./EditTripForm.jsx";
-import TripItinerary from "../../components/trip/TripItinerary.jsx";
-import TripBudget from "../../components/trip/TripBudget.jsx";
-import TripChecklists from "../../components/trip/TripChecklists.jsx";
-import TripReservations from "../../components/trip/TripReservations.jsx";
 import {
     getTrip as getTripService,
     getTripDays as getTripDaysService,
@@ -18,6 +13,12 @@ import {
     sendInvitation as sendInvitationService,
     updateTripMember as updateTripMemberService,
 } from "../../services/TripService.js";
+
+const EditTripForm = lazy(() => import("./EditTripForm.jsx"));
+const TripItinerary = lazy(() => import("../../components/trip/TripItinerary.jsx"));
+const TripBudget = lazy(() => import("../../components/trip/TripBudget.jsx"));
+const TripChecklists = lazy(() => import("../../components/trip/TripChecklists.jsx"));
+const TripReservations = lazy(() => import("../../components/trip/TripReservations.jsx"));
 
 const tripTabs = [
     { id: "itinerary", label: "Itinerary", title: "Your trip, day by day", note: "Shape the days around your crew.", icon: CalendarDays },
@@ -63,6 +64,12 @@ const TripDetails = () => {
     const [memberError, setMemberError] = useState("");
     const [inviteModalOpen, setInviteModalOpen] = useState(false);
     const [activeTab, setActiveTab] = useState("itinerary");
+    const [visitedTabs, setVisitedTabs] = useState(["itinerary"]);
+
+    const selectTab = (tabId) => {
+        setActiveTab(tabId);
+        setVisitedTabs((current) => current.includes(tabId) ? current : [...current, tabId]);
+    };
 
     useEffect(() => {
         let cancelled = false;
@@ -223,13 +230,13 @@ const TripDetails = () => {
                             <nav role="tablist" aria-label="Trip sections" aria-orientation="horizontal" className="flex gap-1.5 overflow-x-auto rounded-2xl bg-[#F7F1E9] p-1 lg:sticky lg:top-4 lg:grid lg:gap-1 lg:rounded-3xl lg:border lg:border-[#EEE7DF] lg:bg-white lg:p-3">
                                 <p className="hidden px-2 pb-1 pt-1 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E] lg:block">Trip workspace</p>
                                 {tripTabs.map(({ id, label, icon: Icon }) => (
-                                    <button key={id} id={`trip-tab-${id}`} type="button" role="tab" aria-selected={activeTab === id} aria-controls={`trip-panel-${id}`} tabIndex={activeTab === id ? 0 : -1} onClick={() => setActiveTab(id)} onKeyDown={(event) => {
+                                    <button key={id} id={`trip-tab-${id}`} type="button" role="tab" aria-selected={activeTab === id} aria-controls={`trip-panel-${id}`} tabIndex={activeTab === id ? 0 : -1} onClick={() => selectTab(id)} onKeyDown={(event) => {
                                         if (["ArrowRight", "ArrowLeft"].includes(event.key)) {
                                             event.preventDefault();
                                             const direction = event.key === "ArrowRight" ? 1 : -1;
                                             const currentIndex = tripTabs.findIndex((tab) => tab.id === id);
                                             const next = tripTabs[(currentIndex + direction + tripTabs.length) % tripTabs.length];
-                                            setActiveTab(next.id);
+                                            selectTab(next.id);
                                             document.getElementById(`trip-tab-${next.id}`)?.focus();
                                         }
                                     }} className={`inline-flex min-h-9 w-max shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-medium transition lg:w-full lg:justify-start ${activeTab === id ? "bg-white text-[#9B4A3E] shadow-sm lg:bg-[#FFF0DF] lg:shadow-none" : "text-[#786A62] hover:bg-white/70 hover:text-[#29201D] lg:hover:bg-[#FFF8F0]"}`}>
@@ -241,22 +248,22 @@ const TripDetails = () => {
                             <section className="min-w-0 px-1 py-1 sm:px-2 lg:px-0">
                                 <div className="min-w-0">
                                     <div id="trip-panel-itinerary" role="tabpanel" aria-labelledby="trip-tab-itinerary" tabIndex={0} hidden={activeTab !== "itinerary"}>
-                                        <TripItinerary tripId={tripId} accessToken={accessToken} user={user} role={trip.role} canEdit={trip.role === "owner" || trip.role === "editor"} days={tripDays} setDays={setTripDays} loading={daysLoading} error={daysError} destination={trip.destination} active={activeTab === "itinerary"} />
+                                        {visitedTabs.includes("itinerary") && <Suspense fallback={<div className="min-h-32" role="status" aria-label="Loading itinerary" />}><TripItinerary tripId={tripId} accessToken={accessToken} user={user} role={trip.role} canEdit={trip.role === "owner" || trip.role === "editor"} days={tripDays} setDays={setTripDays} loading={daysLoading} error={daysError} destination={trip.destination} active={activeTab === "itinerary"} /></Suspense>}
                                     </div>
                                     <div id="trip-panel-details" role="tabpanel" aria-labelledby="trip-tab-details" tabIndex={0} hidden={activeTab !== "details"}>
-                                        <EditTripForm trip={trip} setTrip={setTrip} days={tripDays} />
+                                        {visitedTabs.includes("details") && <Suspense fallback={<div className="min-h-32" role="status" aria-label="Loading trip details" />}><EditTripForm trip={trip} setTrip={setTrip} days={tripDays} /></Suspense>}
                                     </div>
                                     <div id="trip-panel-budget" role="tabpanel" aria-labelledby="trip-tab-budget" tabIndex={0} hidden={activeTab !== "budget"}>
-                                        <TripBudget tripId={tripId} accessToken={accessToken} canEdit={trip.role === "owner" || trip.role === "editor"} />
+                                        {visitedTabs.includes("budget") && <Suspense fallback={<div className="min-h-32" role="status" aria-label="Loading budget" />}><TripBudget tripId={tripId} accessToken={accessToken} canEdit={trip.role === "owner" || trip.role === "editor"} /></Suspense>}
                                     </div>
                                     <div id="trip-panel-checklists" role="tabpanel" aria-labelledby="trip-tab-checklists" tabIndex={0} hidden={activeTab !== "checklists"}>
-                                        <TripChecklists tripId={tripId} accessToken={accessToken} role={trip.role} />
+                                        {visitedTabs.includes("checklists") && <Suspense fallback={<div className="min-h-32" role="status" aria-label="Loading checklists" />}><TripChecklists tripId={tripId} accessToken={accessToken} role={trip.role} /></Suspense>}
                                     </div>
                                     <div id="trip-panel-reservations" role="tabpanel" aria-labelledby="trip-tab-reservations" tabIndex={0} hidden={activeTab !== "reservations"}>
-                                        <TripReservations tripId={tripId} accessToken={accessToken} role={trip.role} days={tripDays} setDays={setTripDays} />
+                                        {visitedTabs.includes("reservations") && <Suspense fallback={<div className="min-h-32" role="status" aria-label="Loading bookings" />}><TripReservations tripId={tripId} accessToken={accessToken} role={trip.role} days={tripDays} setDays={setTripDays} /></Suspense>}
                                     </div>
                                     <div id="trip-panel-people" role="tabpanel" aria-labelledby="trip-tab-people" tabIndex={0} hidden={activeTab !== "people"}>
-                                        <section className="space-y-3">
+                                        {visitedTabs.includes("people") && <section className="space-y-3">
                                             <div className="flex flex-wrap items-center justify-between gap-3">
                                                 <div><p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip group</p><h3 className="mb-0 mt-1 text-xl font-extrabold text-[#29201D]">Travelers</h3><p className="mt-1 text-xs text-[#786A62]">People who can access this trip and their roles.</p></div>
                                                 <span className="inline-flex items-center gap-2 rounded-full bg-[#FFF4E3] px-3 py-1.5 text-sm font-semibold text-[#51443E]"><Users className="h-4 w-4" /> {trip.members?.length || 0}</span>
@@ -270,7 +277,7 @@ const TripDetails = () => {
                                                     return <div key={member._id} className="flex flex-col gap-2.5 py-3 sm:flex-row sm:items-center sm:justify-between"><div className="flex min-w-0 items-center gap-2.5">{memberUser.avatar ? <img src={memberUser.avatar} alt="" className="h-9 w-9 rounded-full object-cover" /> : <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FFE4D8] text-[#C94F46]"><UserRound className="h-4 w-4" /></span>}<div className="min-w-0"><p className="truncate text-sm font-semibold text-[#29201D]">{displayName}{isCurrentUser ? <span className="ml-2 font-normal text-[#786A62]">(you)</span> : null}</p>{memberUser.email && <p className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-[#786A62]"><Mail className="h-3.5 w-3.5" />{memberUser.email}</p>}</div></div><div className="flex items-center gap-2 sm:justify-end">{trip.role === "owner" && member.role !== "owner" ? <><label className="sr-only" htmlFor={`role-${member._id}`}>Role for {displayName}</label><select id={`role-${member._id}`} value={member.role} disabled={memberBusyId === member._id} onChange={(event) => handleRoleChange(member._id, event.target.value)} className="rounded-lg border border-[#EAE2D9] bg-white px-3 py-2 text-sm capitalize text-[#51443E] focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8] disabled:opacity-60"><option value="editor">Editor</option><option value="viewer">Viewer</option></select><button type="button" onClick={() => handleRemoveMember(member)} disabled={memberBusyId === member._id} className="rounded-lg px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50">Remove</button></> : <span className="rounded-full bg-[#FFF4E3] px-3 py-1.5 text-xs font-semibold capitalize text-[#65554D]">{member.role}</span>}</div></div>;
                                                 })}
                                             </div>
-                                        </section>
+                                        </section>}
                                     </div>
                                 </div>
                             </section>
