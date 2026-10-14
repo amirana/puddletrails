@@ -6,7 +6,7 @@ import AuthContext from "../../context/AuthContext.jsx";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
 import { resendVerificationEmail } from "../../services/authService.js";
 
-const fieldClass = "mt-2 block min-h-12 w-full rounded-xl border border-[#E9D9CA] bg-white px-4 py-3 text-base text-[#29201D] outline-none transition placeholder:text-[#A5988E] focus:border-[#E9573F] focus:ring-4 focus:ring-[#FFE4D8]";
+const fieldClass = "auth-input [color-scheme:light] mt-2 block min-h-12 w-full rounded-xl border border-[#E9D9CA] bg-white px-4 py-3 text-base text-[#29201D] outline-none transition placeholder:text-[#A5988E] focus:border-[#E9573F] focus:ring-4 focus:ring-[#FFE4D8]";
 const primaryButton = buttonStyles({ size: "form", className: "w-full" });
 
 const Login = () => {
@@ -50,8 +50,8 @@ const Login = () => {
     };
 
     return (
-        <main className="flex min-h-screen items-center justify-center bg-[#FFF6EB]/80 px-4 py-8 font-copy text-[#29201D] backdrop-blur-sm sm:px-6">
-                <section role="dialog" aria-modal="true" aria-labelledby="login-title" className="relative mx-auto w-full max-w-md rounded-[1.5rem] border border-[#29201D]/10 bg-[#FFFCF7] p-6 shadow-[0_24px_80px_rgba(41,32,29,0.24)] sm:p-9">
+        <main className="flex min-h-screen min-h-[100svh] items-start justify-center overflow-y-auto bg-[#FFF6EB]/80 px-4 py-5 font-copy text-[#29201D] backdrop-blur-sm sm:items-center sm:px-6 sm:py-8">
+                <section role="dialog" aria-modal="true" aria-labelledby="login-title" className="relative mx-auto my-auto w-full max-w-md rounded-[1.5rem] border border-[#E9D9CA] bg-[#FFFCF7] p-6 shadow-[0_24px_80px_rgba(41,32,29,0.18)] sm:p-9">
                     <Link to="/" aria-label="Close and return home" className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full text-[#786A62] transition hover:bg-[#FFF0DF] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]"><X className="h-5 w-5" aria-hidden="true" /></Link>
                     <div>
                         <p className="font-label text-xs font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Back to the getaway</p>

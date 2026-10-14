@@ -12,6 +12,7 @@ import CreateTrip from "./pages/trip/CreateTrip.jsx";
 import TripDetails from "./pages/trip/TripDetails.jsx";
 import Invitation from "./pages/trip/Invitation.jsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.jsx";
+import Profile from "./pages/Profile.jsx";
 
 function App() {
     return (
@@ -33,6 +34,14 @@ function App() {
                 element={
                     <ProtectedRoute>
                         <Dashboard />
+                    </ProtectedRoute>
+                }
+            ></Route>
+            <Route
+                path="/me"
+                element={
+                    <ProtectedRoute>
+                        <Profile />
                     </ProtectedRoute>
                 }
             ></Route>

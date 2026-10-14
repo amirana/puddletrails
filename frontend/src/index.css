@@ -97,3 +97,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         brightness(101%) contrast(92%);
     cursor: pointer;
 }
+
+.auth-input:-webkit-autofill,
+.auth-input:-webkit-autofill:hover,
+.auth-input:-webkit-autofill:focus,
+.auth-input:-webkit-autofill:active {
+    -webkit-text-fill-color: #29201d;
+    box-shadow: 0 0 0 1000px #fff inset;
+}

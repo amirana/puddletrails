@@ -30,10 +30,10 @@ const AppHeader = ({ compact = false }) => {
                 <img src={logo} alt="PuddleTrails" className={`w-auto mix-blend-multiply ${compact ? "h-10 sm:h-12" : "h-12 sm:h-16"}`} />
             </Link>
             <div className="flex items-center gap-3 sm:gap-5">
-                <div className="flex items-center gap-2.5" aria-label={`Signed in as ${displayName}`}>
+                <Link to="/me" aria-label={`View profile for ${displayName}`} className="flex items-center gap-2.5 rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
                     <span aria-hidden="true" className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FFE4D8] text-xs font-bold text-[#9B4A3E] ring-1 ring-[#F2D2C4]">{initials}</span>
                     <span className="hidden max-w-36 truncate text-sm font-semibold text-[#29201D] sm:block">{displayName}</span>
-                </div>
+                </Link>
                 <button
                     type="button"
                     onClick={handleLogout}
