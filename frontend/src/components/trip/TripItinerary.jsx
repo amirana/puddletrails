@@ -11,6 +11,7 @@ import {
     Trash2,
 } from "lucide-react";
 import ActivityForm from "./ActivityForm.jsx";
+import ExplorePlacesMap from "./ExplorePlacesMap.jsx";
 import DayComments from "./DayComments.jsx";
 import {
     createActivity,
@@ -29,6 +30,8 @@ const TripItinerary = ({
     setDays,
     loading,
     error,
+    destination,
+    active = true,
 }) => {
     const [editor, setEditor] = useState(null);
     const [busy, setBusy] = useState("");
@@ -152,6 +155,8 @@ const TripItinerary = ({
                     </span>
                 )}
             </div>
+
+            <ExplorePlacesMap destination={destination} enabled={active} />
 
             {(error || activityError) && <p className="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error || activityError}</p>}
             {loading ? (

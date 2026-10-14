@@ -1,5 +1,11 @@
 # React + Vite
 
+## Google Maps Embed
+
+Trip itineraries use Google Maps Embed API search mode to explore places near a trip destination. In Google Cloud, create an API key, enable **Maps Embed API**, and restrict the key to your app's website referrers and the Maps Embed API. Copy `frontend/.env.example` to `frontend/.env.local` and set `VITE_GOOGLE_MAPS_API_KEY`; in Vercel, add the same variable to the frontend project's environment settings and redeploy. This `VITE_` key is included in the browser bundle, so protect it with those Google Cloud restrictions rather than treating it as a server secret.
+
+Google Maps Embed API setup documentation: https://developers.google.com/maps/documentation/embed/get-started
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

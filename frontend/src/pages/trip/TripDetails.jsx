@@ -241,7 +241,7 @@ const TripDetails = () => {
                             <section className="mt-5 min-w-0 px-1 py-3 sm:px-3 sm:py-5">
                                 <div className="min-w-0">
                                     <div id="trip-panel-itinerary" role="tabpanel" aria-labelledby="trip-tab-itinerary" tabIndex={0} hidden={activeTab !== "itinerary"}>
-                                        <TripItinerary tripId={tripId} accessToken={accessToken} user={user} role={trip.role} canEdit={trip.role === "owner" || trip.role === "editor"} days={tripDays} setDays={setTripDays} loading={daysLoading} error={daysError} />
+                                        <TripItinerary tripId={tripId} accessToken={accessToken} user={user} role={trip.role} canEdit={trip.role === "owner" || trip.role === "editor"} days={tripDays} setDays={setTripDays} loading={daysLoading} error={daysError} destination={trip.destination} active={activeTab === "itinerary"} />
                                     </div>
                                     <div id="trip-panel-details" role="tabpanel" aria-labelledby="trip-tab-details" tabIndex={0} hidden={activeTab !== "details"}>
                                         <EditTripForm trip={trip} setTrip={setTrip} days={tripDays} />
