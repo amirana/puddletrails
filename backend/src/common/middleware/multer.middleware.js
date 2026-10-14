@@ -33,6 +33,17 @@ const multerUpload = multer({
     },
 });
 
+const avatarUpload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024, files: 1 },
+    fileFilter: (_req, file, cb) => {
+        if (!new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]).has(file.mimetype)) {
+            return cb(ApiError.badRequest("Profile photo must be a JPEG, PNG, WebP, or GIF image"));
+        }
+        cb(null, true);
+    },
+});
+
 const uploadReservationAttachment = (req, res, next) => {
     multerUpload.single("attachment")(req, res, (error) => {
         if (!error) return next();
@@ -46,4 +57,17 @@ const uploadReservationAttachment = (req, res, next) => {
     });
 };
 
-export { uploadReservationAttachment };
+const uploadProfileAvatar = (req, res, next) => {
+    avatarUpload.single("avatar")(req, res, (error) => {
+        if (!error) return next();
+        if (error instanceof multer.MulterError) {
+            if (error.code === "LIMIT_FILE_SIZE") {
+                return next(ApiError.badRequest("Profile photo must be 5 MB or smaller"));
+            }
+            return next(ApiError.badRequest("Upload one profile photo at a time"));
+        }
+        next(error);
+    });
+};
+
+export { uploadReservationAttachment, uploadProfileAvatar };

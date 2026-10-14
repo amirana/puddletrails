@@ -7,6 +7,8 @@ import ResetPasswordDto from "./dto/reset-password.dto.js";
 import { authenticate } from "./auth.middleware.js";
 
 import validate from "../../common/middleware/validate.middleware.js";
+import UpdateProfileDto from "./dto/update-profile.dto.js";
+import { uploadProfileAvatar } from "../../common/middleware/multer.middleware.js";
 
 const router = Router();
 
@@ -32,6 +34,8 @@ router.put(
 );
 
 router.get("/profile", authenticate, controller.profile);
+router.patch("/profile", authenticate, validate(UpdateProfileDto), controller.updateProfile);
+router.patch("/profile/avatar", authenticate, uploadProfileAvatar, controller.updateAvatar);
 router.get("/verify-email/:token", controller.verifyEmail);
 
 export default router;

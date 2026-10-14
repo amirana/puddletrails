@@ -34,12 +34,18 @@ const userSchema = new mongoose.Schema(
         },
         avatar: {
             type: String,
+            trim: true,
+            maxlength: 2048,
         },
         city: {
             type: String,
+            trim: true,
+            maxlength: 100,
         },
         country: {
             type: String,
+            trim: true,
+            maxlength: 100,
         },
         isVerified: {
             type: Boolean,

@@ -3,6 +3,8 @@ import { login as loginUser } from "../services/authService.js";
 import { logout as logoutUser } from "../services/authService.js";
 import { refresh as refreshUser } from "../services/authService.js";
 import { profile as profileUser } from "../services/authService.js";
+import { updateProfile as updateProfileUser } from "../services/authService.js";
+import { updateAvatar as updateAvatarUser } from "../services/authService.js";
 
 const AuthContext = createContext();
 
@@ -49,6 +51,18 @@ function AuthProvider({ children }) {
         return getProfile;
     };
 
+    const updateProfile = async (data) => {
+        const result = await updateProfileUser(accessToken, data);
+        setUser(result.data);
+        return result;
+    };
+
+    const updateAvatar = async (file) => {
+        const result = await updateAvatarUser(accessToken, file);
+        setUser(result.data);
+        return result;
+    };
+
     useEffect(() => {
         const userProfile = async () => {
             if (authCheckStarted.current) return;
@@ -75,6 +89,8 @@ function AuthProvider({ children }) {
                 logout,
                 refresh,
                 profile,
+                updateProfile,
+                updateAvatar,
                 authLoading,
             }}
         >

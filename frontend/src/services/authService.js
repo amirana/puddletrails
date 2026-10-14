@@ -112,6 +112,35 @@ const profile = async (accessToken) => {
     return result;
 };
 
+const updateProfile = async (accessToken, data) => {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/profile`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(data),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "Unable to update your profile.");
+    return result;
+};
+
+const updateAvatar = async (accessToken, file) => {
+    const body = new FormData();
+    body.append("avatar", file);
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/profile/avatar`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body,
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || "Unable to upload your profile photo.");
+    return result;
+};
+
 const forgotPassword = async (data) => {
     const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
@@ -161,6 +190,8 @@ export {
     logout,
     refresh,
     profile,
+    updateProfile,
+    updateAvatar,
     forgotPassword,
     resetPassword,
 };

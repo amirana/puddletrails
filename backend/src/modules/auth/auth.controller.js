@@ -83,6 +83,16 @@ const profile = async (req, res) => {
     ApiResponse.ok(res, "User profile", user);
 };
 
+const updateProfile = async (req, res) => {
+    const user = await authService.updateProfile(req.user.id, req.body);
+    ApiResponse.ok(res, "Profile updated", user);
+};
+
+const updateAvatar = async (req, res) => {
+    const user = await authService.updateAvatar(req.user.id, req.file);
+    ApiResponse.ok(res, "Profile photo updated", user);
+};
+
 export {
     register,
     resendVerificationEmail,
@@ -90,6 +100,8 @@ export {
     refreshToken,
     logout,
     profile,
+    updateProfile,
+    updateAvatar,
     verifyEmail,
     forgotPassword,
     resetPassword,

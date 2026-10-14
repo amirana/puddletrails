@@ -13,13 +13,13 @@ const ensureConfigured = () => {
     if (missing.length) throw new Error(`Missing Cloudinary configuration: ${missing.join(", ")}`);
 };
 
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath, folder = "traverse/reservations") => {
     if (!localFilePath) throw new Error("A local file path is required");
     try {
         ensureConfigured();
         return await cloudinary.uploader.upload(localFilePath, {
             resource_type: "auto",
-            folder: "traverse/reservations",
+            folder,
         });
     } finally {
         await fs.unlink(localFilePath).catch(() => {});

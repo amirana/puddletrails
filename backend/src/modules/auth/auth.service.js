@@ -11,6 +11,7 @@ import {
     sendVerificationEmail,
     sendResetPasswordEmail,
 } from "../../common/config/email.js";
+import { uploadOnCloudinary } from "../../common/utils/cloudinary.js";
 
 // Hash refresh token before storing — same approach as reset tokens
 const hashToken = (token) =>
@@ -232,6 +233,43 @@ const profile = async (userId) => {
     return user;
 };
 
+const updateProfile = async (userId, { city, country }) => {
+    const profileData = {};
+    if (city !== undefined) profileData.city = city;
+    if (country !== undefined) profileData.country = country;
+
+    const user = await User.findByIdAndUpdate(
+        userId,
+        { $set: profileData },
+        { new: true, runValidators: true, select: "firstName lastName email avatar city country isVerified" },
+    );
+    if (!user) throw ApiError.notFound("User not found");
+    return user;
+};
+
+const updateAvatar = async (userId, file) => {
+    if (!file) throw ApiError.badRequest("Choose a profile photo to upload");
+
+    const user = await User.findById(userId);
+    if (!user) {
+        const fs = await import("node:fs/promises");
+        await fs.unlink(file.path).catch(() => {});
+        throw ApiError.notFound("User not found");
+    }
+
+    let uploaded;
+    try {
+        uploaded = await uploadOnCloudinary(file.path, "traverse/avatars");
+    } catch (error) {
+        console.error("Failed to upload profile photo", { message: error.message });
+        throw new ApiError(502, "Profile photo upload failed. Please try again.");
+    }
+
+    user.avatar = uploaded.secure_url;
+    await user.save();
+    return User.findById(userId).select("firstName lastName email avatar city country isVerified");
+};
+
 export {
     register,
     resendVerificationEmail,
@@ -241,5 +279,7 @@ export {
     resetPassword,
     refresh,
     profile,
+    updateProfile,
+    updateAvatar,
     verifyEmail,
 };
