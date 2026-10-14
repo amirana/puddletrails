@@ -114,18 +114,17 @@ const DayComments = ({ tripId, day, accessToken, user, role, setDays }) => {
     };
 
     return (
-        <div className="mt-5 border-t border-[#EAE2D9] pt-4">
+        <div className="mt-3 border-t border-[#EAE2D9] pt-3">
             <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-sm font-semibold text-[#29201D]">
                     <MessageCircle className="h-4 w-4 text-[#E9573F]" />
                     <span>Conversation</span>
                     <span className="rounded-full bg-[#FFF0DF] px-2 py-0.5 text-[11px] font-semibold text-[#9B4A3E]">{comments.length}</span>
                 </div>
-                {!composer && <button type="button" onClick={() => setComposer({ mode: "new" })} className="rounded-full border border-[#EAE2D9] bg-white px-3.5 py-2 text-xs font-semibold text-[#9B4A3E] transition hover:border-[#E9573F]/40 hover:bg-[#FFF8F0]">Add comment</button>}
+                {!composer && <button type="button" onClick={() => setComposer({ mode: "new" })} className="text-xs font-bold text-[#C94F46] transition hover:text-[#9B4A3E]">Add comment</button>}
             </div>
             {error && <p role="alert" className="mt-3 rounded-xl border border-red-100 bg-red-50 px-3.5 py-2.5 text-xs text-red-700">{error}</p>}
-            {!roots.length && !composer && <p className="mt-3 rounded-xl bg-[#FFF8F0] px-4 py-3 text-sm text-[#78695F]">No comments yet. Share an idea or ask a question about this day.</p>}
-            <ul className="mt-3 divide-y divide-[#EEE7DF]">
+            <ul className="mt-2 divide-y divide-[#EEE7DF]">
                 {roots.map((comment) => {
                     const replies = comments.filter((item) => String(item.parentComment) === comment._id);
                     return (

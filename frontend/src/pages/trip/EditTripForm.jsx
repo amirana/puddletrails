@@ -103,10 +103,10 @@ const EditTripForm = ({ trip, setTrip, days = [] }) => {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="block">
-            <div className="space-y-5">
-                {isEditing && <div className="rounded-3xl border border-[#F1D7C0] bg-[#FFF4E3] p-6 sm:p-8 lg:p-10">
-                    <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-                        <div className="space-y-4">
+            <div className="space-y-3">
+                {isEditing && <div className="rounded-2xl border border-[#F1D7C0] bg-[#FFF4E3] p-4 sm:p-5">
+                    <div className="flex flex-col gap-3">
+                        <div className="space-y-3">
                             <span className="inline-flex items-center gap-2 rounded-full border border-[#D65343]/20 bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#D65343]">
                                 <PlaneTakeoff className="h-3.5 w-3.5" />
                                 Edit trip details
@@ -121,7 +121,7 @@ const EditTripForm = ({ trip, setTrip, days = [] }) => {
                                                 maxLength: { value: 100, message: "Keep the title under 100 characters." },
                                             })}
                                             aria-invalid={Boolean(errors.title)}
-                                            className="w-full max-w-md rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-2.5 text-2xl font-semibold tracking-[-0.04em] text-[#29201D] outline-none transition-colors focus:border-[#D65343] focus:ring-4 focus:ring-[#D65343]/10 sm:text-3xl"
+                                            className="w-full max-w-md rounded-xl border border-[#EAE2D9] bg-white px-3 py-2 text-xl font-bold text-[#29201D] outline-none transition-colors focus:border-[#D65343] focus:ring-2 focus:ring-[#D65343]/10"
                                         />
 
                                     {isEditing && (
@@ -215,7 +215,7 @@ const EditTripForm = ({ trip, setTrip, days = [] }) => {
                 </div>}
 
                 <div>
-                    <article className="border-t border-[#EEE7DF] py-5 sm:py-6">
+                    <article className="border-t border-[#EEE7DF] py-3">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#29201D]/50">
                             About this trip
@@ -234,11 +234,11 @@ const EditTripForm = ({ trip, setTrip, days = [] }) => {
                         {isEditing ? (
                             <textarea
                                 {...register("description")}
-                                rows={6}
-                                className="mt-4 w-full rounded-xl border border-[#EAE2D9] bg-white px-4 py-3 text-sm leading-6 text-[#29201D] outline-none transition-colors focus:border-[#D65343] focus:ring-4 focus:ring-[#D65343]/10"
+                                rows={3}
+                                className="mt-3 w-full rounded-xl border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm leading-5 text-[#29201D] outline-none transition-colors focus:border-[#D65343] focus:ring-2 focus:ring-[#D65343]/10"
                             />
                         ) : (
-                            <p className="mt-4 text-base leading-7 text-[#29201D]/75">
+                            <p className="mt-3 text-sm leading-6 text-[#29201D]/75">
                                 {trip?.description ||
                                     "No description added yet. Add a few details to capture the mood, plans, or goals for this trip."}
                             </p>

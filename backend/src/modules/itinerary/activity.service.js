@@ -13,6 +13,9 @@ const getActivitiesForDay = async (tripId, dayId) => {
 };
 
 const validateTimeRange = (startTime, endTime) => {
+    if (!startTime || !endTime) {
+        throw ApiError.badRequest("Start time and end time are required");
+    }
     if (startTime && endTime && startTime >= endTime) {
         throw ApiError.badRequest("End time must be later than start time");
     }

@@ -10,8 +10,8 @@ class CreateActivityDto extends BaseDto {
         title: Joi.string().trim().min(1).max(120).required(),
         description: Joi.string().trim().max(1000).allow("").default(""),
         location: Joi.string().trim().max(160).allow("").default(""),
-        startTime: time.default(""),
-        endTime: time.default(""),
+        startTime: time.required(),
+        endTime: time.required(),
     });
 }
 

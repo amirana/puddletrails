@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CircleDollarSign, Pencil, Plus, Trash2, Wallet } from "lucide-react";
+import { CircleDollarSign, Pencil, Plus, Trash2, Wallet, X } from "lucide-react";
 import ExpenseForm from "./ExpenseForm.jsx";
 import {
     createExpense,
@@ -73,8 +73,8 @@ const BudgetSettingsForm = ({ budget, onSave, onCancel, error, busy }) => {
     });
 
     return (
-        <form onSubmit={handleSubmit(submitBudget)} className="mt-5 max-w-5xl bg-[#FFF4E3]/70 px-4 py-5 sm:px-6 sm:py-6" noValidate>
-            <div className="mb-5">
+        <form onSubmit={handleSubmit(submitBudget)} className="mt-4 max-w-4xl rounded-2xl bg-[#FFF4E3]/65 p-4 sm:p-5" noValidate>
+            <div className="mb-4">
                 <p className="text-sm font-semibold text-[#29201D]">Set your trip budget</p>
                 <p className="mt-1 text-xs text-[#786A62]">Choose a shared spending limit and the currency you’ll track.</p>
             </div>
@@ -227,12 +227,12 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
     };
 
     return (
-        <section className="space-y-6">
+        <section className="space-y-4">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#9B4A3E]">Trip money</p>
-                    <h2 className="mb-0 mt-2 !text-2xl font-semibold text-[#29201D]">Budget</h2>
-                    <p className="mt-1 text-sm text-[#786A62]">Keep shared trip costs visible as they add up.</p>
+                    <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip money</p>
+                    <h2 className="mb-0 mt-1 !text-xl font-extrabold text-[#29201D]">Budget</h2>
+                    <p className="mt-1 text-xs text-[#786A62]">Keep shared trip costs visible as they add up.</p>
                 </div>
                 {budget?.currency && canEdit && !editingBudget && (
                     <button type="button" onClick={() => { setFormError(""); setEditingBudget(true); }} className="inline-flex items-center gap-1.5 rounded-lg border border-[#EAE2D9] px-3 py-2 text-xs font-semibold text-[#51443E] hover:bg-[#FFFCF7]">
@@ -263,7 +263,7 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                 </>
             ) : budget && (
                 <>
-                    <div className="mt-5 grid gap-4 bg-[#FFF4E3]/70 px-4 py-4 sm:grid-cols-3 sm:gap-0 sm:px-5">
+                    <div className="mt-4 grid gap-3 sm:grid-cols-3">
                         <SummaryCard label="Total budget" amount={budget.totalBudget} currency={budget.currency} icon={<Wallet className="h-4 w-4" />} accent="yellow" />
                         <SummaryCard label="Total spent" amount={budget.totalSpent} currency={budget.currency} icon={<CircleDollarSign className="h-4 w-4" />} accent="coral" />
                         <SummaryCard label="Remaining" amount={budget.remaining} currency={budget.currency} icon={<CircleDollarSign className="h-4 w-4" />} accent="green" negative={budget.remaining < 0} />
@@ -280,7 +280,7 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                         />
                     )}
 
-                    <div className="mt-7 border-t border-[#F1EAE2] pt-5">
+                    <div className="mt-5 border-t border-[#F1EAE2] pt-4">
                         <div className="flex flex-wrap items-center justify-between gap-3">
                             <div>
                                 <h3 className="text-base font-semibold text-[#29201D]">Expenses</h3>
@@ -294,24 +294,15 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                         </div>
 
                         {expenseError && <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{expenseError}</p>}
-                        {expenseEditor?.mode === "create" && (
-                            <div className="mt-4">
-                                <ExpenseForm currency={budget.currency} onSave={handleExpenseSave} onCancel={() => setExpenseEditor(null)} busy={Boolean(busyExpenseId)} />
-                            </div>
-                        )}
-
                         {budget.expenses.length === 0 ? (
-                            <div className="mt-4 rounded-2xl border border-dashed border-[#EAE2D9] px-4 py-8 text-center">
+                            <div className="mt-4 rounded-2xl bg-[#FFF8F0] px-4 py-6 text-center">
                                 <p className="text-sm font-medium text-[#51443E]">No expenses yet</p>
                                 <p className="mt-1 text-xs text-[#786A62]">Add the first shared cost to start tracking your trip spend.</p>
                             </div>
                         ) : (
                             <ul className="mt-4 divide-y divide-[#F1EAE2]">
                                 {budget.expenses.map((expense) => (
-                                    <li key={expense._id} className="py-4 first:pt-1 last:pb-0">
-                                        {expenseEditor?.mode === "edit" && expenseEditor.expense._id === expense._id ? (
-                                            <ExpenseForm expense={expense} currency={budget.currency} onSave={handleExpenseSave} onCancel={() => setExpenseEditor(null)} busy={Boolean(busyExpenseId)} />
-                                        ) : (
+                                        <li key={expense._id} className="py-3 first:pt-1 last:pb-0">
                                             <div className="flex flex-wrap items-start justify-between gap-3">
                                                 <div className="min-w-0">
                                                     <p className="truncate text-sm font-semibold text-[#29201D]">{expense.description}</p>
@@ -336,7 +327,6 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                                                     )}
                                                 </div>
                                             </div>
-                                        )}
                                     </li>
                                 ))}
                             </ul>
@@ -344,14 +334,22 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                     </div>
                 </>
             )}
+            {expenseEditor && budget?.currency && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#29201D]/45 p-4 backdrop-blur-sm" onMouseDown={(event) => { if (event.target === event.currentTarget && !busyExpenseId) setExpenseEditor(null); }}>
+                    <section role="dialog" aria-modal="true" aria-labelledby="expense-dialog-title" className="my-auto w-full max-w-xl rounded-3xl bg-[#FFFCF7] p-5 shadow-[0_24px_80px_rgba(41,32,29,0.24)] sm:p-6">
+                        <div className="mb-4 flex items-start justify-between gap-4"><div><p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip money</p><h2 id="expense-dialog-title" className="mb-0 mt-1 text-xl font-extrabold text-[#29201D]">{expenseEditor.expense ? "Edit expense" : "Add an expense"}</h2><p className="mt-1 text-xs text-[#786A62]">Recorded in {budget.currency}.</p></div><button type="button" onClick={() => setExpenseEditor(null)} disabled={Boolean(busyExpenseId)} aria-label="Close expense form" className="rounded-full p-2 text-[#786A62] hover:bg-[#F5EFE8] disabled:opacity-50"><X className="h-5 w-5" /></button></div>
+                        <ExpenseForm expense={expenseEditor.expense} currency={budget.currency} onSave={handleExpenseSave} onCancel={() => setExpenseEditor(null)} busy={Boolean(busyExpenseId)} />
+                    </section>
+                </div>
+            )}
         </section>
     );
 };
 
 const SummaryCard = ({ label, amount, currency, icon, accent = "coral", negative = false }) => (
-    <div className="px-1 py-1 sm:border-l sm:border-[#EBDCC9] sm:px-5 sm:first:border-l-0">
+    <div className={`rounded-2xl px-4 py-3 ${accent === "yellow" ? "bg-[#FFF4D0]" : accent === "green" ? "bg-[#EDF3E8]" : "bg-[#FFF0E8]"}`}>
         <div className="flex items-center gap-2 text-xs font-medium text-[#786A62]"><span className={`flex h-7 w-7 items-center justify-center rounded-full ${accent === "yellow" ? "bg-[#FFD34E] text-[#51443E]" : accent === "green" ? "bg-[#7D9869] text-white" : "bg-[#FFE4D8] text-[#C94F46]"}`}>{icon}</span>{label}</div>
-        <p className={`mt-3 text-xl font-semibold tabular-nums tracking-tight ${negative ? "text-red-700" : "text-[#29201D]"}`}>
+        <p className={`mt-2 text-xl font-extrabold tabular-nums ${negative ? "text-red-700" : "text-[#29201D]"}`}>
             {formatMoney(amount, currency)}
         </p>
     </div>

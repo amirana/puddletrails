@@ -9,6 +9,7 @@ import {
     Pencil,
     Plus,
     Trash2,
+    X,
 } from "lucide-react";
 import ActivityForm from "./ActivityForm.jsx";
 import ExplorePlacesMap from "./ExplorePlacesMap.jsx";
@@ -38,8 +39,6 @@ const TripItinerary = ({
     const [activityError, setActivityError] = useState("");
     const [draggedActivityId, setDraggedActivityId] = useState("");
     const [dragOverDayId, setDragOverDayId] = useState("");
-    const [activeDayId, setActiveDayId] = useState("");
-    const activeDay = days.find((day) => day._id === activeDayId) || days[0];
 
     const memberName = (member) =>
         [member?.firstName, member?.lastName].filter(Boolean).join(" ") || "Unknown member";
@@ -146,8 +145,8 @@ const TripItinerary = ({
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
                     <p className="font-label text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">The itinerary</p>
-                    <h2 className="mb-0 mt-2 text-2xl font-extrabold text-[#29201D]">Day by day</h2>
-                    <p className="mt-2 text-sm text-[#786A62]">Pick a day to see its plans and updates.</p>
+                    <h2 className="mb-0 mt-1 text-xl font-extrabold text-[#29201D]">Day by day</h2>
+                    <p className="mt-1 text-xs text-[#786A62]">{canEdit ? "Plan each day together · Drag activities to reschedule" : "A shared plan for every day of the trip"}</p>
                 </div>
                 {!loading && !error && (
                     <span className="inline-flex items-center gap-2 rounded-full bg-[#FFF2E8] px-3 py-1.5 text-sm font-semibold text-[#9B4A3E]">
@@ -156,37 +155,25 @@ const TripItinerary = ({
                 )}
             </div>
 
-            <ExplorePlacesMap destination={destination} enabled={active} />
-
-            {(error || activityError) && <p className="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error || activityError}</p>}
+            {(error || activityError) && <p className="mt-3 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error || activityError}</p>}
             {loading ? (
-                <div className="mt-5 space-y-3" aria-label="Loading itinerary">
+                    <div className="mt-3 space-y-3" aria-label="Loading itinerary">
                     <div className="h-20 animate-pulse rounded-2xl bg-[#F5EFE8]" />
                     <div className="h-20 animate-pulse rounded-2xl bg-[#F5EFE8]" />
                 </div>
             ) : !error && (
                 <>
-                {days.length > 0 && <div className="mt-6 overflow-x-auto pb-2" role="group" aria-label="Choose itinerary day">
-                    <div className="flex w-max gap-2">
-                        {days.map((day) => {
-                            const shortDate = new Date(day.date).toLocaleDateString("en-GB", {
-                                weekday: "short", day: "numeric", month: "short", timeZone: "UTC",
-                            });
-                            const isActive = activeDay?._id === day._id;
-                            return <button key={day._id} type="button" aria-pressed={isActive} onClick={() => setActiveDayId(day._id)} className={`flex min-w-24 flex-col items-start border-b-2 px-3 py-2.5 text-left transition ${isActive ? "border-[#E9573F] text-[#9B4A3E]" : "border-transparent text-[#786A62] hover:border-[#E8B899] hover:text-[#29201D]"}`}><span className="text-[10px] font-bold uppercase tracking-wide">Day {day.dayNumber}</span><span className="mt-1 text-sm font-semibold">{shortDate}</span></button>;
-                        })}
-                    </div>
-                </div>}
-                {activeDay ? <ol className="mt-4 space-y-4">
-                    {[activeDay].map((day) => {
+                {days.length > 0 ? <ol className="mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3" aria-label="Itinerary days">
+                    {days.map((day) => {
                         const dayActivities = day.activities || [];
                         const dayReservations = day.reservations || [];
                         const dayDate = new Date(day.date).toLocaleDateString("en-GB", {
-                            weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC",
+                            weekday: "short", day: "numeric", month: "short", timeZone: "UTC",
                         });
                         return (
                             <li
                                 key={day._id}
+                                aria-label={`Day ${day.dayNumber}, ${dayActivities.length} activities. Drop activities here to move them to this day.`}
                                 onDragOver={(event) => {
                                     if (!canEdit || !draggedActivityId) return;
                                     event.preventDefault();
@@ -198,12 +185,12 @@ const TripItinerary = ({
                                     const activityId = event.dataTransfer.getData("text/plain") || draggedActivityId;
                                     if (activityId) moveActivity(activityId, day._id, dayActivities.length);
                                 }}
-                                className={`py-1 transition-colors ${dragOverDayId === day._id ? "bg-[#FFF4E3]/60" : ""}`}
+                                className={`min-h-[16rem] w-[min(86vw,19rem)] shrink-0 snap-start rounded-2xl border p-3 transition-colors sm:w-[19rem] ${dragOverDayId === day._id ? "border-[#E9573F] bg-[#FFF0DF]" : "border-[#EEE7DF] bg-[#FFF9F1]"}`}
                             >
                                 <div className="flex items-start gap-3">
                                         <span className="mt-0.5 shrink-0 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Day {day.dayNumber}</span>
                                     <div className="min-w-0 flex-1">
-                                        <h3 className="text-sm font-semibold text-[#29201D]">{dayDate}</h3>
+                                        <h3 className="text-sm font-bold text-[#29201D]">{dayDate}</h3>
                                         <p className="mt-1 text-xs text-[#786A62]">{dayActivities.length ? `${dayActivities.length} ${dayActivities.length === 1 ? "activity" : "activities"}` : "The day is open"}</p>
                                     </div>
                                     {canEdit && (
@@ -219,7 +206,7 @@ const TripItinerary = ({
                                 </div>
 
                                 {dayActivities.length > 0 ? (
-                                    <ul className="relative mt-5 space-y-0 before:absolute before:bottom-4 before:left-[7px] before:top-4 before:border-l before:border-dashed before:border-[#E8B899]">
+                                    <ul className="mt-4 space-y-2">
                                         {dayActivities.map((activity, index) => (
                                             <li
                                                 key={activity._id}
@@ -242,20 +229,12 @@ const TripItinerary = ({
                                                     const activityId = event.dataTransfer.getData("text/plain") || draggedActivityId;
                                                     if (activityId && activityId !== activity._id) moveActivity(activityId, day._id, index);
                                                 }}
-                                                className={`group relative border-b border-[#EEE7DF] py-3 pl-6 before:absolute before:left-0 before:top-[18px] before:z-10 before:h-3.5 before:w-3.5 before:rounded-full before:border-[3px] before:border-white before:bg-[#E9573F] first:pt-1 last:border-0 ${draggedActivityId === activity._id ? "opacity-40" : ""}`}
+                                                className={`group rounded-xl border border-[#EEE7DF] bg-white p-3 transition-shadow hover:shadow-sm ${draggedActivityId === activity._id ? "opacity-40" : ""}`}
                                             >
-                                                {editor?.activity?._id === activity._id ? (
-                                                    <ActivityForm
-                                                        activity={activity}
-                                                        busy={Boolean(busy)}
-                                                        onCancel={() => setEditor(null)}
-                                                        onSave={handleSaveActivity}
-                                                    />
-                                                ) : (
-                                                    <div className="flex items-start gap-2">
-                                                        {canEdit && <GripVertical className="mt-0.5 h-4 w-4 shrink-0 cursor-grab text-[#A5988E] active:cursor-grabbing" aria-label="Drag to reorder" />}
-                                                        <div className="min-w-0 flex-1">
-                                                            <h4 className="text-sm font-semibold text-[#29201D]">{activity.title}</h4>
+                                                    <div className="grid grid-cols-[16px_minmax(0,1fr)] gap-x-2">
+                                                        {canEdit ? <GripVertical className="mt-0.5 h-4 w-4 shrink-0 cursor-grab text-[#A5988E] active:cursor-grabbing" aria-label="Drag to reorder" /> : <span aria-hidden="true" />}
+                                                        <div className="min-w-0">
+                                                            <h4 className="break-words text-sm font-semibold leading-5 text-[#29201D]">{activity.title}</h4>
                                                             {(activity.startTime || activity.endTime) && (
                                                                 <p className="mt-1 flex items-center gap-1.5 text-xs text-[#786A62]">
                                                                     <Clock3 className="h-3.5 w-3.5" />
@@ -264,17 +243,17 @@ const TripItinerary = ({
                                                             )}
                                                             {activity.location && <p className="mt-1 flex items-center gap-1.5 text-xs text-[#786A62]"><MapPin className="h-3.5 w-3.5" />{activity.location}</p>}
                                                             {activity.description && <p className="mt-2 whitespace-pre-wrap text-xs leading-5 text-[#786A62]">{activity.description}</p>}
-                                                            <p className="mt-2 text-[11px] leading-4 text-[#8C7D74]">
+                                                            <p className="mt-2 break-words text-[10px] leading-4 text-[#8C7D74]">
                                                                 Added by {memberName(activity.createdBy)} · {formatActivityTime(activity.createdAt)}
                                                             </p>
                                                             {activity.editedAt && (
-                                                                <p className="mt-0.5 text-[11px] leading-4 text-[#8C7D74]">
+                                                                <p className="mt-0.5 break-words text-[10px] leading-4 text-[#8C7D74]">
                                                                     Edited by {memberName(activity.updatedBy)} · {formatActivityTime(activity.editedAt)}
                                                                 </p>
                                                             )}
                                                         </div>
                                                         {canEdit && (
-                                                            <div className="flex shrink-0 items-center gap-1">
+                                                            <div className="col-start-2 mt-2 flex min-w-0 flex-wrap items-center justify-end gap-1 border-t border-[#F1EAE2] pt-2">
                                                                 <button type="button" onClick={() => moveActivity(activity._id, day._id, index - 1)} disabled={Boolean(busy) || index === 0} className="rounded-md p-1.5 text-[#786A62] hover:bg-white hover:text-[#29201D] disabled:opacity-30" aria-label={`Move ${activity.title} earlier`} title="Move earlier"><ChevronUp className="h-4 w-4" /></button>
                                                                 <button type="button" onClick={() => moveActivity(activity._id, day._id, index + 2)} disabled={Boolean(busy) || index === dayActivities.length - 1} className="rounded-md p-1.5 text-[#786A62] hover:bg-white hover:text-[#29201D] disabled:opacity-30" aria-label={`Move ${activity.title} later`} title="Move later"><ChevronDown className="h-4 w-4" /></button>
                                                                 <select
@@ -291,13 +270,12 @@ const TripItinerary = ({
                                                             </div>
                                                         )}
                                                     </div>
-                                                )}
                                             </li>
                                         ))}
                                     </ul>
                                 ) : (
-                                    <p className="mt-4 pl-6 text-xs text-[#786A62]">
-                                        {canEdit ? "No activities yet. Add a stop, meal, or anything your group wants to do." : "No activities have been planned for this day yet."}
+                                    <p className="mt-4 px-1 py-2 text-xs text-[#8C7D74]">
+                                        {canEdit ? "Nothing planned yet. Add a stop or meal." : "No activities planned yet."}
                                     </p>
                                 )}
 
@@ -317,13 +295,6 @@ const TripItinerary = ({
                                     </div>
                                 )}
 
-                                {editor?.dayId === day._id && !editor.activity && (
-                                    <ActivityForm
-                                        busy={Boolean(busy)}
-                                        onCancel={() => setEditor(null)}
-                                        onSave={handleSaveActivity}
-                                    />
-                                )}
                                 <DayComments
                                     tripId={tripId}
                                     day={day}
@@ -337,6 +308,30 @@ const TripItinerary = ({
                     })}
                 </ol> : <p className="mt-6 rounded-2xl border border-dashed border-[#EAE2D9] bg-white p-6 text-sm text-[#786A62]">Trip dates haven’t been set yet, so there are no itinerary days to show.</p>}
                 </>
+            )}
+            <ExplorePlacesMap destination={destination} enabled={active} />
+            {editor && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#29201D]/45 p-4 backdrop-blur-sm"
+                    onMouseDown={(event) => {
+                        if (event.target === event.currentTarget && !busy) setEditor(null);
+                    }}
+                    onKeyDown={(event) => {
+                        if (event.key === "Escape" && !busy) setEditor(null);
+                    }}
+                >
+                    <section role="dialog" aria-modal="true" aria-labelledby="activity-dialog-title" className="my-auto w-full max-w-xl rounded-3xl bg-[#FFFCF7] p-5 shadow-[0_24px_80px_rgba(41,32,29,0.24)] sm:p-6">
+                        <div className="mb-5 flex items-start justify-between gap-4">
+                            <div>
+                                <p className="font-label text-[10px] font-bold uppercase tracking-[0.14em] text-[#9B4A3E]">Day {days.find((day) => day._id === editor.dayId)?.dayNumber}</p>
+                                <h2 id="activity-dialog-title" className="mb-0 mt-1 text-xl font-extrabold text-[#29201D]">{editor.activity ? "Edit activity" : "Add to the itinerary"}</h2>
+                                <p className="mt-1 text-xs text-[#786A62]">Keep the key details handy for your crew.</p>
+                            </div>
+                            <button type="button" onClick={() => setEditor(null)} disabled={Boolean(busy)} aria-label="Close activity form" className="rounded-full p-2 text-[#786A62] hover:bg-[#F5EFE8] disabled:opacity-50"><X className="h-5 w-5" /></button>
+                        </div>
+                        <ActivityForm activity={editor.activity} busy={Boolean(busy)} onCancel={() => setEditor(null)} onSave={handleSaveActivity} />
+                    </section>
+                </div>
             )}
         </section>
     );

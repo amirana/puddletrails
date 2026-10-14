@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CalendarDays, Clock3, FileText, Image as ImageIcon, Pencil, Plus, TicketCheck, Trash2, Upload } from "lucide-react";
+import { CalendarDays, Clock3, FileText, Image as ImageIcon, Pencil, Plus, TicketCheck, Trash2, Upload, X } from "lucide-react";
 import {
     createReservation,
     deleteReservation,
@@ -40,8 +40,8 @@ const ReservationForm = ({ reservation, days, busy, onCancel, onSave }) => {
     const submit = (values) => onSave({ ...values, tripDayId: values.tripDayId || null });
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="mt-5 rounded-2xl border border-[#EAE2D9] bg-[#FFFCF7] p-4 sm:p-5" noValidate>
-            <div className="grid gap-4 sm:grid-cols-2">
+        <form onSubmit={handleSubmit(submit)} className="grid gap-x-3 gap-y-3 sm:grid-cols-2" noValidate>
+            <div className="contents">
                 <label className="text-xs font-semibold text-[#51443E] sm:col-span-2">Reservation name
                     <input maxLength={120} placeholder="e.g. Evening flight to Rome" aria-invalid={Boolean(errors.title)} {...register("title", { required: "Enter a reservation name.", maxLength: { value: 120, message: "Use 120 characters or fewer." } })} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal" />
                     {errors.title && <span className="mt-1 block font-normal text-red-600">{errors.title.message}</span>}
@@ -212,18 +212,17 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
     };
 
     return (
-        <section className="space-y-6">
+        <section className="space-y-4">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C94F3D]">Trip details</p>
-                    <h2 className="mb-0 mt-2 !text-2xl font-semibold text-[#29201D]">Reservations</h2>
-                    <p className="mt-1 text-sm text-[#786A62]">Keep confirmations and important booking details in one place.</p>
+                    <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip logistics</p>
+                    <h2 className="mb-0 mt-1 !text-xl font-extrabold text-[#29201D]">Bookings</h2>
+                    <p className="mt-1 text-xs text-[#786A62]">Keep confirmations and important booking details close.</p>
                 </div>
                 {canEdit && formReservation === undefined && <button type="button" onClick={() => { setError(""); setFormReservation(null); }} className="inline-flex items-center gap-1.5 rounded-lg bg-[#E9573F] px-3.5 py-2.5 text-sm font-semibold text-white hover:bg-[#CF4639]"><Plus className="h-4 w-4" /> Add reservation</button>}
             </div>
 
             {error && !loadError && <p className="mt-5 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{error}</p>}
-            {formReservation !== undefined && <ReservationForm reservation={formReservation} days={days} busy={busy} onCancel={() => setFormReservation(undefined)} onSave={handleSave} />}
             {loading ? (
                 <div className="mt-5 space-y-3" aria-label="Loading reservations"><div className="h-24 animate-pulse rounded-2xl bg-[#F7F0E8]" /><div className="h-24 animate-pulse rounded-2xl bg-[#F7F0E8]" /></div>
             ) : loadError ? (
@@ -232,7 +231,7 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
                     <button type="button" onClick={() => setReloadCount((count) => count + 1)} className="mt-2 text-sm font-semibold text-red-800 underline">Try again</button>
                 </div>
             ) : !reservations.length ? (
-                <div className="mt-5 rounded-2xl border border-dashed border-[#EAE2D9] px-5 py-8 text-center">
+                <div className="mt-4 rounded-2xl bg-[#FFF8F0] px-5 py-6 text-center">
                     <TicketCheck className="mx-auto h-7 w-7 text-[#A99A90]" />
                     <p className="mt-2 text-sm font-semibold text-[#29201D]">No reservations yet</p>
                     <p className="mt-1 text-xs text-[#786A62]">Add a flight, hotel, restaurant, or other booking for this trip.</p>
@@ -240,7 +239,7 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
             ) : (
                 <ul className="mt-5 divide-y divide-[#EEE7DF]">
                     {reservations.map((reservation) => (
-                        <li key={reservation._id} className="py-5 first:pt-1">
+                        <li key={reservation._id} className="py-3 first:pt-1">
                             <div className="flex flex-wrap items-start justify-between gap-3">
                                 <div className="min-w-0">
                                     <div className="flex flex-wrap items-center gap-2">
@@ -303,6 +302,15 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
                         </li>
                     ))}
                 </ul>
+            )}
+            {formReservation !== undefined && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#29201D]/45 p-4 backdrop-blur-sm" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) setFormReservation(undefined); }}>
+                    <section role="dialog" aria-modal="true" aria-labelledby="reservation-dialog-title" className="my-auto max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-[#FFFCF7] p-5 shadow-[0_24px_80px_rgba(41,32,29,0.24)] sm:p-6">
+                        <div className="mb-4 flex items-start justify-between gap-4"><div><p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip logistics</p><h2 id="reservation-dialog-title" className="mb-0 mt-1 text-xl font-extrabold text-[#29201D]">{formReservation ? "Edit booking" : "Add a booking"}</h2><p className="mt-1 text-xs text-[#786A62]">Flights, stays, and plans that are already booked.</p></div><button type="button" onClick={() => setFormReservation(undefined)} disabled={busy} aria-label="Close booking form" className="rounded-full p-2 text-[#786A62] hover:bg-[#F5EFE8] disabled:opacity-50"><X className="h-5 w-5" /></button></div>
+                        {error && !loadError && <p className="mb-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">{error}</p>}
+                        <ReservationForm reservation={formReservation} days={days} busy={busy} onCancel={() => setFormReservation(undefined)} onSave={handleSave} />
+                    </section>
+                </div>
             )}
         </section>
     );

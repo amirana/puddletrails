@@ -167,13 +167,13 @@ const TripDetails = () => {
     return (
         <div className="flex min-h-screen flex-col bg-[#FFFCF7] text-[#29201D]">
             <AppHeader compact />
-            <main className="mx-auto w-full max-w-[1760px] flex-1 px-4 py-4 sm:px-7 sm:py-5">
+            <main className="mx-auto w-full max-w-[1440px] flex-1 px-4 py-3 sm:px-7 sm:py-4">
                 {loading ? (
                     <div className="h-[70vh] animate-pulse rounded-3xl border border-[#EAE2D9] bg-white" aria-label="Loading trip" />
                 ) : pageError ? (
                     <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-sm text-red-700" role="alert">{pageError}</div>
                 ) : trip ? (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="flex min-h-9 flex-wrap items-center justify-between gap-3">
                             <Link to="/dashboard" className="inline-flex min-h-9 items-center gap-2 rounded-full px-2.5 text-sm font-semibold text-[#65554D] transition hover:bg-[#FFF0DF] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
                                 <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All trips
@@ -208,37 +208,37 @@ const TripDetails = () => {
                             </div>
                         </div>
 
-                        <section className="flex items-center justify-between gap-4 rounded-[28px] bg-[#FFF0DF] px-5 py-5 sm:px-8 sm:py-7" aria-label="Trip overview">
+                        <section className="grid min-w-0 grid-cols-[36px_minmax(0,1fr)] items-start gap-x-4 border-b border-[#EEE7DF] px-1 pb-4 pt-1" aria-label="Trip overview">
+                            <span aria-hidden="true" className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFD34E] text-[#29201D]"><Plane className="h-4 w-4 -rotate-12" /></span>
                             <div className="min-w-0">
-                                <p className="font-label text-[9px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Your next adventure</p>
-                                <h1 className="mb-0 mt-1 truncate text-2xl font-extrabold leading-tight tracking-[-0.04em] text-[#29201D] sm:text-3xl">{trip.title || "Your trip"}</h1>
-                            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-[#65554D]">
-                                <span className="inline-flex items-center gap-1.5"><MapPin className="h-4 w-4 text-[#D65343]" />{trip.destination || "Destination to be decided"}</span>
-                                <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-4 w-4 text-[#D65343]" />{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</span>
+                                <h1 className="mb-0 mt-0 truncate text-lg font-bold leading-6 text-[#29201D] sm:text-xl">{trip.title || "Your trip"}</h1>
+                                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium leading-5 text-[#65554D]">
+                                    <span className="inline-flex items-center gap-1"><MapPin className="h-3.5 w-3.5 text-[#E9573F]" />{trip.destination || "Destination to be decided"}</span>
+                                    <span className="inline-flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5 text-[#E9573F]" />{formatDate(trip.startDate)} – {formatDate(trip.endDate)}</span>
+                                </div>
                             </div>
-                            </div>
-                            <span aria-hidden="true" className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FFD34E] text-[#29201D] sm:flex"><Plane className="h-5 w-5 -rotate-12" /></span>
                         </section>
 
-                        <div className="min-w-0">
-                                <nav role="tablist" aria-label="Trip sections" aria-orientation="horizontal" className="flex gap-1 overflow-x-auto border-b border-[#EAE2D9] px-1">
-                                    {tripTabs.map(({ id, label, icon: Icon }) => (
-                                        <button key={id} id={`trip-tab-${id}`} type="button" role="tab" aria-selected={activeTab === id} aria-controls={`trip-panel-${id}`} tabIndex={activeTab === id ? 0 : -1} onClick={() => setActiveTab(id)} onKeyDown={(event) => {
-                                            if (["ArrowRight", "ArrowLeft"].includes(event.key)) {
-                                                event.preventDefault();
-                                                const direction = event.key === "ArrowRight" ? 1 : -1;
-                                                const currentIndex = tripTabs.findIndex((tab) => tab.id === id);
-                                                const next = tripTabs[(currentIndex + direction + tripTabs.length) % tripTabs.length];
-                                                setActiveTab(next.id);
-                                                document.getElementById(`trip-tab-${next.id}`)?.focus();
-                                            }
-                                        }} className={`inline-flex min-h-11 shrink-0 items-center gap-2 border-b-2 px-3 text-sm font-semibold transition ${activeTab === id ? "border-[#E9573F] text-[#9B4A3E]" : "border-transparent text-[#786A62] hover:border-[#F1D7C0] hover:text-[#29201D]"}`}>
-                                            <Icon className={`h-4 w-4 ${activeTab === id ? "text-[#E9573F]" : tripTabIconTones[id]}`} aria-hidden="true" /><span>{label}</span>
-                                        </button>
-                                    ))}
-                                </nav>
+                        <div className="grid min-w-0 gap-3 lg:grid-cols-[190px_minmax(0,1fr)] lg:items-start lg:gap-6">
+                            <nav role="tablist" aria-label="Trip sections" aria-orientation="horizontal" className="flex gap-1.5 overflow-x-auto rounded-2xl bg-[#F7F1E9] p-1 lg:sticky lg:top-4 lg:grid lg:gap-1 lg:rounded-3xl lg:border lg:border-[#EEE7DF] lg:bg-white lg:p-3">
+                                <p className="hidden px-2 pb-1 pt-1 font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E] lg:block">Trip workspace</p>
+                                {tripTabs.map(({ id, label, icon: Icon }) => (
+                                    <button key={id} id={`trip-tab-${id}`} type="button" role="tab" aria-selected={activeTab === id} aria-controls={`trip-panel-${id}`} tabIndex={activeTab === id ? 0 : -1} onClick={() => setActiveTab(id)} onKeyDown={(event) => {
+                                        if (["ArrowRight", "ArrowLeft"].includes(event.key)) {
+                                            event.preventDefault();
+                                            const direction = event.key === "ArrowRight" ? 1 : -1;
+                                            const currentIndex = tripTabs.findIndex((tab) => tab.id === id);
+                                            const next = tripTabs[(currentIndex + direction + tripTabs.length) % tripTabs.length];
+                                            setActiveTab(next.id);
+                                            document.getElementById(`trip-tab-${next.id}`)?.focus();
+                                        }
+                                    }} className={`inline-flex min-h-9 w-max shrink-0 items-center gap-2 rounded-xl px-3 text-xs font-medium transition lg:w-full lg:justify-start ${activeTab === id ? "bg-white text-[#9B4A3E] shadow-sm lg:bg-[#FFF0DF] lg:shadow-none" : "text-[#786A62] hover:bg-white/70 hover:text-[#29201D] lg:hover:bg-[#FFF8F0]"}`}>
+                                        <Icon className={`h-4 w-4 ${activeTab === id ? "text-[#E9573F]" : tripTabIconTones[id]}`} aria-hidden="true" /><span>{label}</span>
+                                    </button>
+                                ))}
+                            </nav>
 
-                            <section className="mt-5 min-w-0 px-1 py-3 sm:px-3 sm:py-5">
+                            <section className="min-w-0 px-1 py-1 sm:px-2 lg:px-0">
                                 <div className="min-w-0">
                                     <div id="trip-panel-itinerary" role="tabpanel" aria-labelledby="trip-tab-itinerary" tabIndex={0} hidden={activeTab !== "itinerary"}>
                                         <TripItinerary tripId={tripId} accessToken={accessToken} user={user} role={trip.role} canEdit={trip.role === "owner" || trip.role === "editor"} days={tripDays} setDays={setTripDays} loading={daysLoading} error={daysError} destination={trip.destination} active={activeTab === "itinerary"} />
@@ -256,18 +256,18 @@ const TripDetails = () => {
                                         <TripReservations tripId={tripId} accessToken={accessToken} role={trip.role} days={tripDays} setDays={setTripDays} />
                                     </div>
                                     <div id="trip-panel-people" role="tabpanel" aria-labelledby="trip-tab-people" tabIndex={0} hidden={activeTab !== "people"}>
-                                        <section className="space-y-4">
-                                            <div className="flex flex-wrap items-start justify-between gap-4">
-                                                <div><p className="font-label text-[10px] font-bold uppercase tracking-[0.1em] text-[#9B4A3E]">Trip group</p><h3 className="mb-0 mt-2 text-2xl font-extrabold text-[#29201D]">Travelers</h3><p className="mt-1 text-sm text-[#786A62]">People who can access this trip and their roles.</p></div>
+                                        <section className="space-y-3">
+                                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                                <div><p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip group</p><h3 className="mb-0 mt-1 text-xl font-extrabold text-[#29201D]">Travelers</h3><p className="mt-1 text-xs text-[#786A62]">People who can access this trip and their roles.</p></div>
                                                 <span className="inline-flex items-center gap-2 rounded-full bg-[#FFF4E3] px-3 py-1.5 text-sm font-semibold text-[#51443E]"><Users className="h-4 w-4" /> {trip.members?.length || 0}</span>
                                             </div>
                                             {memberError && <p className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">{memberError}</p>}
-                                            <div className="mt-5 divide-y divide-[#EEE7DF]">
+                                            <div className="mt-3 divide-y divide-[#EEE7DF]">
                                                 {(trip.members || []).map((member) => {
                                                     const memberUser = member.user || {};
                                                     const isCurrentUser = memberUser._id === user?._id;
                                                     const displayName = [memberUser.firstName, memberUser.lastName].filter(Boolean).join(" ") || memberUser.email || "Trip member";
-                                                    return <div key={member._id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex min-w-0 items-center gap-3">{memberUser.avatar ? <img src={memberUser.avatar} alt="" className="h-11 w-11 rounded-full object-cover" /> : <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#FFE4D8] text-[#C94F46]"><UserRound className="h-5 w-5" /></span>}<div className="min-w-0"><p className="truncate text-sm font-semibold text-[#29201D]">{displayName}{isCurrentUser ? <span className="ml-2 font-normal text-[#786A62]">(you)</span> : null}</p>{memberUser.email && <p className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-[#786A62]"><Mail className="h-3.5 w-3.5" />{memberUser.email}</p>}</div></div><div className="flex items-center gap-2 sm:justify-end">{trip.role === "owner" && member.role !== "owner" ? <><label className="sr-only" htmlFor={`role-${member._id}`}>Role for {displayName}</label><select id={`role-${member._id}`} value={member.role} disabled={memberBusyId === member._id} onChange={(event) => handleRoleChange(member._id, event.target.value)} className="rounded-lg border border-[#EAE2D9] bg-white px-3 py-2 text-sm capitalize text-[#51443E] focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8] disabled:opacity-60"><option value="editor">Editor</option><option value="viewer">Viewer</option></select><button type="button" onClick={() => handleRemoveMember(member)} disabled={memberBusyId === member._id} className="rounded-lg px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50">Remove</button></> : <span className="rounded-full bg-[#FFF4E3] px-3 py-1.5 text-xs font-semibold capitalize text-[#65554D]">{member.role}</span>}</div></div>;
+                                                    return <div key={member._id} className="flex flex-col gap-2.5 py-3 sm:flex-row sm:items-center sm:justify-between"><div className="flex min-w-0 items-center gap-2.5">{memberUser.avatar ? <img src={memberUser.avatar} alt="" className="h-9 w-9 rounded-full object-cover" /> : <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#FFE4D8] text-[#C94F46]"><UserRound className="h-4 w-4" /></span>}<div className="min-w-0"><p className="truncate text-sm font-semibold text-[#29201D]">{displayName}{isCurrentUser ? <span className="ml-2 font-normal text-[#786A62]">(you)</span> : null}</p>{memberUser.email && <p className="mt-0.5 flex items-center gap-1.5 truncate text-xs text-[#786A62]"><Mail className="h-3.5 w-3.5" />{memberUser.email}</p>}</div></div><div className="flex items-center gap-2 sm:justify-end">{trip.role === "owner" && member.role !== "owner" ? <><label className="sr-only" htmlFor={`role-${member._id}`}>Role for {displayName}</label><select id={`role-${member._id}`} value={member.role} disabled={memberBusyId === member._id} onChange={(event) => handleRoleChange(member._id, event.target.value)} className="rounded-lg border border-[#EAE2D9] bg-white px-3 py-2 text-sm capitalize text-[#51443E] focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8] disabled:opacity-60"><option value="editor">Editor</option><option value="viewer">Viewer</option></select><button type="button" onClick={() => handleRemoveMember(member)} disabled={memberBusyId === member._id} className="rounded-lg px-3 py-2 text-xs font-semibold text-red-700 hover:bg-red-50 disabled:opacity-50">Remove</button></> : <span className="rounded-full bg-[#FFF4E3] px-3 py-1.5 text-xs font-semibold capitalize text-[#65554D]">{member.role}</span>}</div></div>;
                                                 })}
                                             </div>
                                         </section>

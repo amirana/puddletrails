@@ -164,12 +164,12 @@ const TripChecklists = ({ tripId, accessToken, role }) => {
     };
 
     return (
-        <section className="space-y-6">
+        <section className="space-y-4">
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#C94F3D]">Trip essentials</p>
-                    <h2 className="mb-0 mt-2 !text-2xl font-semibold text-[#29201D]">Checklists</h2>
-                    <p className="mt-1 text-sm text-[#786A62]">Keep track of what to bring and what still needs doing.</p>
+                    <p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip essentials</p>
+                    <h2 className="mb-0 mt-1 !text-xl font-extrabold text-[#29201D]">Checklists</h2>
+                    <p className="mt-1 text-xs text-[#786A62]">The things to pack, plan, and remember.</p>
                 </div>
                 {canManage && !creating && <button type="button" onClick={() => setCreating(true)} className="inline-flex items-center gap-1.5 rounded-lg bg-[#E9573F] px-3.5 py-2.5 text-sm font-semibold text-white hover:bg-[#CF4639]"><Plus className="h-4 w-4" /> New checklist</button>}
             </div>
@@ -184,20 +184,20 @@ const TripChecklists = ({ tripId, accessToken, role }) => {
                     <button type="button" onClick={() => setReloadCount((count) => count + 1)} className="mt-2 text-sm font-semibold text-red-800 underline">Try again</button>
                 </div>
             ) : !checklists.length ? (
-                <div className="mt-5 rounded-2xl border border-dashed border-[#EAE2D9] px-5 py-8 text-center">
+                <div className="mt-4 rounded-2xl bg-[#FFF8F0] px-5 py-6 text-center">
                     <ClipboardList className="mx-auto h-7 w-7 text-[#A99A90]" />
                     <p className="mt-2 text-sm font-semibold text-[#29201D]">No checklists yet</p>
                     <p className="mt-1 text-xs text-[#786A62]">Create a packing, to-do, or custom list for this trip.</p>
                 </div>
             ) : (
-                <div className="mt-6 space-y-7">
+                <div className="mt-4 space-y-5">
                     {TYPES.map((type) => {
                         const sectionLists = checklists.filter((checklist) => checklist.type === type.value);
                         if (!sectionLists.length) return null;
                         return <section key={type.value} aria-labelledby={`checklist-type-${type.value}`}>
                             <h3 id={`checklist-type-${type.value}`} className="mb-1 flex items-center gap-2 border-b border-[#EEE7DF] pb-2 font-label text-[10px] font-bold uppercase tracking-[0.14em] text-[#9B4A3E]"><span aria-hidden="true" className={`h-2 w-2 rounded-full ${type.value === "packing" ? "bg-[#7D9869]" : type.value === "to-do" ? "bg-[#E9573F]" : "bg-[#FFD34E]"}`} />{type.label}</h3>
                             <div className="divide-y divide-[#EEE7DF]">
-                                {sectionLists.map((checklist) => <article key={checklist._id} className="py-4 sm:py-5">
+                                {sectionLists.map((checklist) => <article key={checklist._id} className="py-3">
                                     {editingChecklistId === checklist._id ? (
                                         <ChecklistForm checklist={checklist} busy={Boolean(busy)} onCancel={() => setEditingChecklistId("")} onSave={(values) => handleRenameChecklist(checklist._id, values)} />
                                     ) : (

@@ -49,7 +49,7 @@ const ExpenseForm = ({ expense, onSave, onCancel, busy, currency }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit(submitExpense)} className="grid gap-3 rounded-2xl border border-[#EAE2D9] bg-[#FFFCF7] p-4 sm:grid-cols-2" noValidate>
+        <form onSubmit={handleSubmit(submitExpense)} className="grid gap-3 sm:grid-cols-2" noValidate>
             <label className="text-xs font-semibold text-[#51443E]">
                 Amount ({currency})
                 <input
