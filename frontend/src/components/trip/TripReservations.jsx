@@ -40,44 +40,44 @@ const ReservationForm = ({ reservation, days, busy, onCancel, onSave }) => {
     const submit = (values) => onSave({ ...values, tripDayId: values.tripDayId || null });
 
     return (
-        <form onSubmit={handleSubmit(submit)} className="grid gap-x-3 gap-y-3 sm:grid-cols-2" noValidate>
+        <form onSubmit={handleSubmit(submit)} className="grid gap-x-4 gap-y-4 sm:grid-cols-2" noValidate>
             <div className="contents">
                 <label className="text-xs font-semibold text-[#51443E] sm:col-span-2">Reservation name
-                    <input maxLength={120} placeholder="e.g. Evening flight to Rome" aria-invalid={Boolean(errors.title)} {...register("title", { required: "Enter a reservation name.", maxLength: { value: 120, message: "Use 120 characters or fewer." } })} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal" />
+                    <input maxLength={120} placeholder="e.g. Evening flight to Rome" aria-invalid={Boolean(errors.title)} {...register("title", { required: "Enter a reservation name.", maxLength: { value: 120, message: "Use 120 characters or fewer." } })} className="mt-2 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8]" />
                     {errors.title && <span className="mt-1 block font-normal text-red-600">{errors.title.message}</span>}
                 </label>
                 <label className="text-xs font-semibold text-[#51443E]">Type
-                    <select {...register("type", { required: "Choose a reservation type." })} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal">
+                    <select {...register("type", { required: "Choose a reservation type." })} className="mt-2 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8]">
                         {TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
                     </select>
                 </label>
                 <label className="text-xs font-semibold text-[#51443E]">Date
-                    <input type="date" min={minDate} aria-invalid={Boolean(errors.date)} {...register("date", { required: "Choose a reservation date.", validate: (value) => value >= minDate || (value === originalDate) || "Reservation date cannot be before today." })} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal" />
+                    <input type="date" min={minDate} aria-invalid={Boolean(errors.date)} {...register("date", { required: "Choose a reservation date.", validate: (value) => value >= minDate || (value === originalDate) || "Reservation date cannot be before today." })} className="mt-2 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8]" />
                     {errors.date && <span className="mt-1 block font-normal text-red-600">{errors.date.message}</span>}
                 </label>
                 <label className="text-xs font-semibold text-[#51443E]">Time <span className="font-normal text-[#786A62]">(optional)</span>
-                    <input type="time" {...register("time")} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal" />
+                    <input type="time" {...register("time")} className="mt-2 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8]" />
                 </label>
                 <label className="text-xs font-semibold text-[#51443E]">Attach to itinerary day <span className="font-normal text-[#786A62]">(optional)</span>
-                    <select {...register("tripDayId")} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal">
+                    <select {...register("tripDayId")} className="mt-2 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8]">
                         <option value="">Trip-wide reservation</option>
                         {days.map((day) => <option key={day._id} value={day._id}>Day {day.dayNumber} · {displayDate(day.date)}</option>)}
                     </select>
                 </label>
                 <label className="text-xs font-semibold text-[#51443E] sm:col-span-2">Confirmation number <span className="font-normal text-[#786A62]">(optional)</span>
-                    <input maxLength={100} {...register("confirmationNumber", { maxLength: { value: 100, message: "Use 100 characters or fewer." } })} className="mt-1.5 block w-full rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal" />
+                    <input maxLength={100} {...register("confirmationNumber", { maxLength: { value: 100, message: "Use 100 characters or fewer." } })} className="mt-2 block w-full rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8]" />
                     {errors.confirmationNumber && <span className="mt-1 block font-normal text-red-600">{errors.confirmationNumber.message}</span>}
                 </label>
                 <label className="inline-flex items-center gap-2 text-sm font-medium text-[#51443E] sm:col-span-2">
-                    <input type="checkbox" {...register("confirmed")} className="h-4 w-4 rounded border-[#D8CEC4] text-[#C94F3D] focus:ring-[#E9573F]" />
+                    <input type="checkbox" {...register("confirmed")} className="h-4 w-4 rounded border-[#D8CEC4] accent-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]" />
                     Reservation is confirmed
                 </label>
                 <label className="text-xs font-semibold text-[#51443E] sm:col-span-2">Notes <span className="font-normal text-[#786A62]">(optional)</span>
-                    <textarea rows={3} maxLength={2000} {...register("notes", { maxLength: { value: 2000, message: "Use 2,000 characters or fewer." } })} className="mt-1.5 block w-full resize-y rounded-lg border border-[#EAE2D9] bg-white px-3 py-2.5 text-sm font-normal" />
+                    <textarea rows={3} maxLength={2000} {...register("notes", { maxLength: { value: 2000, message: "Use 2,000 characters or fewer." } })} className="mt-2 block w-full resize-y rounded-xl border border-[#EAE2D9] bg-white px-3.5 py-3 text-sm font-normal focus:border-[#E9573F] focus:outline-none focus:ring-2 focus:ring-[#FFE4D8]" />
                     {errors.notes && <span className="mt-1 block font-normal text-red-600">{errors.notes.message}</span>}
                 </label>
             </div>
-            <div className="mt-4 flex justify-end gap-2">
+            <div className="mt-2 flex justify-end gap-3 sm:col-span-2">
                 <button type="button" onClick={onCancel} disabled={busy || isSubmitting} className="rounded-lg px-3 py-2 text-sm font-semibold text-[#65554D] hover:bg-[#F1EAE2]">Cancel</button>
                 <button type="submit" disabled={busy || isSubmitting} className="rounded-lg bg-[#E9573F] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50">{isSubmitting ? "Saving…" : reservation ? "Save reservation" : "Add reservation"}</button>
             </div>
@@ -237,27 +237,27 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
                     <p className="mt-1 text-xs text-[#786A62]">Add a flight, hotel, restaurant, or other booking for this trip.</p>
                 </div>
             ) : (
-                <ul className="mt-5 divide-y divide-[#EEE7DF]">
+                <ul className="mt-5 space-y-4">
                     {reservations.map((reservation) => (
-                        <li key={reservation._id} className="py-3 first:pt-1">
+                        <li key={reservation._id} className="rounded-2xl border border-[#EEE7DF] bg-white p-4 sm:p-5">
                             <div className="flex flex-wrap items-start justify-between gap-3">
                                 <div className="min-w-0">
-                                    <div className="flex flex-wrap items-center gap-2">
+                                    <div className="flex flex-wrap items-center gap-2.5">
                                         <h3 className="text-sm font-semibold text-[#29201D]">{reservation.title}</h3>
-                                        <span className="rounded-full bg-[#FFF0E8] px-2.5 py-1 text-[10px] font-semibold text-[#9B4A3E]">{reservation.type}</span>
-                                        <label className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-semibold ${reservation.confirmed ? "bg-emerald-50 text-emerald-800" : "bg-[#F7F0E8] text-[#65554D]"}`}>
-                                            <input type="checkbox" checked={Boolean(reservation.confirmed)} disabled={!canEdit || busy} onChange={() => toggleConfirmed(reservation)} className="h-3.5 w-3.5 rounded border-[#D8CEC4] text-emerald-700 focus:ring-emerald-600 disabled:opacity-60" />
+                                        <span className="rounded-full bg-[#FFF0E8] px-4 py-0.5 text-[11px] font-semibold text-[#9B4A3E]">{reservation.type}</span>
+                                        <label className={`inline-flex items-center gap-2 rounded-full px-4 py-0.5 text-[11px] font-semibold ${reservation.confirmed ? "bg-[#E7EFD9] text-[#5F7F59]" : "bg-[#F7F0E8] text-[#65554D]"}`}>
+                                            <input type="checkbox" checked={Boolean(reservation.confirmed)} disabled={!canEdit || busy} onChange={() => toggleConfirmed(reservation)} className="h-3.5 w-3.5 rounded border-[#D8CEC4] accent-[#7D9869] focus:ring-2 focus:ring-[#DDE8CE] disabled:opacity-60" />
                                             {reservation.confirmed ? "Confirmed" : "Not confirmed"}
                                         </label>
                                     </div>
-                                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-[#65554D]">
+                                    <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-[#65554D]">
                                         <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5 text-[#A99A90]" />{displayDate(reservation.date)}</span>
                                         {reservation.time && <span className="inline-flex items-center gap-1.5"><Clock3 className="h-3.5 w-3.5 text-[#A99A90]" />{reservation.time}</span>}
                                         <span>{dayLabel(reservation.tripDayId)}</span>
                                     </div>
-                                    {reservation.confirmationNumber && <p className="mt-2 text-xs text-[#65554D]"><span className="font-semibold">Confirmation:</span> {reservation.confirmationNumber}</p>}
-                                    {reservation.notes && <p className="mt-2 whitespace-pre-wrap text-sm text-[#65554D]">{reservation.notes}</p>}
-                                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                                    {reservation.confirmationNumber && <p className="mt-3 text-xs text-[#65554D]"><span className="font-semibold">Confirmation:</span> {reservation.confirmationNumber}</p>}
+                                    {reservation.notes && <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-[#65554D]">{reservation.notes}</p>}
+                                    <div className="mt-4 flex flex-wrap items-center gap-2">
                                         {canEdit && (
                                             <label className={`inline-flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#EAE2D9] px-2.5 py-1.5 text-xs font-semibold text-[#51443E] hover:bg-[#FFFCF7] focus-within:ring-2 focus-within:ring-[#FFE4D8] ${busy ? "pointer-events-none opacity-50" : ""}`}>
                                                 <Upload className="h-3.5 w-3.5" /> {uploadingReservationId === reservation._id ? "Uploading…" : "Attach file"}
@@ -277,7 +277,7 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
                                         {(reservation.attachments || []).length >= 5 && <span className="text-xs text-[#786A62]">5 file limit reached</span>}
                                     </div>
                                     {(reservation.attachments || []).length > 0 && (
-                                        <ul className="mt-2 space-y-1.5">
+                                        <ul className="mt-3 space-y-2">
                                             {reservation.attachments.map((attachment) => {
                                                 const isImage = attachment.resourceType === "image";
                                                 return (
@@ -305,7 +305,7 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
             )}
             {formReservation !== undefined && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#29201D]/45 p-4 backdrop-blur-sm" onMouseDown={(event) => { if (event.target === event.currentTarget && !busy) setFormReservation(undefined); }}>
-                    <section role="dialog" aria-modal="true" aria-labelledby="reservation-dialog-title" className="my-auto max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-[#FFFCF7] p-5 shadow-[0_24px_80px_rgba(41,32,29,0.24)] sm:p-6">
+                    <section role="dialog" aria-modal="true" aria-labelledby="reservation-dialog-title" className="my-auto max-h-[92vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-[#FFFCF7] p-5 shadow-[0_24px_80px_rgba(41,32,29,0.24)] sm:p-7">
                         <div className="mb-4 flex items-start justify-between gap-4"><div><p className="font-label text-[10px] font-bold uppercase tracking-[0.12em] text-[#9B4A3E]">Trip logistics</p><h2 id="reservation-dialog-title" className="mb-0 mt-1 text-xl font-extrabold text-[#29201D]">{formReservation ? "Edit booking" : "Add a booking"}</h2><p className="mt-1 text-xs text-[#786A62]">Flights, stays, and plans that are already booked.</p></div><button type="button" onClick={() => setFormReservation(undefined)} disabled={busy} aria-label="Close booking form" className="rounded-full p-2 text-[#786A62] hover:bg-[#F5EFE8] disabled:opacity-50"><X className="h-5 w-5" /></button></div>
                         {error && !loadError && <p className="mb-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700" role="alert">{error}</p>}
                         <ReservationForm reservation={formReservation} days={days} busy={busy} onCancel={() => setFormReservation(undefined)} onSave={handleSave} />

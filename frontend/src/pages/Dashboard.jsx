@@ -369,11 +369,11 @@ const Dashboard = () => {
                                 )}
                             </div>
                         ) : (
-                            <div className="grid gap-4 sm:grid-cols-2">
+                            <div className="grid gap-4 sm:auto-rows-fr sm:grid-cols-2">
                                 {visibleTrips.map((trip, index) => (
                                     <article
                                         key={trip._id}
-                                        className="group relative flex min-h-[225px] flex-col overflow-hidden rounded-[1.5rem] border border-[#EEE7DF] bg-white transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_32px_rgba(60,40,30,0.10)]"
+                                        className="group relative flex h-full min-h-[225px] flex-col overflow-hidden rounded-[1.5rem] border border-[#EEE7DF] bg-white transition duration-200 hover:-translate-y-1 hover:shadow-[0_14px_32px_rgba(60,40,30,0.10)]"
                                     >
                                         <div
                                             className={`h-2 w-full ${["bg-[#E9573F]", "bg-[#7D9869]", "bg-[#FFD34E]"][index % 3]}`}
@@ -402,11 +402,9 @@ const Dashboard = () => {
                                                 {formatDate(trip.startDate)} –{" "}
                                                 {formatDate(trip.endDate)}
                                             </p>
-                                            {trip.description && (
-                                                <p className="mt-3 line-clamp-2 text-xs leading-5 text-[#786A62]">
-                                                    {trip.description}
-                                                </p>
-                                            )}
+                                            <p className="mt-3 min-h-10 line-clamp-2 text-xs leading-5 text-[#786A62]">
+                                                {trip.description || " "}
+                                            </p>
                                             <div className="mt-auto flex items-center justify-between gap-3 border-t border-[#F0EAE3] pt-4">
                                                 <Link
                                                     to={`/trips/${trip._id}`}

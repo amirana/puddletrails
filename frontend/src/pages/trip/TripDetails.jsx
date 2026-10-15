@@ -281,7 +281,7 @@ const TripDetails = () => {
                     </div>
                 ) : trip ? (
                     <div className="space-y-3">
-                        <div className="flex min-h-9 flex-wrap items-center justify-between gap-3">
+                        <div className="flex min-h-9 flex-wrap items-center gap-3">
                             <Link
                                 to="/dashboard"
                                 className="inline-flex min-h-9 items-center gap-2 rounded-full px-2.5 text-sm font-semibold text-[#65554D] transition hover:bg-[#FFF0DF] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]"
@@ -292,7 +292,36 @@ const TripDetails = () => {
                                 />{" "}
                                 All trips
                             </Link>
-                            <div className="flex items-center gap-2.5">
+                        </div>
+
+                        <section
+                            className="grid min-w-0 grid-cols-[36px_minmax(0,1fr)] items-start gap-x-4 border-b border-[#EEE7DF] px-1 pb-4 pt-1 sm:grid-cols-[36px_minmax(0,1fr)_auto]"
+                            aria-label="Trip overview"
+                        >
+                            <span
+                                aria-hidden="true"
+                                className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFD34E] text-[#29201D]"
+                            >
+                                <Plane className="h-4 w-4 -rotate-12" />
+                            </span>
+                            <div className="min-w-0">
+                                <h1 className="mb-0 mt-0 truncate text-lg font-bold leading-6 text-[#29201D] sm:text-xl">
+                                    {trip.title || "Your trip"}
+                                </h1>
+                                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium leading-5 text-[#65554D]">
+                                    <span className="inline-flex items-center gap-1">
+                                        <MapPin className="h-3.5 w-3.5 text-[#E9573F]" />
+                                        {trip.destination ||
+                                            "Destination to be decided"}
+                                    </span>
+                                    <span className="inline-flex items-center gap-1">
+                                        <CalendarDays className="h-3.5 w-3.5 text-[#E9573F]" />
+                                        {formatDate(trip.startDate)} –{" "}
+                                        {formatDate(trip.endDate)}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="col-span-2 mt-2 flex items-center gap-2.5 sm:col-span-1 sm:col-start-3 sm:row-span-2 sm:row-start-1 sm:mt-0 sm:self-start">
                                 <div
                                     className="flex -space-x-2"
                                     aria-label={`${trip.members?.length || 0} trip travelers`}
@@ -380,35 +409,6 @@ const TripDetails = () => {
                                             : "Leave trip"}
                                     </button>
                                 )}
-                            </div>
-                        </div>
-
-                        <section
-                            className="grid min-w-0 grid-cols-[36px_minmax(0,1fr)] items-start gap-x-4 border-b border-[#EEE7DF] px-1 pb-4 pt-1"
-                            aria-label="Trip overview"
-                        >
-                            <span
-                                aria-hidden="true"
-                                className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#FFD34E] text-[#29201D]"
-                            >
-                                <Plane className="h-4 w-4 -rotate-12" />
-                            </span>
-                            <div className="min-w-0">
-                                <h1 className="mb-0 mt-0 truncate text-lg font-bold leading-6 text-[#29201D] sm:text-xl">
-                                    {trip.title || "Your trip"}
-                                </h1>
-                                <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-medium leading-5 text-[#65554D]">
-                                    <span className="inline-flex items-center gap-1">
-                                        <MapPin className="h-3.5 w-3.5 text-[#E9573F]" />
-                                        {trip.destination ||
-                                            "Destination to be decided"}
-                                    </span>
-                                    <span className="inline-flex items-center gap-1">
-                                        <CalendarDays className="h-3.5 w-3.5 text-[#E9573F]" />
-                                        {formatDate(trip.startDate)} –{" "}
-                                        {formatDate(trip.endDate)}
-                                    </span>
-                                </div>
                             </div>
                         </section>
 
