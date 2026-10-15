@@ -55,6 +55,17 @@ const Footer = () => {
                 <p className="text-xs font-semibold text-[#786A62] sm:justify-self-end sm:self-center">
                     © {new Date().getFullYear()} PuddleTrails
                 </p>
+                <p className="text-center text-[11px] font-medium text-[#A49388] sm:col-span-3">
+                    Designed and developed by{" "}
+                    <a
+                        href="https://www.amirana.me/"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-[#786A62] underline-offset-4 transition-colors hover:text-[#C94F46] hover:underline focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]"
+                    >
+                        Ami Rana
+                    </a>
+                </p>
             </div>
         </footer>
     );
