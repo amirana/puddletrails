@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, X } from "lucide-react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import AuthContext from "../../context/AuthContext.jsx";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
@@ -13,6 +13,7 @@ const Login = () => {
     const [submitError, setSubmitError] = useState("");
     const [resendStatus, setResendStatus] = useState("");
     const [isResending, setIsResending] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const { register, handleSubmit, getValues, formState: { errors, isSubmitting } } = useForm({ mode: "onTouched" });
     const navigate = useNavigate();
     const { login } = useContext(AuthContext);
@@ -65,7 +66,12 @@ const Login = () => {
                             {errors.email && <span className="mt-1.5 block text-xs font-normal text-[#B42318]">{errors.email.message}</span>}
                         </label>
                         <label className="block text-sm font-bold text-[#51443E]">Password
-                            <input className={fieldClass} type="password" autoComplete="current-password" {...register("password", { required: "Password is required." })} />
+                            <span className="relative mt-2 block">
+                                <input className={`${fieldClass} mt-0 pr-12`} type={showPassword ? "text" : "password"} autoComplete="current-password" {...register("password", { required: "Password is required." })} />
+                                <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-0 right-2 inline-flex items-center justify-center rounded-full px-2 text-[#786A62] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
+                                    {showPassword ? <Eye className="h-5 w-5" aria-hidden="true" /> : <EyeOff className="h-5 w-5" aria-hidden="true" />}
+                                </button>
+                            </span>
                             {errors.password && <span className="mt-1.5 block text-xs font-normal text-[#B42318]">{errors.password.message}</span>}
                         </label>
                         <div className="-mt-2 text-right"><Link to="/forgot-password" className="text-sm font-bold text-[#C94F46] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">Forgot password?</Link></div>

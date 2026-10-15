@@ -8,9 +8,45 @@
     --font-scoutie: "Scoutie Sans", sans-serif;
 }
 
+a,
+button {
+    cursor: pointer;
+}
+
+/* Keep primary actions on the same raised coral treatment as Dashboard's New trip button. */
+button[class*="bg-[#E9573F]"],
+a[class*="bg-[#E9573F]"] {
+    border-radius: 9999px;
+    background-color: #e9573f;
+    box-shadow: 0 5px 0 #c94f46;
+    color: #fff;
+    font-weight: 700;
+    transition:
+        transform 200ms,
+        background-color 200ms,
+        box-shadow 200ms;
+}
+
+button[class*="bg-[#E9573F]"]:hover,
+a[class*="bg-[#E9573F]"]:hover {
+    transform: translateY(-2px);
+    background-color: #d94f3b;
+    box-shadow: 0 6px 0 #c94f46;
+}
+
+button[class*="bg-[#E9573F]"]:active,
+a[class*="bg-[#E9573F]"]:active {
+    transform: translateY(0);
+}
+
 @keyframes autumn-sway {
-    0%, 100% { transform: rotate(-7deg); }
-    50% { transform: rotate(7deg); }
+    0%,
+    100% {
+        transform: rotate(-7deg);
+    }
+    50% {
+        transform: rotate(7deg);
+    }
 }
 
 .autumn-leaf {
@@ -21,7 +57,9 @@
 .landing-reveal-ready [data-scroll-reveal] {
     opacity: 0;
     transform: translateY(12px);
-    transition: opacity 550ms ease, transform 550ms ease;
+    transition:
+        opacity 550ms ease,
+        transform 550ms ease;
 }
 
 .landing-reveal-ready [data-scroll-reveal].is-visible {
@@ -30,7 +68,9 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .autumn-leaf { animation: none; }
+    .autumn-leaf {
+        animation: none;
+    }
     .landing-reveal-ready [data-scroll-reveal],
     .landing-reveal-ready [data-scroll-reveal].is-visible {
         opacity: 1;

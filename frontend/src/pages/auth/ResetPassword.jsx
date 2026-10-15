@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react";
 import { resetPassword } from "../../services/authService.js";
 import { Link, useParams } from "react-router-dom";
+import { buttonStyles } from "../../components/ui/buttonStyles.js";
 
 const ResetPassword = () => {
     const [submitError, setSubmitError] = useState("");
     const [passwordReset, setPasswordReset] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const { token } = useParams();
 
     const {
@@ -39,7 +43,7 @@ const ResetPassword = () => {
                     <p className="mt-3 text-base leading-relaxed text-[#6b6375]">
                         Your password has been reset. You can now log in.
                     </p>
-                    <Link to="/login" className="mt-8 inline-flex rounded-full bg-[#b8dfc7] px-6 py-3 text-sm font-medium text-[#174c36] transition-colors hover:bg-[#9fd1b1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36]">
+                    <Link to="/login" className={buttonStyles({ className: "mt-8" })}>
                         Go to login
                     </Link>
                 </div>
@@ -72,36 +76,46 @@ const ResetPassword = () => {
                 <form className="mt-8 space-y-5" onSubmit={handleSubmit(onSubmit)} noValidate>
                     <label className="block text-sm font-medium text-[#08060d]">
                         New password
-                        <input
-                            className="mt-2 block w-full rounded-lg border border-black/15 bg-white px-3.5 py-3 text-base text-[#08060d] outline-none transition focus:border-[#4d8063] focus:ring-2 focus:ring-[#b8dfc7]"
-                            type="password"
-                            autoComplete="new-password"
-                            {...register("password", {
-                                required: "Password is required.",
-                                minLength: { value: 8, message: "Password must be at least 8 characters." },
-                                pattern: { value: /^(?=.*[A-Z])(?=.*\d).+$/, message: "Include an uppercase letter and a number." },
-                            })}
-                        />
+                        <span className="relative mt-2 block">
+                            <input
+                                className="block w-full rounded-lg border border-black/15 bg-white px-3.5 py-3 pr-12 text-base text-[#08060d] outline-none transition focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]"
+                                type={showPassword ? "text" : "password"}
+                                autoComplete="new-password"
+                                {...register("password", {
+                                    required: "Password is required.",
+                                    minLength: { value: 8, message: "Password must be at least 8 characters." },
+                                    pattern: { value: /^(?=.*[A-Z])(?=.*\d).+$/, message: "Include an uppercase letter and a number." },
+                                })}
+                            />
+                            <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-0 right-2 inline-flex items-center justify-center rounded-full px-2 text-[#786A62] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
+                                {showPassword ? <Eye className="h-5 w-5" aria-hidden="true" /> : <EyeOff className="h-5 w-5" aria-hidden="true" />}
+                            </button>
+                        </span>
                         {errors.password && <span className="mt-1.5 block text-xs font-normal text-red-600">{errors.password.message}</span>}
                     </label>
 
                     <label className="block text-sm font-medium text-[#08060d]">
                         Confirm new password
-                        <input
-                            className="mt-2 block w-full rounded-lg border border-black/15 bg-white px-3.5 py-3 text-base text-[#08060d] outline-none transition focus:border-[#4d8063] focus:ring-2 focus:ring-[#b8dfc7]"
-                            type="password"
-                            autoComplete="new-password"
-                            {...register("confirmPassword", {
-                                required: "Please confirm your password.",
-                                validate: (value) => value === getValues("password") || "Passwords do not match.",
-                            })}
-                        />
+                        <span className="relative mt-2 block">
+                            <input
+                                className="block w-full rounded-lg border border-black/15 bg-white px-3.5 py-3 pr-12 text-base text-[#08060d] outline-none transition focus:border-[#E9573F] focus:ring-2 focus:ring-[#FFE4D8]"
+                                type={showConfirmPassword ? "text" : "password"}
+                                autoComplete="new-password"
+                                {...register("confirmPassword", {
+                                    required: "Please confirm your password.",
+                                    validate: (value) => value === getValues("password") || "Passwords do not match.",
+                                })}
+                            />
+                            <button type="button" aria-label={showConfirmPassword ? "Hide password" : "Show password"} aria-pressed={showConfirmPassword} onClick={() => setShowConfirmPassword((visible) => !visible)} className="absolute inset-y-0 right-2 inline-flex items-center justify-center rounded-full px-2 text-[#786A62] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
+                                {showConfirmPassword ? <Eye className="h-5 w-5" aria-hidden="true" /> : <EyeOff className="h-5 w-5" aria-hidden="true" />}
+                            </button>
+                        </span>
                         {errors.confirmPassword && <span className="mt-1.5 block text-xs font-normal text-red-600">{errors.confirmPassword.message}</span>}
                     </label>
 
                     {submitError && <p className="rounded-lg bg-red-50 px-3.5 py-3 text-sm text-red-700" role="alert">{submitError}</p>}
 
-                    <button className="w-full rounded-full bg-[#b8dfc7] px-5 py-3.5 text-sm font-medium text-[#174c36] transition-colors hover:bg-[#9fd1b1] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#174c36] disabled:cursor-not-allowed disabled:opacity-60" type="submit" disabled={isSubmitting}>
+                    <button className={buttonStyles({ size: "form", className: "w-full" })} type="submit" disabled={isSubmitting}>
                         {isSubmitting ? "Updating password..." : "Update password"}
                     </button>
                 </form>

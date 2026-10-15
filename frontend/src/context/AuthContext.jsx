@@ -71,7 +71,11 @@ function AuthProvider({ children }) {
             try {
                 await profile();
             } catch (error) {
-                console.error(error.message);
+                // A missing refresh cookie is the normal signed-out state on first visit.
+                // Keep other refresh failures visible for diagnosis.
+                if (error.message !== "Refresh token missing") {
+                    console.error(error.message);
+                }
             } finally {
                 setAuthLoading(false);
             }

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ArrowRight, MapPin, X } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, MapPin, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     register as registerUser,
@@ -17,6 +17,7 @@ const Signup = () => {
     const [verificationEmailSent, setVerificationEmailSent] = useState(true);
     const [resendStatus, setResendStatus] = useState("");
     const [isResending, setIsResending] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = async (data) => {
         setSubmitError("");
@@ -85,7 +86,12 @@ const Signup = () => {
                                     {errors.email && <span className="mt-1.5 block text-xs font-normal text-[#B42318]">{errors.email.message}</span>}
                                 </label>
                                 <label className="block text-sm font-bold text-[#51443E]">Password
-                                    <input className={fieldClass} type="password" autoComplete="new-password" {...register("password", { required: "Password is required.", minLength: { value: 8, message: "Password must be at least 8 characters." }, pattern: { value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/, message: "Include an uppercase letter, lowercase letter, and a number." } })} />
+                                    <span className="relative mt-2 block">
+                                        <input className={`${fieldClass} mt-0 pr-12`} type={showPassword ? "text" : "password"} autoComplete="new-password" {...register("password", { required: "Password is required.", minLength: { value: 8, message: "Password must be at least 8 characters." }, pattern: { value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/, message: "Include an uppercase letter, lowercase letter, and a number." } })} />
+                                        <button type="button" aria-label={showPassword ? "Hide password" : "Show password"} aria-pressed={showPassword} onClick={() => setShowPassword((visible) => !visible)} className="absolute inset-y-0 right-2 inline-flex items-center justify-center rounded-full px-2 text-[#786A62] hover:text-[#29201D] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E9573F]">
+                                            {showPassword ? <Eye className="h-5 w-5" aria-hidden="true" /> : <EyeOff className="h-5 w-5" aria-hidden="true" />}
+                                        </button>
+                                    </span>
                                     {errors.password && <span className="mt-1.5 block text-xs font-normal text-[#B42318]">{errors.password.message}</span>}
                                     <span className="mt-1.5 block text-xs font-normal text-[#786A62]">At least 8 characters, with a number and mixed case.</span>
                                 </label>

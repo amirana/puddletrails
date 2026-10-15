@@ -50,9 +50,13 @@ const AppHeader = ({ compact = false }) => {
                 >
                     <span
                         aria-hidden="true"
-                        className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FFE4D8] text-xs font-bold text-[#9B4A3E] ring-1 ring-[#F2D2C4]"
+                        className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FFE4D8] text-xs font-bold text-[#9B4A3E] ring-1 ring-[#F2D2C4]"
                     >
-                        {initials}
+                        {user?.avatar ? (
+                            <img src={user.avatar} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                            initials
+                        )}
                     </span>
                     <span className="hidden max-w-36 truncate text-sm font-semibold text-[#29201D] sm:block">
                         {displayName}

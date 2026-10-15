@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import {
+    ArrowDown,
     ArrowRight,
     Backpack,
+    Banknote,
     CalendarDays,
     Compass,
     Map,
@@ -13,6 +15,9 @@ import {
 import { Link } from "react-router-dom";
 import tripIllustration from "../assets/illustration1.webp";
 import travelIllustration from "../assets/illustration2.webp";
+import ethanAvatar from "../assets/ethan-valdez.webp";
+import katyAvatar from "../assets/katy-fuller.webp";
+import nicolaAvatar from "../assets/nicola-harris.webp";
 import logo from "../assets/logo.webp";
 import autumnLeaf from "../assets/autumn-leaf.svg";
 import { buttonStyles } from "../components/ui/buttonStyles.js";
@@ -101,28 +106,35 @@ const LandingPage = () => {
                     <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
                         <p className="inline-flex items-center gap-2 rounded-full border border-[#E9D9CA] bg-[#FFF2E8] px-4 py-2 font-label text-[10px] font-bold uppercase tracking-[0.08em] text-[#9B4A3E] sm:text-xs">
                             <MapPin className="h-4 w-4" aria-hidden="true" />{" "}
-                            Your group trip, out of the group chat
+                            Group trip plans, out of the group chat
                         </p>
                         <h1 className="!mb-0 mt-6 max-w-5xl font-copy !text-4xl font-black leading-[1.02] tracking-[-0.055em] sm:!text-5xl lg:!text-[3.5rem]">
-                            Your whole trip,
+                            Planning a trip with friends?
                             <span className="mt-2 block text-[#D95140]">
-                                in one happy place.
+                                Get everyone on the same page.
                             </span>
                         </h1>
                         <p className="mt-5 max-w-2xl text-sm leading-6 text-[#65554D] sm:text-base sm:leading-7">
-                            Bring your crew, pick your plans, and keep all the
-                            little trip details together.
+                            PuddleTrails brings your itinerary, reservations,
+                            checklists, and budget into one shared plan—so your
+                            trip doesn’t get lost in the group chat.
                         </p>
-                        <Link
-                            to="/signup"
-                            className={buttonStyles({
-                                size: "inline",
-                                className: "mt-6",
-                            })}
-                        >
-                            Start planning{" "}
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                        </Link>
+                        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+                            <Link
+                                to="/signup"
+                                className={buttonStyles({ size: "inline" })}
+                            >
+                                Start planning{" "}
+                                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                            <a
+                                href="#how-it-works"
+                                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#E9D9CA] bg-white px-5 py-2.5 text-sm font-bold text-[#65554D] transition hover:border-[#E8B899] hover:bg-[#FFF8F0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29201D]"
+                            >
+                                See how it works{" "}
+                                <ArrowDown className="h-4 w-4" aria-hidden="true" />
+                            </a>
+                        </div>
                     </div>
                 </section>
 
@@ -151,8 +163,7 @@ const LandingPage = () => {
                                 </h2>
                             </div>
                             <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-2 text-xs font-bold text-[#51443E] shadow-sm">
-                                <span className="h-2 w-2 rounded-full bg-[#E9573F]" />{" "}
-                                3 pals planning
+                                Shared trip board
                             </span>
                         </div>
                         <div className="grid overflow-hidden rounded-[1.5rem] bg-white shadow-[0_12px_36px_rgba(60,40,30,0.10)] lg:grid-cols-[1.05fr_0.95fr]">
@@ -271,12 +282,12 @@ const LandingPage = () => {
                                         </div>
                                     </div>
                                     <span
-                                        className="flex -space-x-2"
+                                        className="flex -space-x-3"
                                         aria-label="Three trip members"
                                     >
-                                        <span className="h-7 w-7 rounded-full border-2 border-white bg-[#E9573F]" />
-                                        <span className="h-7 w-7 rounded-full border-2 border-white bg-[#FFD34E]" />
-                                        <span className="h-7 w-7 rounded-full border-2 border-white bg-[#F1B57D]" />
+                                        <img src={ethanAvatar} alt="Ethan" className="h-11 w-11 rounded-full border-2 border-white object-cover" />
+                                        <img src={katyAvatar} alt="Katy" className="h-11 w-11 rounded-full border-2 border-white object-cover" />
+                                        <img src={nicolaAvatar} alt="Nicola" className="h-11 w-11 rounded-full border-2 border-white object-cover" />
                                     </span>
                                 </div>
                             </div>
@@ -302,11 +313,11 @@ const LandingPage = () => {
                                 </span>
                             </h2>
                             <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#65554D]">
-                                Your people, plans, and all the little trip
-                                details, together in one place.
+                                It’s easier to make a plan when the whole crew
+                                can see it, add to it, and find it later.
                             </p>
                         </div>
-                        <div className="mt-10 grid gap-4 md:grid-cols-3">
+                        <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                             <article className="rounded-2xl border border-[#EAE2D9] bg-white p-6 shadow-[0_6px_22px_rgba(60,40,30,0.04)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(60,40,30,0.08)] sm:p-8">
                                 <span className={`${iconTile} bg-[#FFF0C4]`}>
                                     <Map
@@ -315,15 +326,14 @@ const LandingPage = () => {
                                     />
                                 </span>
                                 <p className="mt-7 font-label text-xs font-bold uppercase tracking-[0.08em] text-[#9B4A3E]">
-                                    01 · Make the plan
+                                    Make the plan
                                 </p>
                                 <h3 className="mb-0 mt-3 text-2xl font-extrabold leading-tight tracking-tight">
-                                    Days with room to wander.
+                                    Plan day by day.
                                 </h3>
                                 <p className="mb-0 mt-3 text-base leading-7 text-[#65554D]">
-                                    Add ideas to the itinerary, organize
-                                    activities by day, and keep the plan
-                                    flexible.
+                                    Build a day-by-day itinerary and find
+                                    places on the map.
                                 </p>
                             </article>
                             <article className="rounded-2xl border border-[#EAE2D9] bg-white p-6 shadow-[0_6px_22px_rgba(60,40,30,0.04)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(60,40,30,0.08)] sm:p-8">
@@ -334,14 +344,14 @@ const LandingPage = () => {
                                     />
                                 </span>
                                 <p className="mt-7 font-label text-xs font-bold uppercase tracking-[0.08em] text-[#9B4A3E]">
-                                    02 · Bring your people
+                                    Bring your people
                                 </p>
                                 <h3 className="mb-0 mt-3 text-2xl font-extrabold leading-tight tracking-tight">
-                                    One crew. One shared plan.
+                                    Bring friends along.
                                 </h3>
                                 <p className="mb-0 mt-3 text-base leading-7 text-[#65554D]">
-                                    Invite everyone and choose roles that help
-                                    the whole crew stay in the loop.
+                                    Share trip dates and plans so friends can
+                                    weigh in.
                                 </p>
                             </article>
                             <article className="rounded-2xl border border-[#EAE2D9] bg-white p-6 shadow-[0_6px_22px_rgba(60,40,30,0.04)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(60,40,30,0.08)] sm:p-8">
@@ -352,17 +362,88 @@ const LandingPage = () => {
                                     />
                                 </span>
                                 <p className="mt-7 font-label text-xs font-bold uppercase tracking-[0.08em] text-[#9B4A3E]">
-                                    03 · Keep the details
+                                    Keep the details
                                 </p>
                                 <h3 className="mb-0 mt-3 text-2xl font-extrabold leading-tight tracking-tight">
-                                    Bookings, lists, budgets.
+                                    Keep details handy.
                                 </h3>
                                 <p className="mb-0 mt-3 text-base leading-7 text-[#65554D]">
-                                    Save reservations, share checklists, and
-                                    track trip expenses in one place.
+                                    Keep bookings and checklists beside your
+                                    itinerary.
+                                </p>
+                            </article>
+                            <article className="rounded-2xl border border-[#EAE2D9] bg-white p-6 shadow-[0_6px_22px_rgba(60,40,30,0.04)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(60,40,30,0.08)] sm:p-8">
+                                <span className={`${iconTile} bg-[#E8F0DE]`}>
+                                    <Banknote
+                                        className="h-6 w-6 text-[#557448]"
+                                        aria-hidden="true"
+                                    />
+                                </span>
+                                <p className="mt-7 font-label text-xs font-bold uppercase tracking-[0.08em] text-[#9B4A3E]">
+                                    Keep an eye on spending
+                                </p>
+                                <h3 className="mb-0 mt-3 text-2xl font-extrabold leading-tight tracking-tight">
+                                    Track the trip budget.
+                                </h3>
+                                <p className="mb-0 mt-3 text-base leading-7 text-[#65554D]">
+                                    Set a budget and log expenses as the trip
+                                    unfolds.
                                 </p>
                             </article>
                         </div>
+                    </div>
+                </section>
+
+                <section
+                    data-scroll-reveal
+                    id="how-it-works"
+                    aria-labelledby="how-it-works-title"
+                    className="px-5 py-12 sm:px-8 sm:py-16"
+                >
+                    <div className="mx-auto max-w-7xl rounded-[2rem] bg-[#FFF0DF] px-5 py-10 sm:px-8 sm:py-12">
+                        <div className="mx-auto max-w-2xl text-center">
+                            <p className="font-label text-xs font-bold uppercase tracking-[0.08em] text-[#9B4A3E]">
+                                Three easy steps
+                            </p>
+                            <h2
+                                id="how-it-works-title"
+                                className="mb-0 mt-3 text-3xl font-extrabold leading-tight sm:text-4xl"
+                            >
+                                From “we should go” to a trip plan.
+                            </h2>
+                        </div>
+                        <ol className="mt-8 grid gap-4 md:grid-cols-3">
+                            {[
+                                [
+                                    "01",
+                                    "Create a trip",
+                                    "Add the destination and dates, then start a shared trip board.",
+                                ],
+                                [
+                                    "02",
+                                    "Invite your friends",
+                                    "Bring everyone into the same plan so they can follow along.",
+                                ],
+                                [
+                                    "03",
+                                    "Plan it together",
+                                    "Sort out the days, save the details, and keep the budget in view.",
+                                ],
+                            ].map(([step, title, description]) => (
+                                <li
+                                    key={step}
+                                    className="rounded-2xl border border-white/80 bg-white p-5 sm:p-6"
+                                >
+                                    <span className="font-label text-xs font-bold tracking-[0.12em] text-[#C94F46]">
+                                        {step}
+                                    </span>
+                                    <h3 className="mb-0 mt-3 text-xl font-extrabold">{title}</h3>
+                                    <p className="mb-0 mt-2 text-sm leading-6 text-[#65554D]">
+                                        {description}
+                                    </p>
+                                </li>
+                            ))}
+                        </ol>
                     </div>
                 </section>
 
@@ -395,15 +476,16 @@ const LandingPage = () => {
                                 More looking forward.
                             </h2>
                             <p className="mt-4 text-base leading-7 text-[#65554D]">
-                                Your trip details stop getting buried in
-                                messages. The crew can check the plan, add
-                                ideas, and get excited in one shared home.
+                                No more hunting through messages for the
+                                booking, packing list, or dinner plan. Keep the
+                                trip details together where the whole crew can
+                                find them.
                             </p>
                             <Link
                                 to="/signup"
                                 className={`${primaryButton} mt-7 w-fit`}
                             >
-                                Make your trip board{" "}
+                                Start your trip plan{" "}
                                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </Link>
                         </div>
@@ -425,11 +507,11 @@ const LandingPage = () => {
                             id="get-started-title"
                             className="mb-0 mt-3 text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl"
                         >
-                            Ready to make it a real trip?
+                            Ready to get the group moving?
                         </h2>
                         <p className="mt-4 max-w-2xl text-base leading-7 text-[#65554D]">
-                            Create your account, bring your crew, and start
-                            putting the good bits together.
+                            Create a trip, invite your friends, and make a plan
+                            everyone can actually find.
                         </p>
                         <Link
                             to="/signup"
@@ -438,7 +520,7 @@ const LandingPage = () => {
                                 className: "mt-7",
                             })}
                         >
-                            Create your account{" "}
+                            Start planning{" "}
                             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Link>
                     </div>

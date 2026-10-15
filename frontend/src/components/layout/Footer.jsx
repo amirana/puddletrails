@@ -44,7 +44,7 @@ const Footer = () => {
                         X
                     </a>
                     <a
-                        href="https://www.instagram.com/yourhandle/"
+                        href="https://www.instagram.com/puddletrailsapp/"
                         target="_blank"
                         rel="noreferrer"
                         className="transition-colors hover:text-[#C94F46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]"

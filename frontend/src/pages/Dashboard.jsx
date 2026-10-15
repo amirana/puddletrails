@@ -397,7 +397,7 @@ const Dashboard = () => {
                                                 {trip.destination ||
                                                     "Destination TBD"}
                                             </p>
-                                            <p className="mt-3 inline-flex items-center gap-2 text-xs font-medium text-[#65554D]">
+                                            <p className="mt-3 pb-3 inline-flex items-center gap-2 text-xs font-medium text-[#65554D]">
                                                 <CalendarDays className="h-3.5 w-3.5 text-[#7D9869]" />
                                                 {formatDate(trip.startDate)} –{" "}
                                                 {formatDate(trip.endDate)}
