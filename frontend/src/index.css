@@ -13,7 +13,7 @@
 
     font: 18px/145% var(--font-scoutie);
     letter-spacing: 0.3px;
-    color-scheme: light dark;
+    color-scheme: light;
     color: var(--text);
     background: var(--bg);
     font-synthesis: none;
@@ -26,29 +26,9 @@
     }
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --text: #9ca3af;
-        --text-h: #f3f4f6;
-        --bg: #16171d;
-        --border: #2e303a;
-        --code-bg: #1f2028;
-        --accent: #c084fc;
-        --accent-bg: rgba(192, 132, 252, 0.15);
-        --accent-border: rgba(192, 132, 252, 0.5);
-        --social-bg: rgba(47, 48, 58, 0.5);
-        --shadow:
-            rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
-            rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-    }
-
-    #social .button-icon {
-        filter: invert(1) brightness(2);
-    }
-}
-
 body {
     margin: 0;
+    
 }
 
 #root {
@@ -88,6 +68,59 @@ body {
 /* Make the black icon white */
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
+}
+
+/* Keep native date and time controls visible on the app's light surfaces. */
+input[type="time"] {
+    color-scheme: light;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    cursor: pointer;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-grid;
+    place-content: center;
+    flex: none;
+    width: 1rem;
+    height: 1rem;
+    border: 1px solid #d8cec4;
+    border-radius: 0.2rem;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 0.6rem;
+    height: 0.6rem;
+    transform: scale(0);
+    transition: transform 100ms ease-in-out;
+    background-color: #fff;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0, 43% 62%);
+}
+
+input[type="checkbox"]:checked {
+    border-color: #7d9869;
+    background-color: #7d9869;
+}
+
+input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+input[type="checkbox"]:focus-visible {
+    outline: 2px solid #e9573f;
+    outline-offset: 2px;
+}
+
+input[type="checkbox"]:disabled {
+    cursor: wait;
+    opacity: 0.65;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
