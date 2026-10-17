@@ -35,14 +35,14 @@ const Footer = () => {
                     >
                         Privacy policy
                     </Link>
-                    <a
+                    {/* <a
                         href="https://x.com/yourhandle"
                         target="_blank"
                         rel="noreferrer"
                         className="transition-colors hover:text-[#C94F46] focus-visible:rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C94F46]"
                     >
                         X
-                    </a>
+                    </a> */}
                     <a
                         href="https://www.instagram.com/puddletrailsapp/"
                         target="_blank"

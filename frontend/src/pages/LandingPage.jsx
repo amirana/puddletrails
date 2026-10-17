@@ -18,6 +18,7 @@ import travelIllustration from "../assets/illustration2.webp";
 import ethanAvatar from "../assets/ethan-valdez.webp";
 import katyAvatar from "../assets/katy-fuller.webp";
 import nicolaAvatar from "../assets/nicola-harris.webp";
+import demoVideo from "../assets/demo_video.mp4";
 import logo from "../assets/logo.webp";
 import autumnLeaf from "../assets/autumn-leaf.svg";
 import { buttonStyles } from "../components/ui/buttonStyles.js";
@@ -128,13 +129,37 @@ const LandingPage = () => {
                                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                             </Link>
                             <a
-                                href="#how-it-works"
+                                href="#demo-video"
+                                onClick={(event) => {
+                                    event.preventDefault();
+                                    document
+                                        .getElementById("demo-video")
+                                        ?.scrollIntoView({ behavior: "smooth" });
+                                }}
                                 className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#E9D9CA] bg-white px-5 py-2.5 text-sm font-bold text-[#65554D] transition hover:border-[#E8B899] hover:bg-[#FFF8F0] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#29201D]"
                             >
                                 See how it works{" "}
                                 <ArrowDown className="h-4 w-4" aria-hidden="true" />
                             </a>
                         </div>
+                    </div>
+                </section>
+
+                <section
+                    data-scroll-reveal
+                    id="demo-video"
+                    className="px-5 py-12 sm:px-8 sm:py-16"
+                >
+                    <div className="mx-auto max-w-5xl text-center">
+                        <video
+                            className="w-full overflow-hidden rounded-2xl border border-[#EAE2D9] bg-black shadow-[0_10px_32px_rgba(60,40,30,0.08)]"
+                            controls
+                            preload="metadata"
+                            aria-label="PuddleTrails product demo"
+                        >
+                            <source src={demoVideo} type="video/mp4" />
+                            Your browser does not support the video element.
+                        </video>
                     </div>
                 </section>
 
@@ -391,59 +416,6 @@ const LandingPage = () => {
                                 </p>
                             </article>
                         </div>
-                    </div>
-                </section>
-
-                <section
-                    data-scroll-reveal
-                    id="how-it-works"
-                    aria-labelledby="how-it-works-title"
-                    className="px-5 py-12 sm:px-8 sm:py-16"
-                >
-                    <div className="mx-auto max-w-7xl rounded-[2rem] bg-[#FFF0DF] px-5 py-10 sm:px-8 sm:py-12">
-                        <div className="mx-auto max-w-2xl text-center">
-                            <p className="font-label text-xs font-bold uppercase tracking-[0.08em] text-[#9B4A3E]">
-                                Three easy steps
-                            </p>
-                            <h2
-                                id="how-it-works-title"
-                                className="mb-0 mt-3 text-3xl font-extrabold leading-tight sm:text-4xl"
-                            >
-                                From “we should go” to a trip plan.
-                            </h2>
-                        </div>
-                        <ol className="mt-8 grid gap-4 md:grid-cols-3">
-                            {[
-                                [
-                                    "01",
-                                    "Create a trip",
-                                    "Add the destination and dates, then start a shared trip board.",
-                                ],
-                                [
-                                    "02",
-                                    "Invite your friends",
-                                    "Bring everyone into the same plan so they can follow along.",
-                                ],
-                                [
-                                    "03",
-                                    "Plan it together",
-                                    "Sort out the days, save the details, and keep the budget in view.",
-                                ],
-                            ].map(([step, title, description]) => (
-                                <li
-                                    key={step}
-                                    className="rounded-2xl border border-white/80 bg-white p-5 sm:p-6"
-                                >
-                                    <span className="font-label text-xs font-bold tracking-[0.12em] text-[#C94F46]">
-                                        {step}
-                                    </span>
-                                    <h3 className="mb-0 mt-3 text-xl font-extrabold">{title}</h3>
-                                    <p className="mb-0 mt-2 text-sm leading-6 text-[#65554D]">
-                                        {description}
-                                    </p>
-                                </li>
-                            ))}
-                        </ol>
                     </div>
                 </section>
 
