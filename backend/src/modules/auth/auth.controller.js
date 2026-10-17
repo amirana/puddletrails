@@ -31,7 +31,7 @@ const login = async (req, res) => {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         secure: process.env.NODE_ENV === "production",
-        sameSite: none,
+        sameSite: "none",
     });
 
     // res.cookie("accessToken", accessToken, {
@@ -51,7 +51,7 @@ const refreshToken = async (req, res) => {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         secure: process.env.NODE_ENV === "production",
-        sameSite: none,
+        sameSite: "none",
     });
 
     ApiResponse.ok(res, "Token refreshed", { accessToken });
