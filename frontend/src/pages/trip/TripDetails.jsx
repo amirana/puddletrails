@@ -18,6 +18,7 @@ import { useForm } from "react-hook-form";
 import AuthContext from "../../context/AuthContext.jsx";
 import AppHeader from "../../components/layout/AppHeader.jsx";
 import Footer from "../../components/layout/Footer.jsx";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 import {
     getTrip as getTripService,
     getTripDays as getTripDaysService,
@@ -186,6 +187,11 @@ const TripDetails = () => {
                 data.role,
                 accessToken,
             );
+            if (isPostHogConfigured) {
+                posthog.capture("trip_invitation_sent", {
+                    invited_role: data.role,
+                });
+            }
             setInviteState({
                 busy: false,
                 message: `Invitation sent to ${data.email}.`,
@@ -213,6 +219,11 @@ const TripDetails = () => {
                     member._id === memberId ? response.data : member,
                 ),
             }));
+            if (isPostHogConfigured) {
+                posthog.capture("trip_member_role_updated", {
+                    member_role: role,
+                });
+            }
         } catch (error) {
             setMemberError(error.message);
         } finally {
@@ -256,6 +267,9 @@ const TripDetails = () => {
         setMemberError("");
         try {
             await leaveTripService(tripId, accessToken);
+            if (isPostHogConfigured) {
+                posthog.capture("trip_left");
+            }
             navigate("/dashboard", { replace: true });
         } catch (error) {
             setMemberError(error.message);

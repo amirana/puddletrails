@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { MessageCircle, Pencil, Reply, Trash2 } from "lucide-react";
 import { createDayComment, deleteDayComment, updateDayComment } from "../../services/DayCommentService.js";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 
 const authorName = (comment) =>
     [comment.createdBy?.firstName, comment.createdBy?.lastName].filter(Boolean).join(" ") || "Trip member";
@@ -85,6 +86,11 @@ const DayComments = ({ tripId, day, accessToken, user, role, setDays }) => {
                 setDays((current) => current.map((item) => item._id === day._id
                     ? { ...item, comments: [...(item.comments || []), response.data] }
                     : item));
+                if (isPostHogConfigured) {
+                    posthog.capture("day_comment_added", {
+                        is_reply: Boolean(parentCommentId),
+                    });
+                }
             }
             setComposer(null);
             return true;

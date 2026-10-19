@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CircleDollarSign, Pencil, Plus, Trash2, Wallet, X } from "lucide-react";
 import ExpenseForm from "./ExpenseForm.jsx";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 import {
     createExpense,
     deleteExpense,
@@ -182,6 +183,12 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                 currency: values.currency,
             }, accessToken);
             setBudget(response.data);
+            if (isPostHogConfigured) {
+                posthog.capture("budget_saved", {
+                    currency: values.currency,
+                    is_initial: !budget?.currency,
+                });
+            }
             setEditingBudget(false);
         } catch (error) {
             setFormError(error.message);
@@ -198,6 +205,13 @@ const TripBudget = ({ tripId, accessToken, canEdit }) => {
                 await updateExpense(tripId, expenseEditor.expense._id, values, accessToken);
             } else {
                 await createExpense(tripId, values, accessToken);
+            }
+            if (isPostHogConfigured) {
+                posthog.capture("expense_saved", {
+                    action: expenseEditor?.expense ? "updated" : "created",
+                    category: values.category,
+                    has_transport_type: Boolean(values.transportType),
+                });
             }
             setExpenseEditor(null);
             await loadBudget();

@@ -9,6 +9,7 @@ import {
     updateReservation,
     uploadReservationAttachment,
 } from "../../services/ReservationService.js";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 
 const TYPES = ["Flight", "Hotel", "Restaurant", "Transport", "Other"];
 
@@ -137,6 +138,14 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
                 const response = await createReservation(tripId, values, accessToken);
                 saveReservations([...reservations, response.data].sort((a, b) => new Date(a.date) - new Date(b.date)));
             }
+            if (isPostHogConfigured) {
+                posthog.capture("reservation_saved", {
+                    action: formReservation?._id ? "updated" : "created",
+                    reservation_type: values.type,
+                    confirmed: Boolean(values.confirmed),
+                    attached_to_day: Boolean(values.tripDayId),
+                });
+            }
             setFormReservation(undefined);
         } catch (saveError) {
             setError(saveError.message);
@@ -166,6 +175,11 @@ const TripReservations = ({ tripId, accessToken, role, days, setDays }) => {
             const tripDayId = reservation.tripDayId?._id || reservation.tripDayId || null;
             const response = await updateReservation(tripId, reservation._id, { ...reservation, tripDayId, confirmed: !reservation.confirmed }, accessToken);
             saveReservations(reservations.map((item) => item._id === response.data._id ? response.data : item));
+            if (isPostHogConfigured) {
+                posthog.capture("reservation_confirmation_updated", {
+                    confirmed: !reservation.confirmed,
+                });
+            }
         } catch (toggleError) {
             setError(toggleError.message);
         } finally {

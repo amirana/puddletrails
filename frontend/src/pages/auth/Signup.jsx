@@ -7,6 +7,7 @@ import {
     resendVerificationEmail,
 } from "../../services/authService.js";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 
 const fieldClass = "mt-2 block min-h-12 w-full rounded-xl border border-[#E9D9CA] bg-white px-4 py-3 text-base text-[#29201D] outline-none transition placeholder:text-[#A5988E] focus:border-[#E9573F] focus:ring-4 focus:ring-[#FFE4D8]";
 const primaryButton = buttonStyles({ size: "form", className: "w-full" });
@@ -24,6 +25,11 @@ const Signup = () => {
         setResendStatus("");
         try {
             const result = await registerUser(data);
+            if (isPostHogConfigured) {
+                posthog.capture("account_registered", {
+                    verification_email_sent: Boolean(result.data?.verificationEmailSent),
+                });
+            }
             setVerificationEmailSent(Boolean(result.data?.verificationEmailSent));
         } catch (error) {
             setSubmitError(error.message || "Registration failed.");

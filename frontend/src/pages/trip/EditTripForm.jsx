@@ -5,6 +5,7 @@ import DestinationCombobox from "../../components/ui/DestinationCombobox.jsx";
 import { updateTrip as updateTripService } from "../../services/TripService.js";
 import { PlaneTakeoff, Pencil } from "lucide-react";
 import AuthContext from "../../context/AuthContext.jsx";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 
 const EditTripForm = ({ trip, setTrip, days = [] }) => {
     const { tripId } = useParams();
@@ -83,6 +84,11 @@ const EditTripForm = ({ trip, setTrip, days = [] }) => {
                 role: prev.role,
                 members: prev.members,
             }));
+            if (isPostHogConfigured) {
+                posthog.capture("trip_updated", {
+                    shortened: nextDayCount < currentDayCount,
+                });
+            }
             setIsEditing(false);
         } catch (error) {
             setSubmitError(error.message || "Unable to save trip changes.");

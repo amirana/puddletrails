@@ -11,6 +11,7 @@ import { lazy, Suspense, useCallback, useContext, useEffect, useState } from "re
 import AppHeader from "../components/layout/AppHeader.jsx";
 import Footer from "../components/layout/Footer.jsx";
 import AuthContext from "../context/AuthContext.jsx";
+import posthog, { isPostHogConfigured } from "../services/posthog.js";
 import {
     deleteTrip as deleteTripService,
     getTrips as getTripsService,
@@ -65,6 +66,9 @@ const Dashboard = () => {
         setError("");
         try {
             await deleteTripService(tripId, accessToken);
+            if (isPostHogConfigured) {
+                posthog.capture("trip_deleted");
+            }
             setTrips((current) =>
                 current.filter((trip) => trip._id !== tripId),
             );

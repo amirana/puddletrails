@@ -4,6 +4,7 @@ import { ArrowRight, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { forgotPassword } from "../../services/authService.js";
 import { buttonStyles } from "../../components/ui/buttonStyles.js";
+import posthogLogger from "../../services/posthogLogger.js";
 
 const ForgotPassword = () => {
     const [submitError, setSubmitError] = useState("");
@@ -14,6 +15,9 @@ const ForgotPassword = () => {
         setSubmitError("");
         try {
             await forgotPassword(data);
+            posthogLogger.info("password reset request completed", {
+                operation: "password_reset_request",
+            });
             setEmailSent(true);
         } catch (error) {
             console.error("Forgot password error:", error);

@@ -10,6 +10,7 @@ import {
     updateChecklist,
     updateChecklistItem,
 } from "../../services/ChecklistService.js";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 
 const TYPES = [
     { value: "packing", label: "Packing" },
@@ -109,6 +110,11 @@ const TripChecklists = ({ tripId, accessToken, role }) => {
             await run("create", async () => {
                 const response = await createChecklist(tripId, values, accessToken);
                 setChecklists((current) => [...current, response.data]);
+                if (isPostHogConfigured) {
+                    posthog.capture("checklist_created", {
+                        checklist_type: values.type,
+                    });
+                }
                 setCreating(false);
             });
         } catch { /* error is shown in the panel */ }
@@ -149,6 +155,11 @@ const TripChecklists = ({ tripId, accessToken, role }) => {
             await run(itemId, async () => {
                 const response = await updateChecklistItem(tripId, checklistId, itemId, updates, accessToken);
                 replaceChecklist(response.data);
+                if (isPostHogConfigured && Object.hasOwn(updates, "completed")) {
+                    posthog.capture("checklist_item_completion_updated", {
+                        completed: Boolean(updates.completed),
+                    });
+                }
                 setEditingItem(null);
             });
         } catch { /* error is shown in the panel */ }

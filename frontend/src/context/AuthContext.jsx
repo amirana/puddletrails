@@ -5,6 +5,8 @@ import { refresh as refreshUser } from "../services/authService.js";
 import { profile as profileUser } from "../services/authService.js";
 import { updateProfile as updateProfileUser } from "../services/authService.js";
 import { updateAvatar as updateAvatarUser } from "../services/authService.js";
+import posthog, { isPostHogConfigured } from "../services/posthog.js";
+import posthogLogger from "../services/posthogLogger.js";
 
 const AuthContext = createContext();
 
@@ -15,10 +17,27 @@ function AuthProvider({ children }) {
 
     const authCheckStarted = useRef(false);
 
+    const identifyUser = (authenticatedUser) => {
+        if (!isPostHogConfigured || !authenticatedUser?._id) return;
+
+        if (user?._id && String(user._id) !== String(authenticatedUser._id)) {
+            posthog.reset();
+        }
+
+        posthog.identify(authenticatedUser._id, {
+            email: authenticatedUser.email,
+            name: [authenticatedUser.firstName, authenticatedUser.lastName]
+                .filter(Boolean)
+                .join(" ") || undefined,
+        });
+    };
+
     const login = async (data) => {
         const result = await loginUser(data);
+        const authenticatedUser = result.data.user;
 
-        setUser(result.data.user);
+        identifyUser(authenticatedUser);
+        setUser(authenticatedUser);
         setAccessToken(result.data.accessToken);
 
         return result;
@@ -27,6 +46,9 @@ function AuthProvider({ children }) {
     const logout = async () => {
         const result = await logoutUser(accessToken);
 
+        if (isPostHogConfigured) {
+            posthog.reset();
+        }
         setUser(null);
         setAccessToken(null);
 
@@ -46,7 +68,11 @@ function AuthProvider({ children }) {
         const newAccessToken = result.data.accessToken;
         setAccessToken(newAccessToken);
         const getProfile = await profileUser(newAccessToken);
+        identifyUser(getProfile.data);
         setUser(getProfile.data);
+        posthogLogger.info("authenticated session restored", {
+            operation: "session_restore",
+        });
 
         return getProfile;
     };

@@ -14,6 +14,7 @@ import {
 import ActivityForm from "./ActivityForm.jsx";
 import ExplorePlacesMap from "./ExplorePlacesMap.jsx";
 import DayComments from "./DayComments.jsx";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
 import {
     createActivity,
     deleteActivity,
@@ -68,6 +69,11 @@ const TripItinerary = ({
                 ? await updateActivity(tripId, editing._id, values, accessToken)
                 : await createActivity(tripId, dayId, values, accessToken);
             updateLocalActivity(response.data);
+            if (isPostHogConfigured) {
+                posthog.capture("activity_saved", {
+                    action: editing ? "updated" : "created",
+                });
+            }
             setEditor(null);
         } catch (saveError) {
             setActivityError(saveError.message);

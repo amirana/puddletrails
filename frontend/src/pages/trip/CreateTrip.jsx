@@ -5,6 +5,8 @@ import { ArrowLeft, CalendarDays, MapPin, PlaneTakeoff, X } from "lucide-react";
 import AppHeader from "../../components/layout/AppHeader.jsx";
 import DestinationCombobox from "../../components/ui/DestinationCombobox.jsx";
 import AuthContext from "../../context/AuthContext.jsx";
+import posthog, { isPostHogConfigured } from "../../services/posthog.js";
+import posthogLogger from "../../services/posthogLogger.js";
 
 const CreateTrip = ({ modal = false, onClose }) => {
     const {
@@ -74,6 +76,16 @@ const CreateTrip = ({ modal = false, onClose }) => {
             });
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || "Something went wrong");
+            const creationSurface = modal ? "dashboard_modal" : "trip_page";
+            if (isPostHogConfigured) {
+                posthog.capture("trip_created", {
+                    creation_surface: creationSurface,
+                });
+            }
+            posthogLogger.info("trip creation completed", {
+                operation: "trip_creation",
+                creation_surface: creationSurface,
+            });
             navigate(`/trips/${result.data._id}`);
         } catch (error) {
             console.error("Trip creation error:", error);
